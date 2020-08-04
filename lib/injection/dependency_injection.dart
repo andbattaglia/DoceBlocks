@@ -1,3 +1,4 @@
+import 'package:doce_blocks/firebase/firebase_datasource.dart';
 import 'package:flutter/widgets.dart';
 import 'package:doce_blocks/data/repositories.dart';
 
@@ -27,7 +28,8 @@ class Injector {
   }
 
   static UserRepository provideUserRepository() {
-    return new UserRepositoryImpl();
+    //TODO: create a static to instance the datasource???
+    return new UserRepositoryImpl(new FirebaseDataSource());
   }
 
   Injector._internal();

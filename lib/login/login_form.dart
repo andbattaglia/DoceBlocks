@@ -8,16 +8,17 @@ class LoginForm extends StatefulWidget {
 }
 
 class _LoginFormState extends State<LoginForm> {
-  final _usernameController = TextEditingController();
+  final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
 
     _onLoginButtonPressed() {
+
       BlocProvider.of<LoginBloc>(context).add(
         LoginButtonPressed(
-          username: _usernameController.text,
+          email: _emailController.text,
           password: _passwordController.text,
         ),
       );
@@ -33,15 +34,24 @@ class _LoginFormState extends State<LoginForm> {
             ),
           );
         }
+
+        if (state is LoginSuccess) {
+          Scaffold.of(context).showSnackBar(
+            SnackBar(
+              content: Text('SUCCESS'),
+              backgroundColor: Colors.green,
+            ),
+          );
+        }
       },
       child: BlocBuilder<LoginBloc, LoginState>(
         builder: (context, state) {
-          return Form(
+          return Container(
             child: Column(
               children: [
                 TextFormField(
-                  decoration: InputDecoration(labelText: 'username'),
-                  controller: _usernameController,
+                  decoration: InputDecoration(labelText: 'email'),
+                  controller: _emailController,
                 ),
                 TextFormField(
                   decoration: InputDecoration(labelText: 'password'),
@@ -49,15 +59,9 @@ class _LoginFormState extends State<LoginForm> {
                   obscureText: true,
                 ),
                 RaisedButton(
-                  onPressed:
-                  state is! LoginInProgress ? _onLoginButtonPressed : null,
+                  onPressed: _onLoginButtonPressed,
                   child: Text('Login'),
-                ),
-                Container(
-                  child: state is LoginInProgress
-                      ? CircularProgressIndicator()
-                      : null,
-                ),
+                )
               ],
             ),
           );

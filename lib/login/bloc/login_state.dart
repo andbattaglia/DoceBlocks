@@ -9,7 +9,13 @@ abstract class LoginState extends Equatable {
 
 class LoginInitial extends LoginState {}
 
-class LoginInProgress extends LoginState {}
+class LoginSuccess extends LoginState {
+
+  const LoginSuccess();
+
+//  @override
+//  List<Object> get props => [token];
+}
 
 class LoginFailure extends LoginState {
   final String error;

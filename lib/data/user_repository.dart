@@ -1,41 +1,24 @@
 import 'dart:async';
-
+import 'package:doce_blocks/firebase/firebase_datasource.dart';
 import 'package:meta/meta.dart';
 
 abstract class UserRepository {
-  Future<String> authenticate();
-  Future<void> deleteToken();
-  Future<void> persistToken(String token);
-  Future<bool> hasToken();
+  Future<String> authenticate({
+    @required String email,
+    @required String password,
+  });
 }
 
 class UserRepositoryImpl implements UserRepository {
-  Future<String> authenticate({
-    @required String username,
-    @required String password,
-  }) async {
-    await Future.delayed(Duration(seconds: 1));
-    return 'token';
+
+  FirebaseDataSource firebaseDataSource;
+
+  UserRepositoryImpl(FirebaseDataSource firebaseDataSource) {
+    this.firebaseDataSource = firebaseDataSource;
   }
 
   @override
-  Future<void> deleteToken() async {
-    /// delete from keystore/keychain
-    await Future.delayed(Duration(seconds: 1));
-    return;
-  }
-
-  @override
-  Future<void> persistToken(String token) async {
-    /// write to keystore/keychain
-    await Future.delayed(Duration(seconds: 1));
-    return;
-  }
-
-  @override
-  Future<bool> hasToken() async {
-    /// read from keystore/keychain
-    await Future.delayed(Duration(seconds: 1));
-    return false;
+  Future<String> authenticate({String email, String password}) async {
+    return await firebaseDataSource.authenticate(email: email, password: password);
   }
 }

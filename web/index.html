@@ -18,9 +18,29 @@
   <link rel="manifest" href="manifest.json">
 </head>
 <body>
-  <!-- This script installs service_worker.js to provide PWA functionality to
-       application. For more information, see:
-       https://developers.google.com/web/fundamentals/primers/service-workers -->
+  <!-- The core Firebase JS SDK is always required and must be listed first -->
+  <script src="https://www.gstatic.com/firebasejs/7.17.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.17.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.17.1/firebase-database.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.17.1/firebase-firestore.js"></script>
+
+  <script>
+    // Your web app's Firebase configuration
+    var firebaseConfig = {
+      apiKey: "AIzaSyB5JMdmQrbyGu4uLsQCNNneUMNSK9yd5QI",
+      authDomain: "doceblock.firebaseapp.com",
+      databaseURL: "https://doceblock.firebaseio.com",
+      projectId: "doceblock",
+      storageBucket: "doceblock.appspot.com",
+      messagingSenderId: "480712909105",
+      appId: "1:480712909105:web:76815630e36e430a261010",
+      measurementId: "G-HB6L957BPX"
+    };
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+  </script>
+
+
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', function () {
@@ -28,6 +48,9 @@
       });
     }
   </script>
+
+
   <script src="main.dart.js" type="application/javascript"></script>
+
 </body>
 </html>

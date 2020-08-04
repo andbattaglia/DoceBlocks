@@ -1,7 +1,5 @@
 import 'package:doce_blocks/login/login_page.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:doce_blocks/login/login_page.dart';
 
 
 void main() => runApp(new MyApp());
