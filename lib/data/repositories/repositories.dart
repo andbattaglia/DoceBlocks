@@ -1,0 +1,1 @@
+export 'package:doce_blocks/data/repositories/user_repository.dart';

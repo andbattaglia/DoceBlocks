@@ -1,14 +1,16 @@
 import 'dart:async';
-import 'dart:developer';
 
-import 'package:meta/meta.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:meta/meta.dart';
 
 
 class FirebaseDataSource{
 
-  //TODO: move into dependecies injection file
-  final FirebaseAuth _auth = FirebaseAuth.instance;
+  FirebaseAuth _auth;
+
+  FirebaseDataSource(FirebaseAuth auth) {
+    this._auth = auth;
+  }
 
   Future<String> authenticate({
     @required String email,
@@ -16,5 +18,15 @@ class FirebaseDataSource{
   }) async {
       return _auth.signInWithEmailAndPassword(email: email, password: password).then((authResult) => authResult.user.uid);
   }
+
+  Future<bool> isSignedIn() async {
+    final currentUser = await _auth.currentUser();
+    return currentUser != null;
+  }
+
+  Future<void> signOut() async {
+    return await _auth.signOut();
+  }
+
 
 }

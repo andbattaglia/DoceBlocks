@@ -1,6 +1,7 @@
+import 'package:doce_blocks/presentation/auth/authentication_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:doce_blocks/login/bloc/login_bloc.dart';
+import 'package:doce_blocks/presentation/login/bloc/login_bloc.dart';
 
 class LoginForm extends StatefulWidget {
   @override
@@ -36,12 +37,7 @@ class _LoginFormState extends State<LoginForm> {
         }
 
         if (state is LoginSuccess) {
-          Scaffold.of(context).showSnackBar(
-            SnackBar(
-              content: Text('SUCCESS'),
-              backgroundColor: Colors.green,
-            ),
-          );
+            BlocProvider.of<AuthenticationBloc>(context).add(AuthenticationLoggedIn());
         }
       },
       child: BlocBuilder<LoginBloc, LoginState>(

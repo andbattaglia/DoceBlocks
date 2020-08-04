@@ -1,6 +1,7 @@
-import 'package:doce_blocks/firebase/firebase_datasource.dart';
+import 'package:doce_blocks/data/framework/firebase/firebase_datasource.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/widgets.dart';
-import 'package:doce_blocks/data/repositories.dart';
+import 'package:doce_blocks/data/repositories/repositories.dart';
 
 enum Flavor { DEVEL }
 
@@ -27,9 +28,27 @@ class Injector {
     return _singleton;
   }
 
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  //          FRAMEWORK
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  static FirebaseAuth provideFirebaseAuth() {
+    return FirebaseAuth.instance;
+  }
+
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  //          DATASOURCE
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  static FirebaseDataSource provideFirebaseDataSource() {
+    var firebaseAuth = Injector.provideFirebaseAuth();
+    return new FirebaseDataSource(firebaseAuth);
+  }
+
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  //          REPOSITORY
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   static UserRepository provideUserRepository() {
-    //TODO: create a static to instance the datasource???
-    return new UserRepositoryImpl(new FirebaseDataSource());
+    var firebaseDatasource = Injector.provideFirebaseDataSource();
+    return new UserRepositoryImpl(firebaseDatasource);
   }
 
   Injector._internal();

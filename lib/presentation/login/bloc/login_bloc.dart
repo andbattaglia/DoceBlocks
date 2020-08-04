@@ -16,8 +16,6 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   @override
   Stream<LoginState> mapEventToState(LoginEvent event) async* {
 
-    log(event.toString());
-
     if(event is LoginButtonPressed){
       var userRepository = Injector.provideUserRepository();
 
