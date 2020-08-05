@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:doce_blocks/data/models/models.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -11,9 +12,9 @@ import 'package:meta/meta.dart';
 class FirebaseDataSource{
 
   FirebaseAuth _auth;
-  FirebaseDatabase _db;
+  Firestore _db;
 
-  FirebaseDataSource(FirebaseAuth auth, FirebaseDatabase db) {
+  FirebaseDataSource(FirebaseAuth auth, Firestore db) {
     this._auth = auth;
     this._db = db;
   }
@@ -39,8 +40,8 @@ class FirebaseDataSource{
   }
 
   Future<User> _getUser(String uid) async {
-    var snapshot = await _db.reference().child('users').orderByChild("uid").equalTo(uid).limitToFirst(1).once();
-    return User.fromMap(snapshot.value[0]);
+    var snapshot = await _db.collection("users").document(uid).get();
+    return User.fromMap(snapshot.data);
   }
 
 }

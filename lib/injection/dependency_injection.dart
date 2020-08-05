@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:doce_blocks/data/framework/firebase/firebase_datasource.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -36,8 +37,8 @@ class Injector {
     return FirebaseAuth.instance;
   }
 
-  static FirebaseDatabase provideFirebaseDatabase() {
-    return FirebaseDatabase.instance;
+  static Firestore provideFirestore() {
+    return Firestore.instance;
   }
 
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -45,8 +46,8 @@ class Injector {
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   static FirebaseDataSource provideFirebaseDataSource() {
     var firebaseAuth = Injector.provideFirebaseAuth();
-    var firebaseDatabase = Injector.provideFirebaseDatabase();
-    return new FirebaseDataSource(firebaseAuth, firebaseDatabase);
+    var firestore = Injector.provideFirestore();
+    return new FirebaseDataSource(firebaseAuth, firestore);
   }
 
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
