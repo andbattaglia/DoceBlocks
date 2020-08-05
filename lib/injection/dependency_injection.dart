@@ -1,5 +1,6 @@
 import 'package:doce_blocks/data/framework/firebase/firebase_datasource.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/widgets.dart';
 import 'package:doce_blocks/data/repositories/repositories.dart';
 
@@ -35,12 +36,17 @@ class Injector {
     return FirebaseAuth.instance;
   }
 
+  static FirebaseDatabase provideFirebaseDatabase() {
+    return FirebaseDatabase.instance;
+  }
+
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //          DATASOURCE
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   static FirebaseDataSource provideFirebaseDataSource() {
     var firebaseAuth = Injector.provideFirebaseAuth();
-    return new FirebaseDataSource(firebaseAuth);
+    var firebaseDatabase = Injector.provideFirebaseDatabase();
+    return new FirebaseDataSource(firebaseAuth, firebaseDatabase);
   }
 
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////

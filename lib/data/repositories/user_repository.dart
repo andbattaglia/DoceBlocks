@@ -1,9 +1,10 @@
 import 'dart:async';
 import 'package:doce_blocks/data/framework/firebase/firebase_datasource.dart';
+import 'package:doce_blocks/data/models/models.dart';
 import 'package:meta/meta.dart';
 
 abstract class UserRepository {
-  Future<String> authenticate({@required String email, @required String password,});
+  Future<void> authenticate({@required String email, @required String password,});
   Future<bool> isSignedIn();
   Future<void> signOut();
 }
@@ -11,23 +12,27 @@ abstract class UserRepository {
 class UserRepositoryImpl implements UserRepository {
 
   FirebaseDataSource firebaseDataSource;
+  User _currentUser;
 
   UserRepositoryImpl(FirebaseDataSource firebaseDataSource) {
     this.firebaseDataSource = firebaseDataSource;
   }
 
   @override
-  Future<String> authenticate({String email, String password}) async {
-    return await firebaseDataSource.authenticate(email: email, password: password);
+  Future<void> authenticate({String email, String password}) async {
+    _currentUser = await firebaseDataSource.authenticate(email: email, password: password);
+    return;
   }
 
   @override
   Future<bool> isSignedIn() async {
-    return await firebaseDataSource.isSignedIn();
+    _currentUser = await firebaseDataSource.isSignedIn();
+    return _currentUser != null;
   }
 
   @override
   Future<void> signOut() async {
-    return await firebaseDataSource.signOut();
+    await firebaseDataSource.signOut();
+    _currentUser = null;
   }
 }

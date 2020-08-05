@@ -9,8 +9,15 @@ class LoginForm extends StatefulWidget {
 }
 
 class _LoginFormState extends State<LoginForm> {
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
+  var _emailController;
+  var _passwordController;
+
+  @override
+  void initState() {
+    super.initState();
+    _emailController = TextEditingController(text: 'ab@doceblocks.com');
+    _passwordController = TextEditingController(text: '123456Aa');
+  }
 
   @override
   Widget build(BuildContext context) {
