@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:doce_blocks/presentation/auth/authentication_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -44,7 +46,7 @@ class _LoginFormState extends State<LoginForm> {
         }
 
         if (state is LoginSuccess) {
-            BlocProvider.of<AuthenticationBloc>(context).add(AuthenticationLoggedIn());
+          BlocProvider.of<AuthenticationBloc>(context).add(AuthenticationLoggedIn());
         }
       },
       child: BlocBuilder<LoginBloc, LoginState>(

@@ -9,8 +9,8 @@ class User {
 
   User(this.uid, {this.email = '', this.name = '', this.lastName = '', this.isAdmin = false});
 
-  User.fromMap(dynamic data) :
-        uid = data['uid'],
+  User.fromMap(String uid, dynamic data) :
+        uid = uid,
         email = data['email'],
         name = data['name'],
         lastName = data['last_name'],

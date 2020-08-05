@@ -20,11 +20,16 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       var userRepository = Injector.provideUserRepository();
 
       try{
-        await userRepository.authenticate(email: event.email, password: event.password);
-        yield LoginSuccess();
+        var isSignedIn = await userRepository.authenticate(email: event.email, password: event.password);
+        if(isSignedIn){
+          yield LoginSuccess();
+        } else {
+          yield LoginFailure(error: 'Generic Error!');
+        }
       } on PlatformException catch (exception) {
         yield LoginFailure(error: exception.message);
       } catch (error) {
+        log(error.toString());
         yield LoginFailure(error: 'Generic Error!');
       }
     } else {

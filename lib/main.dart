@@ -34,7 +34,6 @@ class App extends StatelessWidget {
       ),
       home: BlocBuilder<AuthenticationBloc, AuthenticationState>(
         builder: (context, state) {
-          print(state.toString());
           if (state is AuthenticationInitial) {
             return SplashPage();
           }
