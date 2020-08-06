@@ -18,8 +18,8 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
     if(event is LoginButtonPressed){
       var userRepository = Injector.provideUserRepository();
-
       try{
+        yield LoginProgress();
         var isSignedIn = await userRepository.authenticate(email: event.email, password: event.password);
         if(isSignedIn){
           yield LoginSuccess();
