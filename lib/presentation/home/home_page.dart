@@ -1,4 +1,4 @@
-import 'package:doce_blocks/presentation/auth/authentication_bloc.dart';
+import 'package:doce_blocks/domain/bloc/bloc.dart';
 import 'package:doce_blocks/presentation/drawer/drawer_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

@@ -1,13 +1,9 @@
-import 'package:doce_blocks/presentation/auth/authentication_bloc.dart';
+import 'package:doce_blocks/domain/bloc/bloc.dart';
 import 'package:doce_blocks/presentation/home/home_page.dart';
 import 'package:doce_blocks/presentation/login/login_page.dart';
-import 'package:doce_blocks/presentation/utils/simple_bloc_observer.dart';
 import 'package:doce_blocks/presentation/splash/splash_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-
-//void main() => runApp(new App());
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();

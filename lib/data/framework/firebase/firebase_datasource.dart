@@ -5,17 +5,31 @@ import 'package:doce_blocks/data/models/models.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:meta/meta.dart';
 
+abstract class FirebaseDataSource {
+  Future<User> authenticate({@required String email, @required String password,});
+  Future<User> isSignedIn();
+  Future<void> signOut();
+}
 
-class FirebaseDataSource{
+class FirebaseDataSourceImpl extends FirebaseDataSource{
 
   FirebaseAuth _auth;
   Firestore _db;
 
-  FirebaseDataSource(FirebaseAuth auth, Firestore db) {
-    this._auth = auth;
-    this._db = db;
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  //          SINGLETON
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  static final FirebaseDataSourceImpl _singleton = FirebaseDataSourceImpl._internal();
+
+  factory FirebaseDataSourceImpl({FirebaseAuth auth, Firestore db}) {
+    _singleton._auth = auth;
+    _singleton._db = db;
+    return _singleton;
   }
 
+  FirebaseDataSourceImpl._internal();
+
+  @override
   Future<User> authenticate({
     @required String email,
     @required String password,
@@ -25,6 +39,7 @@ class FirebaseDataSource{
       return user;
   }
 
+  @override
   Future<User> isSignedIn() async {
     final currentUser = await _auth.currentUser();
     if(currentUser != null){
@@ -34,6 +49,7 @@ class FirebaseDataSource{
     return null;
   }
 
+  @override
   Future<void> signOut() async {
     return await _auth.signOut();
   }

@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:doce_blocks/data/framework/firebase/firebase_datasource.dart';
+import 'package:doce_blocks/data/framework/datasources.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/widgets.dart';
 import 'package:doce_blocks/data/repositories/repositories.dart';
@@ -46,7 +46,7 @@ class Injector {
   static FirebaseDataSource provideFirebaseDataSource() {
     var firebaseAuth = Injector.provideFirebaseAuth();
     var firestore = Injector.provideFirestore();
-    return new FirebaseDataSource(firebaseAuth, firestore);
+    return FirebaseDataSourceImpl(auth: firebaseAuth, db: firestore);
   }
 
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -54,7 +54,7 @@ class Injector {
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   static UserRepository provideUserRepository() {
     var firebaseDatasource = Injector.provideFirebaseDataSource();
-    return new UserRepositoryImpl(firebaseDatasource);
+    return UserRepositoryImpl(firebaseDataSource: firebaseDatasource);
   }
 
   Injector._internal();

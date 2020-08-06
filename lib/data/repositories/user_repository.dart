@@ -1,6 +1,5 @@
 import 'dart:async';
-import 'dart:developer';
-import 'package:doce_blocks/data/framework/firebase/firebase_datasource.dart';
+import 'package:doce_blocks/data/framework/datasources.dart';
 import 'package:doce_blocks/data/models/models.dart';
 import 'package:meta/meta.dart';
 
@@ -14,28 +13,36 @@ abstract class UserRepository {
 
 class UserRepositoryImpl implements UserRepository {
 
-  FirebaseDataSource firebaseDataSource;
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  //          SINGLETON
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  static final UserRepositoryImpl _singleton = UserRepositoryImpl._internal();
+
+  FirebaseDataSource _firebaseDataSource;
   User _currentUser;
 
-  UserRepositoryImpl(FirebaseDataSource firebaseDataSource) {
-    this.firebaseDataSource = firebaseDataSource;
+  factory UserRepositoryImpl({FirebaseDataSource firebaseDataSource}) {
+    _singleton._firebaseDataSource = firebaseDataSource;
+    return _singleton;
   }
+
+  UserRepositoryImpl._internal();
 
   @override
   Future<bool> authenticate({String email, String password}) async {
-    _currentUser = await firebaseDataSource.authenticate(email: email, password: password);
+    _currentUser = await _firebaseDataSource.authenticate(email: email, password: password);
     return _currentUser != null;
   }
 
   @override
   Future<bool> isSignedIn() async {
-    _currentUser = await firebaseDataSource.isSignedIn();
+    _currentUser = await _firebaseDataSource.isSignedIn();
     return _currentUser != null;
   }
 
   @override
   Future<void> signOut() async {
-    await firebaseDataSource.signOut();
+    await _firebaseDataSource.signOut();
     _currentUser = null;
   }
 
