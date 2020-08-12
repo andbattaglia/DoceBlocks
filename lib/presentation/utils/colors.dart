@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 class DBColors{
@@ -10,6 +11,9 @@ class DBColors{
   static const GradientColorTwo =  PrimaryLightColor;
 
   static const PrimaryButton =  PrimaryColor;
+
+  static const White =  Colors.white;
+  static const Black =  Colors.black;
 
   static const PrimaryHighText =  Color(0xD9000000);
   static const PrimaryMediumText =  Color(0x99000000);

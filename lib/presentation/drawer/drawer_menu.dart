@@ -22,9 +22,6 @@ class _DrawerMenuState extends State<DrawerMenu> {
               children: <Widget>[
                 DrawerHeader(
                   child: Text('${state.user.name} ${state.user.lastName}'),
-                  decoration: BoxDecoration(
-                    color: Colors.blue,
-                  ),
                 ),
               ],
             );

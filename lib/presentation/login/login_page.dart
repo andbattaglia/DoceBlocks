@@ -4,6 +4,7 @@ import 'package:doce_blocks/presentation/utils/colors.dart';
 import 'package:doce_blocks/presentation/utils/dimens.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:responsive_builder/responsive_builder.dart';
 
 class LoginPage extends StatelessWidget {
 
@@ -14,23 +15,19 @@ class LoginPage extends StatelessWidget {
           create: (context) {
             return LoginBloc();
           },
-          child: LayoutBuilder(builder: (builder, constraints) {
-            var size = DBDimens.getScreenSize(constraints.maxWidth);
-            switch(size){
-              case ScreenSize.LARGE:
-                return _buildLargeLayout();
-              case ScreenSize.MEDIUM:
-                return _buildSmallLayout(maxWidth: 400);
-              case ScreenSize.SMALL:
-                return _buildSmallLayout();
-            }
-            return Container();
-          }),
+          child: ScreenTypeLayout(
+              mobile: _buildSmallLayout(),
+              tablet: OrientationLayoutBuilder(
+                portrait: (context) => _buildSmallLayout(),
+                landscape: (context) => _buildLargeLayout(),
+              ),
+              desktop:_buildLargeLayout(),
+          ),
         )
     );
   }
 
-  Widget _buildSmallLayout({double maxWidth}) {
+  Widget _buildSmallLayout() {
     return Container(
         decoration: BoxDecoration(
             gradient: LinearGradient(
@@ -42,8 +39,8 @@ class LoginPage extends StatelessWidget {
         child:  Container(
           margin: EdgeInsets.only(left: DBDimens.PaddingDefault, right: DBDimens.PaddingDefault),
           alignment: Alignment.center,
-          child: SizedBox(
-            width: maxWidth,
+          child: Container(
+            constraints: BoxConstraints(maxWidth: 400),
             child:Card(
                 elevation: 8.0,
                 shape: RoundedRectangleBorder(

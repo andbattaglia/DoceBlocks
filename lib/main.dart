@@ -26,16 +26,14 @@ class App extends StatelessWidget {
 
     return new MaterialApp(
       title: DBString.title,
-//      theme: new ThemeData(
-//        primarySwatch: Colors.blue,
-//        visualDensity: VisualDensity.adaptivePlatformDensity,
-//      ),
       theme: ThemeData(
         brightness: Brightness.light,
-        primaryColor: DBColors.PrimaryColor,
+        primaryColor: DBColors.White,
         accentColor: DBColors.PrimaryAssentColor,
 
         fontFamily: 'Raleway',
+
+        visualDensity: VisualDensity.adaptivePlatformDensity,
 
 //        textTheme: TextTheme(
 //          headline1: TextStyle(fontSize: 72.0, fontWeight: FontWeight.bold),
