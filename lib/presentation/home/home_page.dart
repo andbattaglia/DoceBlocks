@@ -1,7 +1,9 @@
 import 'package:doce_blocks/domain/bloc/bloc.dart';
+import 'package:doce_blocks/domain/bloc/theme/change_theme_bloc.dart';
 import 'package:doce_blocks/presentation/drawer/drawer_menu.dart';
 import 'package:doce_blocks/presentation/profile/profile_page.dart';
-import 'package:doce_blocks/presentation/utils/colors.dart';
+import 'package:doce_blocks/presentation/utils/dimens.dart';
+import 'package:doce_blocks/presentation/utils/themes.dart';
 import 'package:doce_blocks/presentation/utils/strings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -16,7 +18,7 @@ class HomePage extends StatelessWidget {
         appBar: AppBar(
           title: Text(DBString.title),
           actions: <Widget>[
-            _buildProfile(context)
+            _buildProfileAvatar(context)
           ],
         ),
         body: _buildBody()
@@ -52,18 +54,27 @@ class HomePage extends StatelessWidget {
 //    );
   }
 
-  Widget _buildProfile(BuildContext context){
-    return Container(
-      child: GestureDetector(
-        onTap: () {
-          showDialog(context: context, builder: (BuildContext context) => ProfilePage(),
-          );        },
-        child:  CircleAvatar(
-          backgroundColor: DBColors.PrimaryColor,
-          child: Text('AH'),
-        ),
-      ),
+  Widget _buildProfileAvatar(BuildContext context){
+    return BlocBuilder<AuthenticationBloc, AuthenticationState>(
+      builder: (context, state){
+        if(state is AuthenticationSuccess){
+          return Container(
+            padding: EdgeInsets.only(right: DBDimens.PaddingQuarter, left: DBDimens.PaddingQuarter),
+            child: GestureDetector(
+              onTap: () {
+                showDialog(context: context, builder: (BuildContext context) => ProfilePage());
+              },
+              child:CircleAvatar(
+                backgroundColor: Theme.of(context).primaryColorDark,
+                child: Text('${state.user.name[0]}${state.user.lastName[0]}', style: Theme.of(context).textTheme.headline6),
+              ),
+            ),
+          );
+        }
+        return null;
+      },
     );
+
   }
 }
 

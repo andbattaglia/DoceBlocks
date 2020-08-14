@@ -1,5 +1,6 @@
 import 'package:doce_blocks/domain/bloc/bloc.dart';
-import 'package:doce_blocks/presentation/utils/colors.dart';
+import 'package:doce_blocks/injection/dependency_injection.dart';
+import 'package:doce_blocks/presentation/utils/themes.dart';
 import 'package:doce_blocks/presentation/utils/dimens.dart';
 import 'package:doce_blocks/presentation/utils/strings.dart';
 import 'package:flutter/material.dart';
@@ -48,6 +49,7 @@ class _LoginFormState extends State<LoginForm> {
           BlocProvider.of<AuthenticationBloc>(context).add(AuthenticationLoggedIn());
         }
       },
+
       child: BlocBuilder<LoginBloc, LoginState>(
         builder: (context, state) {
           return Wrap(
@@ -56,7 +58,7 @@ class _LoginFormState extends State<LoginForm> {
               Container(
                 alignment: Alignment.centerLeft,
                 padding: EdgeInsets.only(top: DBDimens.PaddingDouble, left: DBDimens.PaddingDouble, right: DBDimens.PaddingDouble),
-                child: Text(DBString.login_title, style: TextStyle(color: DBColors.PrimaryMediumText, fontSize: 36, fontWeight: FontWeight.normal))
+                child: Text(DBString.login_title, style: Theme.of(context).textTheme.headline4)
               ),
 
               Container(
@@ -64,9 +66,11 @@ class _LoginFormState extends State<LoginForm> {
                 child: TextFormField(
                   controller: _emailController,
                   decoration: InputDecoration(
-                    labelStyle: new TextStyle(color: DBColors.PrimaryDisabledText),
+                    labelStyle: new TextStyle(),
                     focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: DBColors.PrimaryDarkColor),
+                      borderSide: BorderSide(
+                        color: Theme.of(context).primaryColor
+                      ),
                     ),
                     labelText: DBString.login_email_hint,
                   ),
@@ -78,11 +82,12 @@ class _LoginFormState extends State<LoginForm> {
                   controller: _passwordController,
                   obscureText: true,
                   decoration: InputDecoration(
-                    labelStyle: new TextStyle(color:  DBColors.PrimaryDisabledText),
+                    labelStyle: new TextStyle(),
                     focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: DBColors.PrimaryDarkColor),
+                      borderSide: BorderSide(
+                          color: Theme.of(context).primaryColor
+                      ),
                     ),
-                    focusColor: DBColors.PrimaryDarkColor,
                     labelText: DBString.login_password_hint,
                   ),
                 ),
@@ -93,9 +98,9 @@ class _LoginFormState extends State<LoginForm> {
                       alignment: Alignment.centerLeft,
                       child: FloatingActionButton.extended(
                         onPressed: _onLoginButtonPressed,
-                        label: Text(DBString.login_button),
-                        icon: Icon(Icons.send),
-                        backgroundColor: DBColors.PrimaryButton,
+                        label: Text(DBString.login_button, style: Theme.of(context).accentTextTheme.button),
+                        icon: Icon(Icons.send, color: Theme.of(context).iconTheme.color),
+                        backgroundColor: Theme.of(context).buttonColor,
                       )
                   )
               ),

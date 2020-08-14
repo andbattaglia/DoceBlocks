@@ -1,6 +1,7 @@
 import 'package:doce_blocks/domain/bloc/bloc.dart';
+import 'package:doce_blocks/injection/dependency_injection.dart';
 import 'package:doce_blocks/presentation/login/login_form.dart';
-import 'package:doce_blocks/presentation/utils/colors.dart';
+import 'package:doce_blocks/presentation/utils/themes.dart';
 import 'package:doce_blocks/presentation/utils/dimens.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -16,24 +17,24 @@ class LoginPage extends StatelessWidget {
             return LoginBloc();
           },
           child: ScreenTypeLayout(
-              mobile: _buildSmallLayout(),
+              mobile: _buildSmallLayout(context),
               tablet: OrientationLayoutBuilder(
-                portrait: (context) => _buildSmallLayout(),
-                landscape: (context) => _buildLargeLayout(),
+                portrait: (context) => _buildSmallLayout(context),
+                landscape: (context) => _buildLargeLayout(context),
               ),
-              desktop:_buildLargeLayout(),
+              desktop:_buildLargeLayout(context),
           ),
         )
     );
   }
 
-  Widget _buildSmallLayout() {
+  Widget _buildSmallLayout(BuildContext context) {
     return Container(
         decoration: BoxDecoration(
             gradient: LinearGradient(
                 begin: Alignment.topRight,
                 end: Alignment.bottomLeft,
-                colors: [ DBColors.GradientColorOne, DBColors.GradientColorTwo]
+                colors: [ Theme.of(context).primaryColor,  Theme.of(context).primaryColorLight ]
             )
         ),
         child:  Container(
@@ -52,7 +53,7 @@ class LoginPage extends StatelessWidget {
     );
   }
 
-  Widget _buildLargeLayout() {
+  Widget _buildLargeLayout(BuildContext context) {
     return Row(
       children: [
         Expanded(
@@ -64,7 +65,7 @@ class LoginPage extends StatelessWidget {
                 gradient: LinearGradient(
                     begin: Alignment.topRight,
                     end: Alignment.bottomLeft,
-                    colors: [ DBColors.GradientColorOne, DBColors.GradientColorTwo]
+                    colors: [ Theme.of(context).primaryColor,  Theme.of(context).primaryColorLight ]
                 )
             ),
             child: Image.asset('assets/login.png'),
@@ -74,7 +75,7 @@ class LoginPage extends StatelessWidget {
             flex: 1,
             child: Container(
               alignment: Alignment.center,
-              color: Colors.white,
+              color: Theme.of(context).backgroundColor,
               child: LoginForm(),
             )
         )

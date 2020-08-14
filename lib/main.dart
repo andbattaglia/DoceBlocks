@@ -1,8 +1,9 @@
 import 'package:doce_blocks/domain/bloc/bloc.dart';
+import 'package:doce_blocks/domain/bloc/theme/change_theme_bloc.dart';
 import 'package:doce_blocks/presentation/home/home_page.dart';
 import 'package:doce_blocks/presentation/login/login_page.dart';
 import 'package:doce_blocks/presentation/splash/splash_page.dart';
-import 'package:doce_blocks/presentation/utils/colors.dart';
+import 'package:doce_blocks/presentation/utils/themes.dart';
 import 'package:doce_blocks/presentation/utils/strings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -11,11 +12,21 @@ void main() {
   WidgetsFlutterBinding.ensureInitialized();
   Bloc.observer = SimpleBlocObserver();
   runApp(
-    BlocProvider(
-      create: (context) => AuthenticationBloc()
-        ..add(AuthenticationStarted()),
+//    BlocProvider(
+//      create: (context) => AuthenticationBloc()..add(AuthenticationStarted()),
+//      child: App(),
+//    ),
+    MultiBlocProvider(
+      providers: [
+        BlocProvider<AuthenticationBloc>(
+          create: (BuildContext context) => AuthenticationBloc()..add(AuthenticationStarted()),
+        ),
+        BlocProvider<ChangeThemeBloc>(
+          create: (BuildContext context) => ChangeThemeBloc(),
+        ),
+      ],
       child: App(),
-    ),
+    )
   );
 }
 
@@ -23,39 +34,35 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return BlocBuilder<ChangeThemeBloc, ChangeThemeState>(
+      builder: (context, state){
 
-    return new MaterialApp(
-      title: DBString.title,
-      theme: ThemeData(
-        brightness: Brightness.light,
-        primaryColor: DBColors.White,
-        accentColor: DBColors.PrimaryAssentColor,
+        print('CAMBIO');
+        print(state.themeState.themeMode);
 
-        fontFamily: 'Raleway',
-
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-
-//        textTheme: TextTheme(
-//          headline1: TextStyle(fontSize: 72.0, fontWeight: FontWeight.bold),
-//          headline6: TextStyle(fontSize: 36.0, fontStyle: FontStyle.italic),
-//          bodyText2: TextStyle(fontSize: 14.0, fontFamily: 'Hind'),
-//        ),
-      ),
-      home: BlocBuilder<AuthenticationBloc, AuthenticationState>(
-        builder: (context, state) {
-          if (state is AuthenticationInitial) {
-            return SplashPage();
-          }
-          if (state is AuthenticationSuccess) {
-            return HomePage();
-          }
-          if (state is AuthenticationFailure) {
-            return LoginPage();
-          }
-          return Container();
-        },
-      ),
+        return new MaterialApp(
+          title: DBString.title,
+          theme: kLightTheme,
+          darkTheme: kDarkTheme,
+          themeMode: state.themeState.themeMode,
+          home: BlocBuilder<AuthenticationBloc, AuthenticationState>(
+            builder: (context, state) {
+              if (state is AuthenticationInitial) {
+                return SplashPage();
+              }
+              if (state is AuthenticationSuccess) {
+                return HomePage();
+              }
+              if (state is AuthenticationFailure) {
+                return LoginPage();
+              }
+              return Container();
+            },
+          ),
+        );
+      },
     );
+
   }
 }
 

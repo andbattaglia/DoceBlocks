@@ -5,4 +5,6 @@ class DBDimens{
   static const double PaddingDouble = 32.0;
 
   static const double CornerDefault = 24.0;
+
+  static const double RadiusAvatar = 40.0;
 }
