@@ -1,5 +1,5 @@
 import 'package:doce_blocks/domain/bloc/bloc.dart';
-import 'package:doce_blocks/domain/bloc/theme/change_theme_bloc.dart';
+import 'package:doce_blocks/domain/bloc/theme/settings_theme_bloc.dart';
 import 'package:doce_blocks/presentation/drawer/drawer_menu.dart';
 import 'package:doce_blocks/presentation/profile/profile_page.dart';
 import 'package:doce_blocks/presentation/utils/dimens.dart';

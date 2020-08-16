@@ -72,7 +72,7 @@ class _LoginFormState extends State<LoginForm> {
                         color: Theme.of(context).primaryColor
                       ),
                     ),
-                    labelText: DBString.login_email_hint,
+                    labelText: DBString.standard_email,
                   ),
                 ),
               ),
@@ -88,7 +88,7 @@ class _LoginFormState extends State<LoginForm> {
                           color: Theme.of(context).primaryColor
                       ),
                     ),
-                    labelText: DBString.login_password_hint,
+                    labelText: DBString.standard_password,
                   ),
                 ),
               ),
@@ -98,7 +98,7 @@ class _LoginFormState extends State<LoginForm> {
                       alignment: Alignment.centerLeft,
                       child: FloatingActionButton.extended(
                         onPressed: _onLoginButtonPressed,
-                        label: Text(DBString.login_button, style: Theme.of(context).accentTextTheme.button),
+                        label: Text(DBString.standard_login, style: Theme.of(context).accentTextTheme.button),
                         icon: Icon(Icons.send, color: Theme.of(context).iconTheme.color),
                         backgroundColor: Theme.of(context).buttonColor,
                       )

@@ -1,7 +1,8 @@
 import 'package:doce_blocks/data/models/models.dart';
 import 'package:doce_blocks/domain/bloc/bloc.dart';
-import 'package:doce_blocks/domain/bloc/theme/change_theme_bloc.dart';
+import 'package:doce_blocks/domain/bloc/theme/settings_theme_bloc.dart';
 import 'package:doce_blocks/presentation/utils/dimens.dart';
+import 'package:doce_blocks/presentation/utils/strings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -74,7 +75,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     onPressed: () {
                       Navigator.of(context).pop(); // To close the dialog
                     },
-                    child: Text("Cancel"),
+                    child: Text(DBString.standard_cancel),
                   ),
                   FlatButton(
                     onPressed: () {
@@ -83,7 +84,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       );
                       Navigator.of(context).pop();
                     },
-                    child: Text("Signout"),
+                    child: Text(DBString.standard_signout),
                   ),
                 ],
               )
@@ -110,16 +111,17 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Widget _buildColorSwitch(BuildContext context) {
-    return BlocBuilder<ChangeThemeBloc, ChangeThemeState>(
+    return BlocBuilder<SettingsThemeBloc, SettingsThemeState>(
       builder: (context, state) {
         return Row (
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text( "Change Theme", textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodyText2 ),
+            Text( DBString.setting_switch_theme, textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodyText2 ),
             Switch(
-              value: state.themeState.isLightMode,
+              value: state.themeState.isDarkMode,
+              activeColor: Theme.of(context).primaryColor,
               onChanged: (value) {
-                BlocProvider.of<ChangeThemeBloc>(context).add(OnThemeChangedEvent(value));
+                BlocProvider.of<SettingsThemeBloc>(context).add(OnSettingsThemeChangedEvent(value));
               },
             )
           ],

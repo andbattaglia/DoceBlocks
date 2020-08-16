@@ -1,5 +1,5 @@
 import 'package:doce_blocks/domain/bloc/bloc.dart';
-import 'package:doce_blocks/domain/bloc/theme/change_theme_bloc.dart';
+import 'package:doce_blocks/domain/bloc/theme/settings_theme_bloc.dart';
 import 'package:doce_blocks/presentation/home/home_page.dart';
 import 'package:doce_blocks/presentation/login/login_page.dart';
 import 'package:doce_blocks/presentation/splash/splash_page.dart';
@@ -21,8 +21,8 @@ void main() {
         BlocProvider<AuthenticationBloc>(
           create: (BuildContext context) => AuthenticationBloc()..add(AuthenticationStarted()),
         ),
-        BlocProvider<ChangeThemeBloc>(
-          create: (BuildContext context) => ChangeThemeBloc(),
+        BlocProvider<SettingsThemeBloc>(
+          create: (BuildContext context) => SettingsThemeBloc(),
         ),
       ],
       child: App(),
@@ -34,11 +34,8 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ChangeThemeBloc, ChangeThemeState>(
+    return BlocBuilder<SettingsThemeBloc, SettingsThemeState>(
       builder: (context, state){
-
-        print('CAMBIO');
-        print(state.themeState.themeMode);
 
         return new MaterialApp(
           title: DBString.title,
