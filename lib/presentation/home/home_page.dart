@@ -1,59 +1,87 @@
 import 'package:doce_blocks/domain/bloc/bloc.dart';
-import 'package:doce_blocks/domain/bloc/theme/settings_theme_bloc.dart';
-import 'package:doce_blocks/presentation/drawer/drawer_menu.dart';
+import 'package:doce_blocks/presentation/pages/PagesListPage.dart';
 import 'package:doce_blocks/presentation/profile/profile_page.dart';
 import 'package:doce_blocks/presentation/utils/dimens.dart';
-import 'package:doce_blocks/presentation/utils/themes.dart';
 import 'package:doce_blocks/presentation/utils/strings.dart';
+import 'package:doce_blocks/presentation/widget/composer/widget_composer_page.dart';
+import 'package:doce_blocks/presentation/widget/composer/widget_list_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:responsive_builder/responsive_builder.dart';
 
 
 class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        drawer: DrawerMenu(),
-        appBar: AppBar(
-          title: Text(DBString.title),
-          actions: <Widget>[
-            _buildProfileAvatar(context)
-          ],
-        ),
-        body: _buildBody()
+    return ScreenTypeLayout(
+      mobile: _buildSmallPage(context),
+      tablet: OrientationLayoutBuilder(
+        portrait: (context) => _buildSmallPage(context),
+        landscape: (context) => _buildLargePage(context),
+      ),
+      desktop: _buildLargePage(context),
     );
   }
 
-  Widget _buildBody() {
-
-//    double top = 0;
-//    double left = 0;
-//
-//    return Container(
-//      child: Draggable(
-//        //TODO: START
-//        child: Container(
-//          padding: EdgeInsets.only(top: top, left: left),
-//          child: DragItem(),
-//        ),
-//        //TODO: THE DRAGGABLE ICON
-//        feedback: Container(
-//          padding: EdgeInsets.only(top: top, left: left),
-//          child: DraggingItem(),
-//        ),
-//        //TODO: START ICON DURING DRAGGING
-//        childWhenDragging: Container(
-//          padding: EdgeInsets.only(top: top, left: left),
-//          child: DragItem(),
-//        ),
-//        onDragCompleted: () {},
-//        onDragEnd: (drag) {
-//        },
-//      ),
-//    );
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  //          SMALL PAGE
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Widget _buildSmallPage(BuildContext context){
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(DBString.title),
+        actions: <Widget>[
+          _buildProfileAvatar(context)
+        ],
+      ),
+      drawer: Drawer(
+          child: PagesListPage()
+      ),
+      body: WidgetComposerPage(),
+    );
   }
 
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  //          LARGE PAGE
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Widget _buildLargePage(BuildContext context){
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(DBString.title),
+        actions: <Widget>[
+          _buildProfileAvatar(context)
+        ]
+      ),
+      body: Column(
+        children: <Widget>[
+          Expanded(
+            child: Row(
+              mainAxisSize: MainAxisSize.max,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                Expanded(
+                  child: PagesListPage()
+                ),
+                Expanded(
+                  flex: 3,
+                  child: WidgetComposerPage()
+                ),
+                Expanded(
+                  child: WidgetListPage()
+                ),
+
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  //          OTHERS
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   Widget _buildProfileAvatar(BuildContext context){
     return BlocBuilder<AuthenticationBloc, AuthenticationState>(
       builder: (context, state){
@@ -77,27 +105,3 @@ class HomePage extends StatelessWidget {
 
   }
 }
-
-
-//TODO: draggable item
-//class DragItem extends StatelessWidget {
-//  @override
-//  Widget build(BuildContext context) {
-//    return Icon(
-//      Icons.audiotrack,
-//      color: Colors.green,
-//      size: 30.0,
-//    );
-//  }
-//}
-//
-//class DraggingItem extends StatelessWidget {
-//  @override
-//  Widget build(BuildContext context) {
-//    return Icon(
-//      Icons.beach_access,
-//      color: Colors.blue,
-//      size: 36.0,
-//    );
-//  }
-//}

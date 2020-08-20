@@ -76,6 +76,7 @@ class _LoginFormState extends State<LoginForm> {
                   ),
                 ),
               ),
+
               Container(
                 padding: EdgeInsets.only(top:  DBDimens.PaddingHalf, bottom: DBDimens.PaddingDouble, left:  DBDimens.PaddingDouble, right:  DBDimens.PaddingDouble),
                 child: TextFormField(
@@ -104,7 +105,6 @@ class _LoginFormState extends State<LoginForm> {
                       )
                   )
               ),
-
             ],
           );
         },
