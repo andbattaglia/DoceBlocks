@@ -29,9 +29,7 @@ class _WidgetComposerPageState extends State<WidgetComposerPage> {
                 });
 
           } else {
-            return Container(
-              child: Text("Page Empty"),
-            );
+            return Container();
           }
         },
         onWillAccept: (data) {

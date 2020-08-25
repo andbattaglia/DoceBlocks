@@ -1,10 +1,11 @@
 import 'package:doce_blocks/data/models/models.dart';
 import 'package:doce_blocks/domain/bloc/bloc.dart';
-import 'package:doce_blocks/domain/bloc/theme/settings_theme_bloc.dart';
+import 'package:doce_blocks/domain/bloc/theme/theme_bloc.dart';
 import 'package:doce_blocks/presentation/utils/dimens.dart';
 import 'package:doce_blocks/presentation/utils/strings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:responsive_builder/responsive_builder.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -15,118 +16,132 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+    return ScreenTypeLayout(
+      mobile: _buildSmallPage(context),
+      tablet: OrientationLayoutBuilder(
+        portrait: (context) => _buildSmallPage(context),
+        landscape: (context) => _buildLargePage(context),
+      ),
+      desktop: _buildLargePage(context),
+    );
+  }
+
+  Widget _buildSmallPage(BuildContext context){
     return Dialog(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(DBDimens.PaddingDefault),
       ),
       elevation: 0.0,
       backgroundColor: Colors.transparent,
-      child: _buildContent(context),
+      child: BlocBuilder<AuthenticationBloc, AuthenticationState>(
+        builder: (context, state){
+          if(state is AuthenticationSuccess){
+            return _buildContent(state.user);
+          }
+          return Container();
+        },
+      ),
     );
   }
 
-  Widget _buildContent(BuildContext context) {
+  Widget _buildLargePage(BuildContext context){
     return BlocBuilder<AuthenticationBloc, AuthenticationState>(
       builder: (context, state){
         if(state is AuthenticationSuccess){
-          return _authSuccess(state.user);
+          return Container(
+            padding: EdgeInsets.only(right: DBDimens.PaddingHalf),
+            child: _buildContent(state.user),
+          );
         }
         return Container();
       },
     );
   }
 
-  Widget _authSuccess(User user){
-    return Stack(
-      children: <Widget>[
-        Container(
-          constraints: BoxConstraints(maxWidth: 400),
-          padding: EdgeInsets.only(
-            top: DBDimens.RadiusAvatar + DBDimens.PaddingDefault,
-            bottom: DBDimens.PaddingDefault,
-            left: DBDimens.PaddingDefault,
-            right: DBDimens.PaddingDefault,
-          ),
-          margin: EdgeInsets.only(top: DBDimens.RadiusAvatar),
-          decoration: new BoxDecoration(
-            color: Theme.of(context).backgroundColor,
-            shape: BoxShape.rectangle,
-            borderRadius: BorderRadius.circular(DBDimens.PaddingDefault),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black26,
-                blurRadius: 10.0,
-                offset: const Offset(0.0, 10.0),
-              ),
-            ],
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min, // To make the card compact
-            children: <Widget>[
-              Text('${user.name} ${user.lastName}', style: Theme.of(context).textTheme.headline5),
-              SizedBox(height: DBDimens.PaddingHalf),
-              Text(user.email, textAlign: TextAlign.center, style: Theme.of(context).textTheme.headline6),
+  Widget _buildContent(User user){
+    return Card(
+      elevation: 0.0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(DBDimens.CornerDefault),
+      ),
+      child: Container(
+        constraints: BoxConstraints(maxWidth: 400),
+        padding: EdgeInsets.all(DBDimens.PaddingDouble),
+        child:
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _buildAvatar(context, user.getInitials()),
               SizedBox(height: DBDimens.PaddingDefault),
-              _buildColorSwitch(context),
+              Text('${user.name} ${user.lastName}', style: Theme.of(context).textTheme.headline6),
+              SizedBox(height: DBDimens.PaddingHalf),
+              Text(user.email, textAlign: TextAlign.center, style: Theme.of(context).textTheme.subtitle1),
+              SizedBox(height: DBDimens.PaddingDefault),
               Row(
-                mainAxisAlignment: MainAxisAlignment.end,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  FlatButton(
-                    onPressed: () {
-                      Navigator.of(context).pop(); // To close the dialog
-                    },
-                    child: Text(DBString.standard_cancel),
-                  ),
-                  FlatButton(
-                    onPressed: () {
-                      BlocProvider.of<AuthenticationBloc>(context).add(
-                        AuthenticationLoggedOut(),
-                      );
-                      Navigator.of(context).pop();
-                    },
-                    child: Text(DBString.standard_signout),
-                  ),
+                  _buildThemeSwitchButton(context),
+                  SizedBox(width: DBDimens.PaddingDefault),
+                  _buildLogoutButton(context),
                 ],
               )
             ],
-          ),
         ),
-        _buildProfileAvatar(context, '${user.name[0]}${user.lastName[0]}')
-      ],
+      )
     );
   }
 
-  Widget _buildProfileAvatar(BuildContext context, String name){
-    return Positioned(
-        left: DBDimens.PaddingDefault,
-        right: DBDimens.PaddingDefault,
-        child: Container(
-          child:CircleAvatar(
-            backgroundColor: Theme.of(context).primaryColor,
-            radius: DBDimens.RadiusAvatar,
-            child: Text(name, style: Theme.of(context).textTheme.headline4,),
-          ),
-        )
+  Widget _buildAvatar(BuildContext context, String name){
+    return Container(
+      child:CircleAvatar(
+        backgroundColor: Theme.of(context).primaryColor,
+        radius: DBDimens.RadiusAvatar,
+        child: Text(name, style: Theme.of(context).textTheme.headline4),
+      ),
     );
   }
 
-  Widget _buildColorSwitch(BuildContext context) {
+  Widget _buildLogoutButton(BuildContext context){
+    return _buildInk(Icons.logout, () {
+      BlocProvider.of<AuthenticationBloc>(context).add(
+        AuthenticationLoggedOut(),
+      );
+      Navigator.of(context).pop();
+    });
+  }
+
+  Widget _buildThemeSwitchButton(BuildContext context) {
     return BlocBuilder<SettingsThemeBloc, SettingsThemeState>(
-      builder: (context, state) {
-        return Row (
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text( DBString.setting_switch_theme, textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodyText2 ),
-            Switch(
-              value: state.themeState.isDarkMode,
-              activeColor: Theme.of(context).primaryColor,
-              onChanged: (value) {
-                BlocProvider.of<SettingsThemeBloc>(context).add(OnSettingsThemeChangedEvent(value));
-              },
-            )
-          ],
-        );
-      }
+        builder: (context, state) {
+
+          if(state is ChangeThemeLight){
+            return _buildInk(Icons.brightness_5, () {
+              BlocProvider.of<SettingsThemeBloc>(context).add(OnSettingsThemeChangedEvent(true));
+            });
+          }
+
+          if(state is ChangeThemeDark) {
+            return _buildInk(Icons.bedtime, () {
+              BlocProvider.of<SettingsThemeBloc>(context).add(OnSettingsThemeChangedEvent(false));
+            });
+          }
+
+          return Container();
+        }
+    );
+  }
+
+  Widget _buildInk(IconData iconData, Function onPressed){
+    return Ink(
+      decoration: ShapeDecoration(
+        color: Theme.of(context).toggleButtonsTheme.color,
+        shape: CircleBorder(),
+      ),
+      child: IconButton(
+        icon: Icon(iconData),
+        iconSize: DBDimens.PaddingDefault,
+        onPressed: onPressed,
+      ),
     );
   }
 }

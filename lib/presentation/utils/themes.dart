@@ -12,12 +12,20 @@ ThemeData _buildLightTheme() {
     primaryColorLight:  Color(0xFF6dffff),
     buttonColor: Color(0xFF00D8FF),
     backgroundColor: Color(0xFFFFFFFF),
+    selectedRowColor: Colors.grey[300],
     iconTheme: new IconThemeData(
         color: Colors.white,
         opacity: 1.0
     ),
+    primaryIconTheme: new IconThemeData(
+        color: Colors.black,
+        opacity: 1.0
+    ),
+    toggleButtonsTheme: ToggleButtonsThemeData(
+        color: Colors.grey[300]
+    ) ,
     textTheme: _buildTextTheme(Colors.black87),
-    accentTextTheme: _buildTextTheme(Colors.white)
+    accentTextTheme: _buildTextTheme(Colors.white),
   );
 }
 
@@ -34,6 +42,14 @@ ThemeData _buildDarkTheme() {
     iconTheme: new IconThemeData(
         color: Colors.white,
         opacity: 1.0
+    ),
+    selectedRowColor: Colors.grey[500],
+    primaryIconTheme: new IconThemeData(
+        color: Colors.white,
+        opacity: 1.0
+    ),
+    toggleButtonsTheme: ToggleButtonsThemeData(
+        color: Colors.grey[700]
     ),
     textTheme: _buildTextTheme(Colors.white),
     accentTextTheme: _buildTextTheme(Colors.white)

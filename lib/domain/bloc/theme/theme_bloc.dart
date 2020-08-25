@@ -6,8 +6,8 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-part 'settings_theme_event.dart';
-part 'settings_theme_state.dart';
+part 'theme_event.dart';
+part 'theme_state.dart';
 
 class SettingsThemeBloc extends Bloc<SettingsThemeEvent, SettingsThemeState> {
 

@@ -1,4 +1,4 @@
-part of 'settings_theme_bloc.dart';
+part of 'theme_bloc.dart';
 
 abstract class SettingsThemeState extends Equatable {
   final ThemeState themeState;

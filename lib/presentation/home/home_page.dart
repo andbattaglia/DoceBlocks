@@ -1,10 +1,9 @@
 import 'package:doce_blocks/domain/bloc/bloc.dart';
-import 'package:doce_blocks/presentation/pages/PagesListPage.dart';
+import 'package:doce_blocks/presentation/pages/pages_list_page.dart';
 import 'package:doce_blocks/presentation/profile/profile_page.dart';
 import 'package:doce_blocks/presentation/utils/dimens.dart';
 import 'package:doce_blocks/presentation/utils/strings.dart';
 import 'package:doce_blocks/presentation/widget/composer/widget_composer_page.dart';
-import 'package:doce_blocks/presentation/widget/composer/widget_list_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:responsive_builder/responsive_builder.dart';
@@ -30,6 +29,9 @@ class HomePage extends StatelessWidget {
   Widget _buildSmallPage(BuildContext context){
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        iconTheme: Theme.of(context).primaryIconTheme,
+        elevation: 0.0,
         title: Text(DBString.title),
         actions: <Widget>[
           _buildProfileAvatar(context)
@@ -47,32 +49,16 @@ class HomePage extends StatelessWidget {
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   Widget _buildLargePage(BuildContext context){
     return Scaffold(
-      appBar: AppBar(
-        title: Text(DBString.title),
-        actions: <Widget>[
-          _buildProfileAvatar(context)
-        ]
-      ),
-      body: Column(
+      body: Row(
+        mainAxisSize: MainAxisSize.max,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           Expanded(
-            child: Row(
-              mainAxisSize: MainAxisSize.max,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                Expanded(
-                  child: PagesListPage()
-                ),
-                Expanded(
-                  flex: 3,
-                  child: WidgetComposerPage()
-                ),
-                Expanded(
-                  child: WidgetListPage()
-                ),
-
-              ],
-            ),
+            child: PagesListPage(),
+          ),
+          Expanded(
+            flex: 3,
+            child: Container()
           ),
         ],
       ),
