@@ -6,24 +6,21 @@ final ThemeData kLightTheme = _buildLightTheme();
 ThemeData _buildLightTheme() {
   final ThemeData base = ThemeData.light();
   return base.copyWith(
-    primaryColor: Color(0xFF00D8FF),
+    primaryColor: Color(0xFF0465ac),
     accentColor: Color(0x59000000),
-    primaryColorDark:  Color(0xFF00a6cc),
-    primaryColorLight:  Color(0xFF6dffff),
-    buttonColor: Color(0xFF00D8FF),
+    primaryColorDark:  Color(0xFF003b7c),
+    primaryColorLight:  Color(0xFF5492de),
+    buttonColor: Color(0xFF0465ac),
     backgroundColor: Color(0xFFFFFFFF),
-    selectedRowColor: Colors.grey[300],
+    selectedRowColor: Color(0xFFDADADA),
     iconTheme: new IconThemeData(
         color: Colors.white,
         opacity: 1.0
     ),
     primaryIconTheme: new IconThemeData(
-        color: Colors.black,
+        color: Color(0xFF000000),
         opacity: 1.0
     ),
-    toggleButtonsTheme: ToggleButtonsThemeData(
-        color: Colors.grey[300]
-    ) ,
     textTheme: _buildTextTheme(Colors.black87),
     accentTextTheme: _buildTextTheme(Colors.white),
   );
@@ -34,22 +31,19 @@ final ThemeData kDarkTheme = _buildDarkTheme();
 ThemeData _buildDarkTheme() {
   final ThemeData base = ThemeData.dark();
   return base.copyWith(
-    primaryColor: Color(0xFFf2a365),
+    primaryColor: Color(0xFF0465ac),
     accentColor: Color(0x59000000),
-    primaryColorDark:  Color(0xFFbc7438),
-    primaryColorLight:  Color(0xFFffd494),
-    buttonColor: Color(0xFFf2a365),
+    primaryColorDark:  Color(0xFF003b7c),
+    primaryColorLight:  Color(0xFF5492de),
+    buttonColor: Color(0xFF0465ac),
+    selectedRowColor: Color(0xFF757575),
     iconTheme: new IconThemeData(
         color: Colors.white,
         opacity: 1.0
     ),
-    selectedRowColor: Colors.grey[500],
     primaryIconTheme: new IconThemeData(
-        color: Colors.white,
-        opacity: 1.0
-    ),
-    toggleButtonsTheme: ToggleButtonsThemeData(
-        color: Colors.grey[700]
+        color: Color(0xFFFFFFFF),
+        opacity: 1.0,
     ),
     textTheme: _buildTextTheme(Colors.white),
     accentTextTheme: _buildTextTheme(Colors.white)

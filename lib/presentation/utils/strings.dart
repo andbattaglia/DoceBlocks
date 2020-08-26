@@ -13,4 +13,6 @@ class DBString{
 
   static const String setting_switch_theme = "Dark Mode";
 
+  static const String new_page_title = "Insert new page name";
+
 }

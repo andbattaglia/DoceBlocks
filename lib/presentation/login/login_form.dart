@@ -67,10 +67,11 @@ class _LoginFormState extends State<LoginForm> {
                   controller: _emailController,
                   decoration: InputDecoration(
                     labelStyle: new TextStyle(),
-                    focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Theme.of(context).primaryColor
-                      ),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Theme.of(context).disabledColor),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Theme.of(context).primaryColor),
                     ),
                     labelText: DBString.standard_email,
                   ),
@@ -84,10 +85,11 @@ class _LoginFormState extends State<LoginForm> {
                   obscureText: true,
                   decoration: InputDecoration(
                     labelStyle: new TextStyle(),
-                    focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(
-                          color: Theme.of(context).primaryColor
-                      ),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Theme.of(context).disabledColor),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Theme.of(context).primaryColor),
                     ),
                     labelText: DBString.standard_password,
                   ),

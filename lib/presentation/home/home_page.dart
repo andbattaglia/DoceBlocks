@@ -49,18 +49,27 @@ class HomePage extends StatelessWidget {
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   Widget _buildLargePage(BuildContext context){
     return Scaffold(
-      body: Row(
-        mainAxisSize: MainAxisSize.max,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          Expanded(
-            child: PagesListPage(),
-          ),
-          Expanded(
-            flex: 3,
-            child: Container()
-          ),
-        ],
+      body: Container(
+        decoration: BoxDecoration(
+            gradient: LinearGradient(
+                begin: Alignment.topRight,
+                end: Alignment.bottomLeft,
+                colors: [ Theme.of(context).primaryColor,  Theme.of(context).primaryColorLight ]
+            )
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.max,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            Expanded(
+              child: PagesListPage(),
+            ),
+            Expanded(
+                flex: 3,
+                child: WidgetComposerPage()
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -80,7 +89,7 @@ class HomePage extends StatelessWidget {
               },
               child:CircleAvatar(
                 backgroundColor: Theme.of(context).primaryColorDark,
-                child: Text('${state.user.name[0]}${state.user.lastName[0]}', style: Theme.of(context).textTheme.headline6),
+                child: Text('${state.user.name[0]}${state.user.lastName[0]}', style: Theme.of(context).accentTextTheme.headline6),
               ),
             ),
           );

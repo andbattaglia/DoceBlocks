@@ -2,7 +2,6 @@ import 'package:doce_blocks/data/models/models.dart';
 import 'package:doce_blocks/domain/bloc/bloc.dart';
 import 'package:doce_blocks/domain/bloc/theme/theme_bloc.dart';
 import 'package:doce_blocks/presentation/utils/dimens.dart';
-import 'package:doce_blocks/presentation/utils/strings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:responsive_builder/responsive_builder.dart';
@@ -49,7 +48,6 @@ class _ProfilePageState extends State<ProfilePage> {
       builder: (context, state){
         if(state is AuthenticationSuccess){
           return Container(
-            padding: EdgeInsets.only(right: DBDimens.PaddingHalf),
             child: _buildContent(state.user),
           );
         }
@@ -59,9 +57,10 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Widget _buildContent(User user){
-    return Card(
-      elevation: 0.0,
-      shape: RoundedRectangleBorder(
+    return Container(
+      margin: EdgeInsets.all(DBDimens.PaddingDefault),
+      decoration: BoxDecoration(
+        color: Theme.of(context).backgroundColor,
         borderRadius: BorderRadius.circular(DBDimens.CornerDefault),
       ),
       child: Container(
@@ -81,7 +80,6 @@ class _ProfilePageState extends State<ProfilePage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   _buildThemeSwitchButton(context),
-                  SizedBox(width: DBDimens.PaddingDefault),
                   _buildLogoutButton(context),
                 ],
               )
@@ -96,17 +94,22 @@ class _ProfilePageState extends State<ProfilePage> {
       child:CircleAvatar(
         backgroundColor: Theme.of(context).primaryColor,
         radius: DBDimens.RadiusAvatar,
-        child: Text(name, style: Theme.of(context).textTheme.headline4),
+        child: Text(name, style: Theme.of(context).accentTextTheme.headline4),
       ),
     );
   }
 
   Widget _buildLogoutButton(BuildContext context){
-    return _buildInk(Icons.logout, () {
+    return _buildInk(context, Icons.logout, () {
+      var deviceType = getDeviceType(MediaQuery.of(context).size);
+      if(deviceType == DeviceScreenType.mobile) {
+        Navigator.of(context).pop();
+      }
+
       BlocProvider.of<AuthenticationBloc>(context).add(
         AuthenticationLoggedOut(),
       );
-      Navigator.of(context).pop();
+
     });
   }
 
@@ -115,13 +118,13 @@ class _ProfilePageState extends State<ProfilePage> {
         builder: (context, state) {
 
           if(state is ChangeThemeLight){
-            return _buildInk(Icons.brightness_5, () {
+            return _buildInk(context, Icons.brightness_5, () {
               BlocProvider.of<SettingsThemeBloc>(context).add(OnSettingsThemeChangedEvent(true));
             });
           }
 
           if(state is ChangeThemeDark) {
-            return _buildInk(Icons.bedtime, () {
+            return _buildInk(context, Icons.bedtime, () {
               BlocProvider.of<SettingsThemeBloc>(context).add(OnSettingsThemeChangedEvent(false));
             });
           }
@@ -131,17 +134,14 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Widget _buildInk(IconData iconData, Function onPressed){
-    return Ink(
-      decoration: ShapeDecoration(
-        color: Theme.of(context).toggleButtonsTheme.color,
-        shape: CircleBorder(),
-      ),
-      child: IconButton(
-        icon: Icon(iconData),
-        iconSize: DBDimens.PaddingDefault,
-        onPressed: onPressed,
-      ),
+  Widget _buildInk(BuildContext context, IconData iconData, Function onPressed){
+    return RawMaterialButton(
+      onPressed: onPressed,
+      elevation: 0.0,
+      fillColor: Theme.of(context).selectedRowColor,
+      child: Icon(iconData, color: Theme.of(context).primaryIconTheme.color),
+      padding: EdgeInsets.all(15.0),
+      shape: CircleBorder(),
     );
   }
 }

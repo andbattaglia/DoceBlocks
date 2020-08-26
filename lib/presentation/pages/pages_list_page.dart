@@ -42,10 +42,10 @@ class _PagesListPageState extends State<PagesListPage> {
                 itemCount: pagesList.length + 1,
                 itemBuilder: (context, index) {
                   if(index == pagesList.length){
-                    return _buildAddPageItem(context);
+                    return _buildAddPageItem(context, true);
                   } else {
                     var customPage = pagesList[index];
-                    return _buildPageItem(context, customPage, true);
+                    return _buildSmallPageItem(context, customPage);
                   }
                 });
           }
@@ -69,10 +69,10 @@ class _PagesListPageState extends State<PagesListPage> {
                   if(index == 0){
                     return ProfilePage();
                   } else if(index == pagesList.length + 1){
-                    return _buildAddPageItem(context);
+                    return _buildAddPageItem(context, false);
                   } else {
                     var customPage = pagesList[index-1];
-                    return _buildPageItem(context, customPage, false);
+                    return _buildLargePageItem(context, customPage);
                   }
                 });
           }
@@ -86,34 +86,54 @@ class _PagesListPageState extends State<PagesListPage> {
     );
   }
 
-  Widget _buildPageItem(BuildContext context , CustomPage page, bool isRoundCorner){
-    return Card(
-        color: page.isSelected ? Theme.of(context).selectedRowColor : Theme.of(context).backgroundColor,
-        elevation: 0.0,
-        shape: RoundedRectangleBorder(
-          borderRadius: isRoundCorner ? BorderRadius.all(Radius.circular(DBDimens.CornerDefault)) : BorderRadius.only(bottomLeft: Radius.circular(DBDimens.CornerDefault), topLeft: Radius.circular(DBDimens.CornerDefault)),
-        ),
-        child: new InkWell(
-            borderRadius: isRoundCorner ? BorderRadius.all(Radius.circular(DBDimens.CornerDefault)) : BorderRadius.only(bottomLeft: Radius.circular(DBDimens.CornerDefault), topLeft: Radius.circular(DBDimens.CornerDefault)),
-            onTap: () {
-              BlocProvider.of<PagesBloc>(context).add(SelectPageEvent(id: page.id));
-            },
-            child: Container(
-              padding: EdgeInsets.all(DBDimens.PaddingDefault),
-              child: Text(page.name),
-            )
-        ),
+  Widget _buildSmallPageItem(BuildContext context , CustomPage page){
+    return Container(
+      margin: EdgeInsets.all(DBDimens.PaddingHalf),
+      decoration: BoxDecoration(
+        color: page.isSelected ? Theme.of(context).selectedRowColor : Colors.transparent,
+        borderRadius: BorderRadius.all(Radius.circular(DBDimens.CornerDefault)),
+      ),
+      child: new InkWell(
+          borderRadius: BorderRadius.all(Radius.circular(DBDimens.CornerDefault)),
+          onTap: () {
+            BlocProvider.of<PagesBloc>(context).add(SelectPageEvent(id: page.id));
+          },
+          child: Container(
+            padding: EdgeInsets.all(DBDimens.PaddingDefault),
+            child: Text(page.name, style: Theme.of(context).textTheme.bodyText1),
+          )
+      ),
     );
   }
 
-  Widget _buildAddPageItem(BuildContext context){
+  Widget _buildLargePageItem(BuildContext context , CustomPage page){
+    return Container(
+      margin: EdgeInsets.only(top: DBDimens.PaddingQuarter, bottom: DBDimens.PaddingQuarter, left: DBDimens.PaddingDefault),
+      decoration: BoxDecoration(
+        color: page.isSelected ? Theme.of(context).backgroundColor : Colors.transparent,
+        borderRadius: BorderRadius.only(bottomLeft: Radius.circular(DBDimens.CornerDefault), topLeft: Radius.circular(DBDimens.CornerDefault)),
+      ),
+      child: new InkWell(
+          borderRadius: BorderRadius.only(bottomLeft: Radius.circular(DBDimens.CornerDefault), topLeft: Radius.circular(DBDimens.CornerDefault)),
+          onTap: () {
+            BlocProvider.of<PagesBloc>(context).add(SelectPageEvent(id: page.id));
+          },
+          child: Container(
+            padding: EdgeInsets.all(DBDimens.PaddingDefault),
+            child: Text(page.name, style: page.isSelected ? Theme.of(context).textTheme.bodyText1 : Theme.of(context).accentTextTheme.bodyText1),
+          )
+      ),
+    );
+  }
+
+  Widget _buildAddPageItem(BuildContext context, bool lightBackground){
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Card(
-          color: Theme.of(context).backgroundColor,
-          elevation: 0.0,
-          shape: RoundedRectangleBorder(
+        Container(
+          margin: EdgeInsets.only(top: DBDimens.PaddingQuarter, bottom: DBDimens.PaddingQuarter, left: DBDimens.PaddingDefault, right: DBDimens.PaddingDefault),
+          decoration: BoxDecoration(
+            color: Colors.transparent,
             borderRadius: BorderRadius.all(Radius.circular(DBDimens.CornerDefault)),
           ),
           child: new InkWell(
@@ -126,9 +146,9 @@ class _PagesListPageState extends State<PagesListPage> {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text(DBString.standard_add),
+                    Text(DBString.standard_add, style: lightBackground ? Theme.of(context).textTheme.bodyText1 : Theme.of(context).accentTextTheme.bodyText1),
                     SizedBox(width: DBDimens.PaddingHalf),
-                    Icon(Icons.add, size: DBDimens.IconSizeSmall, color: Theme.of(context).primaryIconTheme.color,)
+                    Icon(Icons.add, size: DBDimens.IconSizeSmall, color: lightBackground ? Theme.of(context).primaryIconTheme.color : Theme.of(context).iconTheme.color)
                   ],
                 ),
               )
@@ -139,7 +159,7 @@ class _PagesListPageState extends State<PagesListPage> {
   }
 
   Widget _buildAddPageDialog(BuildContext context){
-    
+
     var _inputController = TextEditingController();
 
     return Dialog(
@@ -149,7 +169,7 @@ class _PagesListPageState extends State<PagesListPage> {
       elevation: 0.0,
       backgroundColor: Colors.transparent,
       child: Card(
-          elevation: 0.0,
+          elevation: 4.0,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(DBDimens.CornerDefault),
           ),
@@ -160,7 +180,7 @@ class _PagesListPageState extends State<PagesListPage> {
             Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text('Insert Page name', style: Theme.of(context).textTheme.bodyText1),
+                Text(DBString.new_page_title, style: Theme.of(context).textTheme.bodyText1),
                 SizedBox(height: DBDimens.PaddingDefault),
                 TextFormField(
                   controller: _inputController,
@@ -175,7 +195,6 @@ class _PagesListPageState extends State<PagesListPage> {
                   ),
                   textInputAction: TextInputAction.go,
                   onFieldSubmitted: (value) {
-
                     if(value.trim().isNotEmpty){
                       Navigator.of(context, rootNavigator: true).pop();
                       BlocProvider.of<PagesBloc>(context).add(AddPageEvent(name: value.trim()));
