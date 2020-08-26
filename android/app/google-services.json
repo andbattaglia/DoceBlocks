@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "480712909105",
+    "firebase_url": "https://doceblock.firebaseio.com",
+    "project_id": "doceblock",
+    "storage_bucket": "doceblock.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:480712909105:android:3ffeba6a4e4b3630261010",
+        "android_client_info": {
+          "package_name": "com.docebo.doce_blocks"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "480712909105-8rcu0659v0oduleklp889h42ma7g636a.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDOkfKNB6RRt37PvSZrDXPnqlktYhlMKa0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "480712909105-8rcu0659v0oduleklp889h42ma7g636a.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "480712909105-md9dge9u2nht39ldffl0dn15lroga0qo.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.docebo.doceBlocks"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

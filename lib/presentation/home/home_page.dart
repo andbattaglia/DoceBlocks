@@ -32,7 +32,7 @@ class HomePage extends StatelessWidget {
         backgroundColor: Colors.transparent,
         iconTheme: Theme.of(context).primaryIconTheme,
         elevation: 0.0,
-        title: Text(DBString.title),
+        title: Text(DBString.title, style: Theme.of(context).textTheme.headline6),
         actions: <Widget>[
           _buildProfileAvatar(context)
         ],
