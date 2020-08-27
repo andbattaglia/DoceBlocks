@@ -107,22 +107,56 @@ class _PagesListPageState extends State<PagesListPage> {
   }
 
   Widget _buildLargePageItem(BuildContext context , CustomPage page){
-    return Container(
-      margin: EdgeInsets.only(top: DBDimens.PaddingQuarter, bottom: DBDimens.PaddingQuarter, left: DBDimens.PaddingDefault),
-      decoration: BoxDecoration(
-        color: page.isSelected ? Theme.of(context).backgroundColor : Colors.transparent,
-        borderRadius: BorderRadius.only(bottomLeft: Radius.circular(DBDimens.CornerDefault), topLeft: Radius.circular(DBDimens.CornerDefault)),
-      ),
-      child: new InkWell(
-          borderRadius: BorderRadius.only(bottomLeft: Radius.circular(DBDimens.CornerDefault), topLeft: Radius.circular(DBDimens.CornerDefault)),
-          onTap: () {
-            BlocProvider.of<PagesBloc>(context).add(SelectPageEvent(id: page.id));
-          },
-          child: Container(
-            padding: EdgeInsets.all(DBDimens.PaddingDefault),
-            child: Text(page.name, style: page.isSelected ? Theme.of(context).textTheme.bodyText1 : Theme.of(context).accentTextTheme.bodyText1),
-          )
-      ),
+    return  Container(
+        margin: EdgeInsets.only( left: DBDimens.PaddingDefault),
+        child: Column(
+          children: [
+            Container(
+              height: 8,
+              color: page.isSelected ? Theme.of(context).backgroundColor : Colors.transparent,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Theme.of(context).primaryColor,
+                  borderRadius: BorderRadius.only(bottomRight: Radius.circular(DBDimens.CornerDefault)),
+                ),
+              ),
+            ),
+            Container(
+              height: 56,
+              padding: EdgeInsets.only(left: DBDimens.PaddingDefault),
+              decoration: BoxDecoration(
+                color: page.isSelected ? Theme.of(context).backgroundColor : Colors.transparent,
+                borderRadius: BorderRadius.only(bottomLeft: Radius.circular(DBDimens.CornerDefault), topLeft: Radius.circular(DBDimens.CornerDefault)),
+              ),
+              child: new InkWell(
+                  borderRadius: BorderRadius.only(bottomLeft: Radius.circular(DBDimens.CornerDefault), topLeft: Radius.circular(DBDimens.CornerDefault)),
+                  onTap: () {
+                    BlocProvider.of<PagesBloc>(context).add(SelectPageEvent(id: page.id));
+                  },
+                  child: Container(
+                      constraints: BoxConstraints.expand(),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(page.name, style: page.isSelected ? Theme.of(context).textTheme.bodyText1 : Theme.of(context).accentTextTheme.bodyText1)
+                        ],
+                      )
+                  )
+              ),
+            ),
+            Container(
+              height: 8,
+              color: page.isSelected ? Theme.of(context).backgroundColor : Colors.transparent,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Theme.of(context).primaryColor,
+                  borderRadius: BorderRadius.only(topRight: Radius.circular(DBDimens.CornerDefault)),
+                ),
+              ),
+            ),
+          ],
+        )
     );
   }
 
@@ -131,7 +165,7 @@ class _PagesListPageState extends State<PagesListPage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
-          margin: EdgeInsets.only(top: DBDimens.PaddingQuarter, bottom: DBDimens.PaddingQuarter, left: DBDimens.PaddingDefault, right: DBDimens.PaddingDefault),
+          padding: EdgeInsets.only(left: DBDimens.PaddingDefault),
           decoration: BoxDecoration(
             color: Colors.transparent,
             borderRadius: BorderRadius.all(Radius.circular(DBDimens.CornerDefault)),

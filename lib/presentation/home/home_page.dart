@@ -51,11 +51,7 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
-            gradient: LinearGradient(
-                begin: Alignment.topRight,
-                end: Alignment.bottomLeft,
-                colors: [ Theme.of(context).primaryColor,  Theme.of(context).primaryColorLight ]
-            )
+            color: Theme.of(context).primaryColor
         ),
         child: Row(
           mainAxisSize: MainAxisSize.max,

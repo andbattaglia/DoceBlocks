@@ -48,6 +48,7 @@ class _ProfilePageState extends State<ProfilePage> {
       builder: (context, state){
         if(state is AuthenticationSuccess){
           return Container(
+            padding: EdgeInsets.only(left: DBDimens.PaddingDefault, right: DBDimens.PaddingDefault, top: DBDimens.PaddingDefault, bottom: DBDimens.PaddingHalf),
             child: _buildContent(state.user),
           );
         }
@@ -58,7 +59,6 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Widget _buildContent(User user){
     return Container(
-      margin: EdgeInsets.all(DBDimens.PaddingDefault),
       decoration: BoxDecoration(
         color: Theme.of(context).backgroundColor,
         borderRadius: BorderRadius.circular(DBDimens.CornerDefault),
