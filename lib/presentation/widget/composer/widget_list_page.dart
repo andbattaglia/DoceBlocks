@@ -1,12 +1,12 @@
 import 'package:doce_blocks/presentation/utils/dimens.dart';
 import 'package:doce_blocks/presentation/widget/draggableitem/image_drag_item.dart';
+import 'package:doce_blocks/presentation/widget/draggableitem/card_drag_item.dart';
 import 'package:doce_blocks/presentation/widget/draggableitem/simple_drag_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
 class WidgetListPage extends StatefulWidget {
-
   final bool isHorizontal;
 
   WidgetListPage({@required this.isHorizontal}) : super();
@@ -16,7 +16,6 @@ class WidgetListPage extends StatefulWidget {
 }
 
 class _WidgetListPageState extends State<WidgetListPage> {
-
   bool accepted = false;
 
   @override
@@ -27,25 +26,24 @@ class _WidgetListPageState extends State<WidgetListPage> {
           portrait: (context) => _buildSmallPage(context),
           landscape: (context) => _buildLargePage(context),
         ),
-        desktop: _buildLargePage(context)
-    );
+        desktop: _buildLargePage(context));
   }
 
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //          SMALL PAGE
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  Widget _buildSmallPage(BuildContext context){
+  Widget _buildSmallPage(BuildContext context) {
     return Container(
-      padding: EdgeInsets.only( left: DBDimens.PaddingDefault, right: DBDimens.PaddingDefault, bottom: DBDimens.PaddingDouble),
+      padding: EdgeInsets.only(
+          left: DBDimens.PaddingDefault,
+          right: DBDimens.PaddingDefault,
+          bottom: DBDimens.PaddingDouble),
       child: Column(
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          Container(
-              height: 72,
-              child: _buildContent(context)
-          )
+          Container(height: 72, child: _buildContent(context))
         ],
       ),
     );
@@ -54,52 +52,46 @@ class _WidgetListPageState extends State<WidgetListPage> {
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //          LARGE PAGE
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  Widget _buildLargePage(BuildContext context){
+  Widget _buildLargePage(BuildContext context) {
     return Container(
-      padding: EdgeInsets.only( top: DBDimens.PaddingDefault, bottom: DBDimens.PaddingDefault),
+      padding: EdgeInsets.only(
+          top: DBDimens.PaddingDefault, bottom: DBDimens.PaddingDefault),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisSize: MainAxisSize.max,
-        children: <Widget>[
-          Container(
-            width: 72,
-            child: _buildContent(context)
-          )
-        ],
+        children: <Widget>[Container(width: 72, child: _buildContent(context))],
       ),
     );
   }
 
-
-  Widget _buildContent(BuildContext context){
+  Widget _buildContent(BuildContext context) {
     return ListView(
       scrollDirection: widget.isHorizontal ? Axis.horizontal : Axis.vertical,
       children: <Widget>[
-        _buildImageWidget(context),
-        _buildImageWidget(context),
-        _buildImageWidget(context),
+        _buildImageWidget(
+            context, 'Flutter_Image', Icons.warning, Colors.yellow),
+        _buildImageWidget(
+            context, 'Flutter_Card', Icons.description, Colors.blue),
+        _buildImageWidget(context, 'Flutter_Video', Icons.movie, Colors.purple),
       ],
     );
   }
 }
 
-
-Widget _buildImageWidget(BuildContext context) {
-
-  var tile = ImageDragItem();
+Widget _buildImageWidget(
+    BuildContext context, String data, IconData icon, Color color) {
+  var tile = ImageDragItem(icon: icon, color: color);
 
   return Draggable(
-      data: 'Flutter_Image',
+    data: data,
+    child: tile,
+    feedback: tile,
+    childWhenDragging: Opacity(
+      opacity: 0.5,
       child: tile,
-      feedback: tile,
-      childWhenDragging: Opacity(
-        opacity: 0.5,
-        child: tile,
-      ),
-      onDragCompleted: () {},
-      onDragEnd: (drag) {
-      },
+    ),
+    onDragCompleted: () {},
+    onDragEnd: (drag) {},
   );
 }
-

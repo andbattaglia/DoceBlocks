@@ -4,6 +4,8 @@ import 'package:doce_blocks/presentation/utils/dimens.dart';
 import 'package:doce_blocks/presentation/widget/composer/widget_list_page.dart';
 import 'package:doce_blocks/presentation/widget/draggableitem/image_drag_item.dart';
 import 'package:doce_blocks/presentation/widget/draggableitem/simple_drag_item.dart';
+import 'package:doce_blocks/presentation/widget/draggableitem/card_drag_item.dart';
+import 'package:doce_blocks/presentation/widget/draggableitem/video_drag_item.dart';
 import 'package:flutter/material.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
@@ -13,7 +15,6 @@ class WidgetComposerPage extends StatefulWidget {
 }
 
 class _WidgetComposerPageState extends State<WidgetComposerPage> {
-
   List<Widget> itemsList = [];
 
   @override
@@ -24,14 +25,13 @@ class _WidgetComposerPageState extends State<WidgetComposerPage> {
           portrait: (context) => _buildSmallPage(context),
           landscape: (context) => _buildLargePage(context),
         ),
-        desktop: _buildLargePage(context)
-    );
+        desktop: _buildLargePage(context));
   }
 
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //          SMALL PAGE
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  Widget _buildSmallPage(BuildContext context){
+  Widget _buildSmallPage(BuildContext context) {
     return Scaffold(
       floatingActionButton: AddFloatingActionButton(),
       body: _buildContent(context),
@@ -41,70 +41,74 @@ class _WidgetComposerPageState extends State<WidgetComposerPage> {
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //          LARGE PAGE
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  Widget _buildLargePage(BuildContext context){
+  Widget _buildLargePage(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(top: DBDimens.PaddingDefault, bottom: DBDimens.PaddingDefault, right: DBDimens.PaddingDefault),
-      decoration: BoxDecoration(
-        color: Theme.of(context).backgroundColor,
-        borderRadius: BorderRadius.circular(DBDimens.CornerDefault),
-      ),
-      child: Stack(
-        children: [
-          Row(
-            children: [
-              Expanded(flex: 9,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).selectedRowColor,
-                      borderRadius: BorderRadius.only(topLeft: Radius.circular(DBDimens.CornerDefault), bottomLeft: Radius.circular(DBDimens.CornerDefault)),
-                    ),
-                  )
-              ),
-              Expanded(flex: 1,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).selectedRowColor,
-                      borderRadius: BorderRadius.only(topRight: Radius.circular(DBDimens.CornerDefault), bottomRight: Radius.circular(DBDimens.CornerDefault)),
-                    ),
-                    child: WidgetListPage(isHorizontal: false),
-                  )
-              )
-            ],
-          ),
-          Row(
-            children: [
-              Expanded(flex: 9,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).backgroundColor,
-                      borderRadius: BorderRadius.all(Radius.circular(DBDimens.CornerDefault)),
-                    ),
-                    child: _buildContent(context),
-                  )
-              ),
-              Expanded(flex: 1,
-                  child: Container()
-              )
-            ],
-          ),
-        ],
-      )
-    );
+        margin: EdgeInsets.only(
+            top: DBDimens.PaddingDefault,
+            bottom: DBDimens.PaddingDefault,
+            right: DBDimens.PaddingDefault),
+        decoration: BoxDecoration(
+          color: Theme.of(context).backgroundColor,
+          borderRadius: BorderRadius.circular(DBDimens.CornerDefault),
+        ),
+        child: Stack(
+          children: [
+            Row(
+              children: [
+                Expanded(
+                    flex: 9,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).selectedRowColor,
+                        borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(DBDimens.CornerDefault),
+                            bottomLeft:
+                                Radius.circular(DBDimens.CornerDefault)),
+                      ),
+                    )),
+                Expanded(
+                    flex: 1,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).selectedRowColor,
+                        borderRadius: BorderRadius.only(
+                            topRight: Radius.circular(DBDimens.CornerDefault),
+                            bottomRight:
+                                Radius.circular(DBDimens.CornerDefault)),
+                      ),
+                      child: WidgetListPage(isHorizontal: false),
+                    ))
+              ],
+            ),
+            Row(
+              children: [
+                Expanded(
+                    flex: 9,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).backgroundColor,
+                        borderRadius: BorderRadius.all(
+                            Radius.circular(DBDimens.CornerDefault)),
+                      ),
+                      child: _buildContent(context),
+                    )),
+                Expanded(flex: 1, child: Container())
+              ],
+            ),
+          ],
+        ));
   }
 
-
-  Widget _buildContent(BuildContext context){
+  Widget _buildContent(BuildContext context) {
     return Container(
       child: DragTarget(
         builder: (context, List<String> candidateData, rejectedData) {
-          if(itemsList.length > 0){
-
+          if (itemsList.length > 0) {
             return ListView.builder(
                 itemCount: itemsList.length,
                 itemBuilder: (context, index) {
                   return itemsList[index];
                 });
-
           } else {
             return Container();
           }
@@ -114,16 +118,23 @@ class _WidgetComposerPageState extends State<WidgetComposerPage> {
         },
         onAccept: (data) {
           setState(() {
-            switch(data){
+            switch (data) {
               case "Flutter_Image":
-                itemsList.add(ImageDragItem());
+                itemsList.add(
+                    ImageDragItem(icon: Icons.warning, color: Colors.blue));
                 break;
               case "Flutter_Simple":
                 itemsList.add(SimpleDragItem());
                 break;
+              case "Flutter_Card":
+                itemsList.add(CardDragItem());
+                break;
+              case "Flutter_Video":
+                itemsList.add(VideoDragItem());
+                break;
             }
             var deviceType = getDeviceType(MediaQuery.of(context).size);
-            if(deviceType == DeviceScreenType.mobile) {
+            if (deviceType == DeviceScreenType.mobile) {
               Navigator.of(context).pop();
             }
           });
@@ -133,25 +144,22 @@ class _WidgetComposerPageState extends State<WidgetComposerPage> {
   }
 }
 
-
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //          FLOATING BUTTON
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 class AddFloatingActionButton extends StatefulWidget {
-
   @override
-  _AddFloatingActionButtonState createState() => _AddFloatingActionButtonState();
+  _AddFloatingActionButtonState createState() =>
+      _AddFloatingActionButtonState();
 }
 
 class _AddFloatingActionButtonState extends State<AddFloatingActionButton> {
-
   bool isOpen = false;
   PersistentBottomSheetController bottomSheetController;
 
   @override
   Widget build(BuildContext context) {
-
-    if(isOpen){
+    if (isOpen) {
       return FloatingActionButton(
         backgroundColor: Colors.red,
         child: Icon(Icons.close),
@@ -162,17 +170,16 @@ class _AddFloatingActionButtonState extends State<AddFloatingActionButton> {
       );
     } else {
       return FloatingActionButton(
-          backgroundColor: Theme.of(context).primaryColor ,
+          backgroundColor: Theme.of(context).primaryColor,
           child: Icon(Icons.add),
           onPressed: () {
             bottomSheetController = showBottomSheet(
                 context: context,
                 builder: (context) => Container(
-                  constraints: BoxConstraints.expand(height: 150),
-                  color: Theme.of(context).selectedRowColor,
-                  child: WidgetListPage(isHorizontal: true),
-                )
-            );
+                      constraints: BoxConstraints.expand(height: 150),
+                      color: Theme.of(context).selectedRowColor,
+                      child: WidgetListPage(isHorizontal: true),
+                    ));
             changeState(true);
             bottomSheetController.closed.then((value) {
               changeState(false);
