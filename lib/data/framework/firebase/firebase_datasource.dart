@@ -6,13 +6,18 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:meta/meta.dart';
 
 abstract class FirebaseDataSource {
-  Future<User> authenticate({@required String email, @required String password,});
+  Future<User> authenticate({
+    @required String email,
+    @required String password,
+  });
   Future<User> isSignedIn();
   Future<void> signOut();
+
+  Future<Page> getPage(final String uid);
+  Future<List<Page>> getPages();
 }
 
-class FirebaseDataSourceImpl extends FirebaseDataSource{
-
+class FirebaseDataSourceImpl extends FirebaseDataSource {
   FirebaseAuth _auth;
   Firestore _db;
 
@@ -34,15 +39,15 @@ class FirebaseDataSourceImpl extends FirebaseDataSource{
     @required String email,
     @required String password,
   }) async {
-      var authResp = await _auth.signInWithEmailAndPassword(email: email, password: password);
-      var user = await _getUser(authResp.user.uid);
-      return user;
+    var authResp = await _auth.signInWithEmailAndPassword(email: email, password: password);
+    var user = await _getUser(authResp.user.uid);
+    return user;
   }
 
   @override
   Future<User> isSignedIn() async {
     final currentUser = await _auth.currentUser();
-    if(currentUser != null){
+    if (currentUser != null) {
       var user = await _getUser(currentUser.uid);
       return user;
     }
@@ -59,4 +64,15 @@ class FirebaseDataSourceImpl extends FirebaseDataSource{
     return User.fromMap(snapshot.documentID, snapshot.data);
   }
 
+  @override
+  Future<Page> getPage(String uid) async {
+    final snapshot = await _db.collection("pages").document(uid).get();
+
+    return Page.fromJson(snapshot.documentID, snapshot.data);
+  }
+
+  @override
+  Future<List<Page>> getPages() {
+    throw UnimplementedError();
+  }
 }
