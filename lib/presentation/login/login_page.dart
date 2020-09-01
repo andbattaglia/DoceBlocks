@@ -29,27 +29,23 @@ class LoginPage extends StatelessWidget {
   }
 
   Widget _buildSmallLayout(BuildContext context) {
-    return Container(
-        decoration: BoxDecoration(
-            gradient: LinearGradient(
-                begin: Alignment.topRight,
-                end: Alignment.bottomLeft,
-                colors: [ Theme.of(context).primaryColor,  Theme.of(context).primaryColorLight ]
-            )
-        ),
-        child:  Container(
-          margin: EdgeInsets.only(left: DBDimens.PaddingDefault, right: DBDimens.PaddingDefault),
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Container(
           alignment: Alignment.center,
-          child: Container(
-            constraints: BoxConstraints(maxWidth: 400),
-            child:Card(
-                elevation: 8.0,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(DBDimens.CornerDefault),
-                ),
-                child: LoginForm()
-            ),
-          ),)
+          child: Image.asset('assets/login.png', height: 170, width: 328),
+        ),
+
+        SizedBox(
+          height: DBDimens.Padding50,
+        ),
+
+        Container(
+          alignment: Alignment.center,
+          child: LoginForm(),
+        )
+      ],
     );
   }
 
@@ -59,15 +55,8 @@ class LoginPage extends StatelessWidget {
         Expanded(
           flex: 1,
           child: Container(
-            padding: EdgeInsets.only(left: DBDimens.PaddingDouble, right: DBDimens.PaddingDouble),
             alignment: Alignment.center,
-            decoration: BoxDecoration(
-                gradient: LinearGradient(
-                    begin: Alignment.topRight,
-                    end: Alignment.bottomLeft,
-                    colors: [ Theme.of(context).primaryColor,  Theme.of(context).primaryColorLight ]
-                )
-            ),
+            color: Theme.of(context).primaryColor,
             child: Image.asset('assets/login.png'),
           ),
         ),

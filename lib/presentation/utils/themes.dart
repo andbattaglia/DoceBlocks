@@ -6,11 +6,11 @@ final ThemeData kLightTheme = _buildLightTheme();
 ThemeData _buildLightTheme() {
   final ThemeData base = ThemeData.light();
   return base.copyWith(
-    primaryColor: Color(0xFF0465ac),
+    primaryColor: Color(0xFF3366ff),
     accentColor: Color(0x59000000),
-    primaryColorDark:  Color(0xFF003b7c),
-    primaryColorLight:  Color(0xFF5492de),
-    buttonColor: Color(0xFF0465ac),
+    primaryColorDark:  Color(0xFF003dcb),
+    primaryColorLight:  Color(0xFF7b93ff),
+    buttonColor: Color(0xFF3366ff),
     backgroundColor: Color(0xFFFFFFFF),
     selectedRowColor: Color(0xFFDADADA),
     iconTheme: new IconThemeData(
@@ -31,11 +31,11 @@ final ThemeData kDarkTheme = _buildDarkTheme();
 ThemeData _buildDarkTheme() {
   final ThemeData base = ThemeData.dark();
   return base.copyWith(
-    primaryColor: Color(0xFF0465ac),
+    primaryColor: Color(0xFF3366ff),
     accentColor: Color(0x59000000),
-    primaryColorDark:  Color(0xFF003b7c),
-    primaryColorLight:  Color(0xFF5492de),
-    buttonColor: Color(0xFF0465ac),
+    primaryColorDark:  Color(0xFF003dcb),
+    primaryColorLight:  Color(0xFF7b93ff),
+    buttonColor: Color(0xFF3366ff),
     selectedRowColor: Color(0xFF757575),
     iconTheme: new IconThemeData(
         color: Colors.white,

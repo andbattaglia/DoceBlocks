@@ -52,17 +52,31 @@ class _LoginFormState extends State<LoginForm> {
 
       child: BlocBuilder<LoginBloc, LoginState>(
         builder: (context, state) {
-          return Wrap(
-            alignment: WrapAlignment.center,
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
+                padding: EdgeInsets.only(right: DBDimens.PaddingDefault, left: DBDimens.PaddingDefault),
                 alignment: Alignment.centerLeft,
-                padding: EdgeInsets.only(top: DBDimens.PaddingDouble, left: DBDimens.PaddingDouble, right: DBDimens.PaddingDouble),
-                child: Text(DBString.login_title, style: Theme.of(context).textTheme.headline4)
+                child: Text(DBString.login_title, style: Theme.of(context).textTheme.headline5)
+              ),
+
+              SizedBox(
+                height: DBDimens.PaddingHalf,
               ),
 
               Container(
-                padding: EdgeInsets.only(top: DBDimens.PaddingDouble, bottom: DBDimens.PaddingHalf, left: DBDimens.PaddingDouble, right: DBDimens.PaddingDouble),
+                  padding: EdgeInsets.only(right: DBDimens.PaddingDefault, left: DBDimens.PaddingDefault),
+                  alignment: Alignment.centerLeft,
+                  child: Text(DBString.login_description, style: Theme.of(context).textTheme.subtitle2)
+              ),
+
+              SizedBox(
+                height: DBDimens.Padding50,
+              ),
+
+              Container(
+                padding: EdgeInsets.only(right: DBDimens.PaddingDefault, left: DBDimens.PaddingDefault),
                 child: TextFormField(
                   controller: _emailController,
                   decoration: InputDecoration(
@@ -78,8 +92,12 @@ class _LoginFormState extends State<LoginForm> {
                 ),
               ),
 
+              SizedBox(
+                height: DBDimens.PaddingDefault,
+              ),
+
               Container(
-                padding: EdgeInsets.only(top:  DBDimens.PaddingHalf, bottom: DBDimens.PaddingDouble, left:  DBDimens.PaddingDouble, right:  DBDimens.PaddingDouble),
+                padding: EdgeInsets.only(right: DBDimens.PaddingDefault, left: DBDimens.PaddingDefault),
                 child: TextFormField(
                   controller: _passwordController,
                   obscureText: true,
@@ -95,18 +113,22 @@ class _LoginFormState extends State<LoginForm> {
                   ),
                 ),
               ),
-              Padding(
-                  padding: EdgeInsets.only(top:  DBDimens.PaddingDefault, bottom:  DBDimens.PaddingDouble, left:  DBDimens.PaddingDouble, right:  DBDimens.PaddingDouble),
-                  child: Container(
-                      alignment: Alignment.centerLeft,
-                      child: FloatingActionButton.extended(
-                        onPressed: _onLoginButtonPressed,
-                        label: Text(DBString.standard_login, style: Theme.of(context).accentTextTheme.button),
-                        icon: Icon(Icons.send, color: Theme.of(context).iconTheme.color),
-                        backgroundColor: Theme.of(context).buttonColor,
-                      )
-                  )
+
+              SizedBox(
+                height: DBDimens.PaddingDouble,
               ),
+
+              Container(
+                padding: EdgeInsets.only(left:  DBDimens.PaddingDefault, right:  DBDimens.PaddingDefault),
+                alignment: Alignment.centerRight,
+                child:  RaisedButton(
+                  onPressed: _onLoginButtonPressed,
+                  padding: EdgeInsets.only(left:  DBDimens.PaddingDouble, right:  DBDimens.PaddingDouble),
+                  child: Text(DBString.standard_login.toUpperCase(), style: Theme.of(context).accentTextTheme.button),
+                  color: Theme.of(context).buttonColor,
+                ),
+              )
+
             ],
           );
         },
