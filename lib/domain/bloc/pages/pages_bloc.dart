@@ -1,61 +1,78 @@
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
-import 'package:doce_blocks/domain/models/page.dart';
-import 'package:equatable/equatable.dart';
+import 'package:doce_blocks/data/models/models.dart';
+import 'package:doce_blocks/injection/dependency_injection.dart';
 import 'package:flutter/material.dart';
-import 'package:doce_blocks/domain/utils/extensions.dart';
 
 part 'pages_event.dart';
 part 'pages_state.dart';
 
 class PagesBloc extends Bloc<PagesEvent, PagesState> {
 
-  //TODO: move it on repository
-  List<CustomPage> _pagesList = [ CustomPage("Page 1"), CustomPage("Page 2") ];
-
-  String _selectedId;
-
   PagesBloc() : super(GetPagesInitial());
 
   @override
-  Stream<PagesState> mapEventToState(PagesEvent event,) async* {
+  Stream<PagesState> mapEventToState(PagesEvent event) async* {
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //          GET PAGES EVENT
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     if(event is GetPagesEvent){
-      var pagesList = _pagesList;
-      yield GetPagesSuccess(pages: pagesList);
 
-      pagesList.asMap().forEach((index, value) {
-        value.isSelected = index == 0;
-      });
+      var userRepository = Injector.provideUserRepository();
+      var user = await userRepository.getUser();
 
-      yield GetPagesSuccess(pages: pagesList);
+      var pageRepository = Injector.providePageRepository();
+      var pages = await pageRepository.getPages(user.uid, false);
+
+      yield GetPagesSuccess(pages: pages);
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //          SELECT PAGE EVENT
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     else if(event is SelectPageEvent){
-      var pagesList = _pagesList;
+      var userRepository = Injector.provideUserRepository();
+      var user = await userRepository.getUser();
 
-      yield GetPagesSuccess(pages: pagesList);
+      var pageRepository = Injector.providePageRepository();
+      var pages = await pageRepository.getPages(user.uid, true);
+      yield GetPagesSuccess(pages: pages);
 
-      _selectedId = event.id;
-      pagesList.asMap().forEach((index, value) {
-        value.isSelected = value.id == _selectedId;
-      });
-
-      yield GetPagesSuccess(pages: pagesList);
+      pages = pageRepository.setCurrentPage(event.id);
+      yield GetPagesSuccess(pages: pages);
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //          ADD PAGE EVENT
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     else if(event is AddPageEvent){
-      var pagesList = _pagesList;
-      pagesList.add(CustomPage(event.name));
 
-      pagesList.asMap().forEach((index, value) {
-        value.isSelected = value.id == _selectedId;
-      });
+      var userRepository = Injector.provideUserRepository();
+      var user = await userRepository.getUser();
 
-      yield GetPagesSuccess(pages: pagesList);
+      var pageRepository = Injector.providePageRepository();
+      await pageRepository.setPage(user.uid, event.name);
+
+      var pages = await pageRepository.getPages(user.uid, false);
+      yield GetPagesSuccess(pages: pages);
     }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //          DELETE PAGE EVENT
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    else if(event is DeletePageEvent){
+      var userRepository = Injector.provideUserRepository();
+      var user = await userRepository.getUser();
+
+      var pageRepository = Injector.providePageRepository();
+      await pageRepository.deletePages(event.id);
+
+      var pages = await pageRepository.getPages(user.uid, false);
+      yield GetPagesSuccess(pages: pages);
+    }
+
 
     else {
       yield GetPagesInitial();

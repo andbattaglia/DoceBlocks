@@ -1,7 +1,7 @@
 import 'dart:developer';
 
+import 'package:doce_blocks/data/models/models.dart';
 import 'package:doce_blocks/domain/bloc/pages/pages_bloc.dart';
-import 'package:doce_blocks/domain/models/page.dart';
 import 'package:doce_blocks/presentation/profile/profile_page.dart';
 import 'package:doce_blocks/presentation/utils/dimens.dart';
 import 'package:doce_blocks/presentation/utils/strings.dart';
@@ -96,11 +96,21 @@ class _PagesListPageState extends State<PagesListPage> {
       child: new InkWell(
           borderRadius: BorderRadius.all(Radius.circular(DBDimens.CornerDefault)),
           onTap: () {
-            BlocProvider.of<PagesBloc>(context).add(SelectPageEvent(id: page.id));
+            BlocProvider.of<PagesBloc>(context).add(SelectPageEvent(id: page.uid));
           },
           child: Container(
             padding: EdgeInsets.all(DBDimens.PaddingDefault),
-            child: Text(page.name, style: Theme.of(context).textTheme.bodyText1),
+            child: Row(
+              children: [
+                Expanded(child: Text(page.name, style: Theme.of(context).textTheme.bodyText1)),
+                IconButton(
+                    icon: Icon(Icons.close, color: Theme.of(context).primaryIconTheme.color),
+                  onPressed: (){
+                    BlocProvider.of<PagesBloc>(context).add(DeletePageEvent(id: page.uid));
+                  },
+                ),
+              ],
+            ),
           )
       ),
     );
@@ -131,17 +141,21 @@ class _PagesListPageState extends State<PagesListPage> {
               child: new InkWell(
                   borderRadius: BorderRadius.only(bottomLeft: Radius.circular(DBDimens.CornerDefault), topLeft: Radius.circular(DBDimens.CornerDefault)),
                   onTap: () {
-                    BlocProvider.of<PagesBloc>(context).add(SelectPageEvent(id: page.id));
+                    BlocProvider.of<PagesBloc>(context).add(SelectPageEvent(id: page.uid));
                   },
                   child: Container(
                       constraints: BoxConstraints.expand(),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.center,
+                      child: Row(
                         children: [
-                          Text(page.name, style: page.isSelected ? Theme.of(context).textTheme.bodyText1 : Theme.of(context).accentTextTheme.bodyText1)
+                          Expanded(child: Text(page.name, style: page.isSelected ? Theme.of(context).textTheme.bodyText1 : Theme.of(context).accentTextTheme.bodyText1)),
+                          IconButton(
+                            icon: Icon(Icons.close, color:  page.isSelected ? Theme.of(context).primaryIconTheme.color : Theme.of(context).iconTheme.color),
+                            onPressed: (){
+                              BlocProvider.of<PagesBloc>(context).add(DeletePageEvent(id: page.uid));
+                            },
+                          ),
                         ],
-                      )
+                      ),
                   )
               ),
             ),

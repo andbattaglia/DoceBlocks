@@ -35,3 +35,15 @@ class AddPageEvent extends PagesEvent {
   @override
   String toString() => 'AddPageEvent ${this.name}';
 }
+
+class DeletePageEvent extends PagesEvent {
+
+  final String id;
+
+  const DeletePageEvent({
+    @required this.id,
+  });
+
+  @override
+  String toString() => 'DeletePageEvent ${this.id}';
+}

@@ -1,9 +1,11 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:doce_blocks/data/models/models.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:meta/meta.dart';
+import 'package:uuid/uuid.dart';
 
 abstract class FirebaseDataSource {
   Future<User> authenticate({
@@ -13,8 +15,9 @@ abstract class FirebaseDataSource {
   Future<User> isSignedIn();
   Future<void> signOut();
 
-  Future<Page> getPage(final String uid);
-  Future<List<Page>> getPages();
+  Future<bool> setPage(String userId, String name);
+  Future<bool> deletePage(String pageId);
+  Future<List<CustomPage>> getPages(String userId);
 }
 
 class FirebaseDataSourceImpl extends FirebaseDataSource {
@@ -60,19 +63,41 @@ class FirebaseDataSourceImpl extends FirebaseDataSource {
   }
 
   Future<User> _getUser(String uid) async {
-    var snapshot = await _db.collection("users").document(uid).get();
+    CollectionReference users = _db.collection('users');
+    var snapshot = await users.document(uid).get();
     return User.fromMap(snapshot.documentID, snapshot.data);
   }
 
   @override
-  Future<Page> getPage(String uid) async {
-    final snapshot = await _db.collection("pages").document(uid).get();
+  Future<bool> setPage(String userId, String name) async {
 
-    return Page.fromJson(snapshot.documentID, snapshot.data);
+    CollectionReference pages = _db.collection('pages');
+
+    return pages.add({
+      'userId': userId, // John Doe
+      'name': name, // Stokes and Sons
+    }).then((value) =>  true);
   }
 
   @override
-  Future<List<Page>> getPages() {
-    throw UnimplementedError();
+  Future<bool> deletePage(String pageId) {
+
+    CollectionReference pages = _db.collection('pages');
+
+    return pages.document(pageId).delete().then((value) => true);
+  }
+
+  @override
+  Future<List<CustomPage>> getPages(String userId) async {
+    CollectionReference pages = _db.collection('pages');
+
+    var snapshot = await pages.where('userId', isEqualTo: userId).getDocuments();
+
+    var result = List<CustomPage>();
+    snapshot.documents.forEach((item) {
+      result.add(CustomPage.fromJson(item.documentID, item.data));
+    });
+
+    return result;
   }
 }
