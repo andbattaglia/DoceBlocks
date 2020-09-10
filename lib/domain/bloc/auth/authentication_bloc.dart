@@ -28,6 +28,9 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
   }
 
   Stream<AuthenticationState> _mapAuthenticationStartedToState() async* {
+
+    await Future.delayed(const Duration(milliseconds: 2000));
+
     final isSignedIn = await _userRepository.isSignedIn();
     if (isSignedIn) {
       var user = await _userRepository.getUser();
