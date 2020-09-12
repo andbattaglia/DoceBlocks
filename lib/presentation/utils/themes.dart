@@ -11,18 +11,22 @@ ThemeData _buildLightTheme() {
     primaryColorDark:  Color(0xFF003dcb),
     primaryColorLight:  Color(0xFF7b93ff),
     buttonColor: Color(0xFF3366ff),
-    backgroundColor: Color(0xFFFFFFFF),
     selectedRowColor: Color(0xFFDADADA),
     iconTheme: new IconThemeData(
         color: Colors.white,
         opacity: 1.0
     ),
-    primaryIconTheme: new IconThemeData(
+    accentIconTheme: new IconThemeData(
         color: Color(0xFF000000),
+        opacity: 1.0
+    ),
+    primaryIconTheme: new IconThemeData(
+        color: Color(0xFF3366ff),
         opacity: 1.0
     ),
     textTheme: _buildTextTheme(Colors.black87),
     accentTextTheme: _buildTextTheme(Colors.white),
+    primaryTextTheme: _buildTextTheme(Color(0xFF3366ff))
   );
 }
 
@@ -41,12 +45,17 @@ ThemeData _buildDarkTheme() {
         color: Colors.white,
         opacity: 1.0
     ),
+    accentIconTheme: new IconThemeData(
+        color: Colors.white,
+        opacity: 1.0
+    ),
     primaryIconTheme: new IconThemeData(
-        color: Color(0xFFFFFFFF),
-        opacity: 1.0,
+        color: Color(0xFF3366ff),
+        opacity: 1.0
     ),
     textTheme: _buildTextTheme(Colors.white),
-    accentTextTheme: _buildTextTheme(Colors.white)
+    accentTextTheme: _buildTextTheme(Colors.white),
+    primaryTextTheme: _buildTextTheme(Color(0xFF3366ff))
   );
 }
 

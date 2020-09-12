@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:doce_blocks/data/models/models.dart';
 import 'package:doce_blocks/domain/bloc/pages/pages_bloc.dart';
+import 'package:doce_blocks/presentation/pages/add_page_page.dart';
 import 'package:doce_blocks/presentation/profile/profile_page.dart';
 import 'package:doce_blocks/presentation/utils/dimens.dart';
 import 'package:doce_blocks/presentation/utils/strings.dart';
@@ -31,6 +32,9 @@ class _PagesListPageState extends State<PagesListPage> {
     );
   }
 
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  //          SMALL PAGE
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   Widget _buildSmallPage(BuildContext context){
     return BlocBuilder<PagesBloc, PagesState>(
         builder: (context, state) {
@@ -44,8 +48,7 @@ class _PagesListPageState extends State<PagesListPage> {
                   if(index == pagesList.length){
                     return _buildAddPageItem(context, true);
                   } else {
-                    var customPage = pagesList[index];
-                    return _buildSmallPageItem(context, customPage);
+                    return _buildSmallPageItem(context, pagesList[index]);
                   }
                 });
           }
@@ -55,6 +58,9 @@ class _PagesListPageState extends State<PagesListPage> {
     );
   }
 
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  //          LARGE PAGE
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   Widget _buildLargePage(BuildContext context){
     return BlocBuilder<PagesBloc, PagesState>(
         builder: (context, state) {
@@ -86,6 +92,9 @@ class _PagesListPageState extends State<PagesListPage> {
     );
   }
 
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  //          PAGE_ITEM
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   Widget _buildSmallPageItem(BuildContext context , CustomPage page){
     return Container(
       margin: EdgeInsets.all(DBDimens.PaddingHalf),
@@ -94,29 +103,25 @@ class _PagesListPageState extends State<PagesListPage> {
         borderRadius: BorderRadius.all(Radius.circular(DBDimens.CornerDefault)),
       ),
       child: new InkWell(
-          borderRadius: BorderRadius.all(Radius.circular(DBDimens.CornerDefault)),
-          onTap: () {
-            BlocProvider.of<PagesBloc>(context).add(SelectPageEvent(id: page.uid));
-          },
-          child: Container(
-            padding: EdgeInsets.all(DBDimens.PaddingDefault),
-            child: Row(
-              children: [
-                Expanded(child: Text(page.name, style: Theme.of(context).textTheme.bodyText1)),
-                IconButton(
-                    icon: Icon(Icons.close, color: Theme.of(context).primaryIconTheme.color),
-                  onPressed: (){
-                    BlocProvider.of<PagesBloc>(context).add(DeletePageEvent(id: page.uid));
-                  },
-                ),
-              ],
-            ),
-          )
+        borderRadius: BorderRadius.all(Radius.circular(DBDimens.CornerDefault)),
+        onTap: () {
+          BlocProvider.of<PagesBloc>(context).add(SelectPageEvent(id: page.uid));
+        },
+        child: Container(
+          padding: EdgeInsets.all(DBDimens.PaddingDefault),
+          child: Row(
+            children: [
+              Icon(page.materialIcon, color: Theme.of(context).primaryIconTheme.color),
+              SizedBox(width: DBDimens.PaddingHalf),
+              Expanded(child: Text(page.name, style: Theme.of(context).textTheme.bodyText1)),
+            ],
+          ),
+        )
       ),
     );
   }
 
-  Widget _buildLargePageItem(BuildContext context , CustomPage page){
+   Widget _buildLargePageItem(BuildContext context , CustomPage page){
     return  Container(
         margin: EdgeInsets.only( left: DBDimens.PaddingDefault),
         child: Column(
@@ -174,6 +179,10 @@ class _PagesListPageState extends State<PagesListPage> {
     );
   }
 
+
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  //          ADD_PAGE_ITEM
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   Widget _buildAddPageItem(BuildContext context, bool lightBackground){
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -187,16 +196,16 @@ class _PagesListPageState extends State<PagesListPage> {
           child: new InkWell(
               borderRadius: BorderRadius.all(Radius.circular(DBDimens.CornerDefault)),
               onTap: () {
-                showDialog(context: context, builder: (BuildContext c) => _buildAddPageDialog(context));
+                Navigator.push(context, MaterialPageRoute(builder: (context) => AddPagePage()),);
               },
               child: Container(
                 padding: EdgeInsets.all(DBDimens.PaddingDefault),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text(DBString.standard_add, style: lightBackground ? Theme.of(context).textTheme.bodyText1 : Theme.of(context).accentTextTheme.bodyText1),
+                    Text(DBString.standard_add.toUpperCase(), style: lightBackground ? Theme.of(context).primaryTextTheme.button : Theme.of(context).primaryTextTheme.button),
                     SizedBox(width: DBDimens.PaddingHalf),
-                    Icon(Icons.add, size: DBDimens.IconSizeSmall, color: lightBackground ? Theme.of(context).primaryIconTheme.color : Theme.of(context).iconTheme.color)
+                    Icon(Icons.add, size: DBDimens.IconSizeSmall, color: lightBackground ? Theme.of(context).primaryIconTheme.color : Theme.of(context).primaryIconTheme.color)
                   ],
                 ),
               )
@@ -206,54 +215,54 @@ class _PagesListPageState extends State<PagesListPage> {
     );
   }
 
-  Widget _buildAddPageDialog(BuildContext context){
-
-    var _inputController = TextEditingController();
-
-    return Dialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(DBDimens.PaddingDefault),
-      ),
-      elevation: 0.0,
-      backgroundColor: Colors.transparent,
-      child: Card(
-          elevation: 4.0,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(DBDimens.CornerDefault),
-          ),
-          child: Container(
-            constraints: BoxConstraints(maxWidth: 400),
-            padding: EdgeInsets.all(DBDimens.PaddingDouble),
-            child:
-            Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(DBString.new_page_title, style: Theme.of(context).textTheme.bodyText1),
-                SizedBox(height: DBDimens.PaddingDefault),
-                TextFormField(
-                  controller: _inputController,
-                  decoration: InputDecoration(
-                    labelStyle: new TextStyle(),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Theme.of(context).disabledColor),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Theme.of(context).primaryColor),
-                    ),
-                  ),
-                  textInputAction: TextInputAction.go,
-                  onFieldSubmitted: (value) {
-                    if(value.trim().isNotEmpty){
-                      Navigator.of(context, rootNavigator: true).pop();
-                      BlocProvider.of<PagesBloc>(context).add(AddPageEvent(name: value.trim()));
-                    }
-                  },
-                ),
-              ],
-            ),
-          )
-      ),
-    );
-  }
+//  Widget _buildAddPageDialog(BuildContext context){
+//
+//    var _inputController = TextEditingController();
+//
+//    return Dialog(
+//      shape: RoundedRectangleBorder(
+//        borderRadius: BorderRadius.circular(DBDimens.PaddingDefault),
+//      ),
+//      elevation: 0.0,
+//      backgroundColor: Colors.transparent,
+//      child: Card(
+//          elevation: 4.0,
+//          shape: RoundedRectangleBorder(
+//            borderRadius: BorderRadius.circular(DBDimens.CornerDefault),
+//          ),
+//          child: Container(
+//            constraints: BoxConstraints(maxWidth: 400),
+//            padding: EdgeInsets.all(DBDimens.PaddingDouble),
+//            child:
+//            Column(
+//              mainAxisSize: MainAxisSize.min,
+//              children: [
+//                Text(DBString.new_page_title, style: Theme.of(context).textTheme.bodyText1),
+//                SizedBox(height: DBDimens.PaddingDefault),
+//                TextFormField(
+//                  controller: _inputController,
+//                  decoration: InputDecoration(
+//                    labelStyle: new TextStyle(),
+//                    enabledBorder: OutlineInputBorder(
+//                      borderSide: BorderSide(color: Theme.of(context).disabledColor),
+//                    ),
+//                    focusedBorder: OutlineInputBorder(
+//                      borderSide: BorderSide(color: Theme.of(context).primaryColor),
+//                    ),
+//                  ),
+//                  textInputAction: TextInputAction.go,
+//                  onFieldSubmitted: (value) {
+//                    if(value.trim().isNotEmpty){
+//                      Navigator.of(context, rootNavigator: true).pop();
+//                      BlocProvider.of<PagesBloc>(context).add(AddPageEvent(name: value.trim()));
+//                    }
+//                  },
+//                ),
+//              ],
+//            ),
+//          )
+//      ),
+//    );
+//  }
 
 }

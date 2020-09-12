@@ -1,10 +1,12 @@
 import 'dart:developer';
 
+import 'package:doce_blocks/domain/bloc/pages/pages_bloc.dart';
 import 'package:doce_blocks/presentation/utils/dimens.dart';
 import 'package:doce_blocks/presentation/widget/composer/widget_list_page.dart';
 import 'package:doce_blocks/presentation/widget/draggableitem/image_drag_item.dart';
 import 'package:doce_blocks/presentation/widget/draggableitem/simple_drag_item.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
 class WidgetComposerPage extends StatefulWidget {
@@ -18,13 +20,17 @@ class _WidgetComposerPageState extends State<WidgetComposerPage> {
 
   @override
   Widget build(BuildContext context) {
-    return ScreenTypeLayout(
-        mobile: _buildSmallPage(context),
-        tablet: OrientationLayoutBuilder(
-          portrait: (context) => _buildSmallPage(context),
-          landscape: (context) => _buildLargePage(context),
-        ),
-        desktop: _buildLargePage(context)
+
+    return BlocProvider<PagesBloc>(
+        create: (_) => PagesBloc()..add(GetPagesEvent()),
+        child: ScreenTypeLayout(
+          mobile: _buildSmallPage(context),
+          tablet: OrientationLayoutBuilder(
+            portrait: (context) => _buildSmallPage(context),
+            landscape: (context) => _buildLargePage(context),
+          ),
+          desktop: _buildLargePage(context),
+        )
     );
   }
 
@@ -94,6 +100,22 @@ class _WidgetComposerPageState extends State<WidgetComposerPage> {
 
 
   Widget _buildContent(BuildContext context){
+    return BlocBuilder<PagesBloc, PagesState>(
+        builder: (context, state) {
+          if(state is GetPagesSuccess){
+
+            var pagesList = state.pages;
+
+            return Container(
+              child: (Text("${state.pages.length}")),
+            );
+          }
+
+          return Container();
+        }
+    );
+
+
     return Container(
       child: DragTarget(
         builder: (context, List<String> candidateData, rejectedData) {

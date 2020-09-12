@@ -1,6 +1,8 @@
 import 'package:doce_blocks/domain/bloc/bloc.dart';
+import 'package:doce_blocks/domain/bloc/pages/pages_bloc.dart';
 import 'package:doce_blocks/presentation/pages/pages_list_page.dart';
 import 'package:doce_blocks/presentation/profile/profile_page.dart';
+import 'package:doce_blocks/presentation/utils/cross_platform_svg.dart';
 import 'package:doce_blocks/presentation/utils/dimens.dart';
 import 'package:doce_blocks/presentation/utils/strings.dart';
 import 'package:doce_blocks/presentation/widget/composer/widget_composer_page.dart';
@@ -13,6 +15,7 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return ScreenTypeLayout(
       mobile: _buildSmallPage(context),
       tablet: OrientationLayoutBuilder(
@@ -38,7 +41,22 @@ class HomePage extends StatelessWidget {
         ],
       ),
       drawer: Drawer(
-          child: PagesListPage()
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.max,
+            children: <Widget>[
+              Expanded(
+                flex: 1,
+                child: DrawerHeader(
+                  child: CrossPlatformSvg.asset('assets/logo.svg'),
+                ),
+              ),
+              Expanded(
+                flex: 5,
+                child: PagesListPage(),
+              ),
+            ],
+          ),
       ),
       body: WidgetComposerPage(),
     );

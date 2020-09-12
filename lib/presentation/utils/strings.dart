@@ -11,9 +11,14 @@ class DBString{
   static const String standard_signout = "Signout";
   static const String standard_cancel = "Cancel";
   static const String standard_add = "Add";
+  static const String standard_done = "Done";
 
   static const String setting_switch_theme = "Dark Mode";
 
   static const String new_page_title = "Insert new page name";
+
+  static const String add_section_title = "Name new section";
+  static const String add_section_hint = "Section name";
+  static const String add_section_choose_icon_title = "Choose icon";
 
 }
