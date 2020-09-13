@@ -92,6 +92,8 @@ class PageRepositoryImpl implements PageRepository {
       if(list.isNotEmpty){
         list[0].isSelected = true;
         _subjectSelectedPage.add(list[0]);
+      } else {
+        _subjectSelectedPage.add(null);
       }
     } else {
       list.asMap().forEach((index, value) {
