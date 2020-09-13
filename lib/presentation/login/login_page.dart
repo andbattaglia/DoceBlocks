@@ -1,9 +1,8 @@
 import 'package:doce_blocks/domain/bloc/bloc.dart';
-import 'package:doce_blocks/injection/dependency_injection.dart';
 import 'package:doce_blocks/presentation/login/login_form.dart';
-import 'package:doce_blocks/presentation/utils/themes.dart';
 import 'package:doce_blocks/presentation/utils/dimens.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
@@ -29,23 +28,26 @@ class LoginPage extends StatelessWidget {
   }
 
   Widget _buildSmallLayout(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Container(
-          alignment: Alignment.center,
-          child: Image.asset('assets/login.png', height: 170, width: 328),
-        ),
+    return Container(
+      color: Theme.of(context).backgroundColor,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            alignment: Alignment.center,
+            child: Image.asset('assets/login.png', height: 170, width: 328),
+          ),
 
-        SizedBox(
-          height: DBDimens.Padding50,
-        ),
+          SizedBox(
+            height: DBDimens.Padding50,
+          ),
 
-        Container(
-          alignment: Alignment.center,
-          child: LoginForm(),
-        )
-      ],
+          Container(
+            alignment: Alignment.center,
+            child: LoginForm(),
+          )
+        ],
+      ),
     );
   }
 

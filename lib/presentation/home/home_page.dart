@@ -1,3 +1,4 @@
+import 'package:doce_blocks/data/models/models.dart';
 import 'package:doce_blocks/domain/bloc/bloc.dart';
 import 'package:doce_blocks/domain/bloc/pages/pages_bloc.dart';
 import 'package:doce_blocks/presentation/pages/pages_list_page.dart';
@@ -18,9 +19,11 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
 
+  PagesBloc _pagesBloc;
+
   @override
   void initState() {
-    PagesBloc pagesBloc = new PagesBloc()..add(GetPagesEvent());
+    _pagesBloc = PagesBloc()..add(GetPagesEvent());
   }
 
   @override
@@ -40,38 +43,46 @@ class _HomePageState extends State<HomePage> {
   //          SMALL PAGE
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   Widget _buildSmallPage(BuildContext context){
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        iconTheme: Theme.of(context).primaryIconTheme,
-        elevation: 0.0,
-        title: Text(DBString.title, style: Theme.of(context).textTheme.headline6),
-        actions: <Widget>[
-          _buildProfileAvatar(context)
-        ],
-      ),
-      drawer: Drawer(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.max,
-            children: <Widget>[
-              Expanded(
-                flex: 1,
-                child: DrawerHeader(
-                  child: CrossPlatformSvg.asset('assets/logo.svg'),
-                ),
-              ),
-              Expanded(
-                flex: 5,
-                child: PagesListPage(),
-              ),
+    return StreamBuilder(stream: _pagesBloc.getSelectedPageStream(), builder: (context, AsyncSnapshot<CustomPage> snapshot){
+
+      String title = DBString.title;
+      if(snapshot.hasData){
+          title = snapshot.data.name;
+      }
+
+      return Scaffold(
+          appBar: AppBar(
+            backgroundColor: Colors.transparent,
+            iconTheme: Theme.of(context).accentIconTheme,
+            elevation: 0.0,
+            title: Text(title, style: Theme.of(context).textTheme.headline6),
+            actions: <Widget>[
+              _buildProfileAvatar(context)
             ],
           ),
-      ),
-      body: WidgetComposerPage()
+          drawer: Drawer(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.max,
+              children: <Widget>[
+                Expanded(
+                  flex: 1,
+                  child: DrawerHeader(
+                    child: CrossPlatformSvg.asset('assets/logo.svg'),
+                  ),
+                ),
+                Expanded(
+                  flex: 5,
+                  child: PagesListPage(),
+                ),
+              ],
+            ),
+          ),
+          body: WidgetComposerPage()
+        );
+      }
     );
   }
-
 
 
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////

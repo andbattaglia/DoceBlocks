@@ -7,13 +7,14 @@ import 'package:rxdart/rxdart.dart';
 
 abstract class PageRepository {
 
-  List<CustomPage> setCurrentPage(String uid);
+  void setCurrentPage(String uid);
 
   void addPage(String userId, String name, String icon);
   void getPages(String userId);
   void deletePages(String userId, String pageId);
 
   ValueStream<List<CustomPage>> observeCachedPages();
+  ValueStream<CustomPage> observeSelectedPages();
 }
 
 class PageRepositoryImpl implements PageRepository {
@@ -35,43 +36,66 @@ class PageRepositoryImpl implements PageRepository {
   //          IMPLEMENTATION
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   BehaviorSubject<List<CustomPage>> _subjectCachedPages = new BehaviorSubject<List<CustomPage>>.seeded(new List());
-
-  String _currentPageId;
+  BehaviorSubject<CustomPage> _subjectSelectedPage = new BehaviorSubject<CustomPage>();
 
   @override
-  List<CustomPage> setCurrentPage(String uid) {
-//    if(_cachedPages.isNotEmpty){
-//      _currentPageId = uid;
-//      _cachedPages.asMap().forEach((index, value) {
-//        value.isSelected = value.uid == uid;
-//      });
-//    }
-//
-//    return _cachedPages;
+  void setCurrentPage(String uid) {
+      CustomPage page = _subjectCachedPages.value.firstWhere((element) => element.uid == uid);
+      _subjectSelectedPage.add(page);
+
+      _subjectCachedPages.add(setSelected(_subjectCachedPages.value));
   }
 
   @override
   void addPage(String userId, String name, String icon) {
     _firebaseDataSource.addPage(userId, name, icon)
         .then((value) => _firebaseDataSource.getPages(userId))
-        .then((value) => _subjectCachedPages.add(value));
+        .then((value) {
+          _subjectCachedPages.add(setSelected(value));
+        });
   }
 
   @override
   void getPages(String userId) {
     _firebaseDataSource.getPages(userId)
-        .then((remoteValue) => _subjectCachedPages.add(remoteValue));
+        .then((remoteValue) {
+          _subjectCachedPages.add(setSelected(remoteValue));
+        });
   }
 
   @override
   void deletePages(String userId, String pageId) async {
     await _firebaseDataSource.deletePage(pageId)
         .then((value) => _firebaseDataSource.getPages(userId))
-        .then((value) => _subjectCachedPages.add(value));
+        .then((value) {
+          _subjectCachedPages.add(setSelected(value, id: pageId));
+        });
   }
 
   @override
   ValueStream<List<CustomPage>> observeCachedPages() {
     return _subjectCachedPages;
+  }
+
+  @override
+  ValueStream<CustomPage> observeSelectedPages() {
+    return _subjectSelectedPage;
+  }
+
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  //          UTILS METHOD
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  List<CustomPage> setSelected(List<CustomPage> list, {String id})  {
+    CustomPage currentPage = _subjectSelectedPage.value;
+
+    if(currentPage == null || currentPage.uid == id){
+      list[0].isSelected = true;
+      _subjectSelectedPage.add(list[0]);
+    } else {
+      list.asMap().forEach((index, value) {
+        value.isSelected = value.uid == currentPage.uid;
+      });
+    }
+    return list;
   }
 }

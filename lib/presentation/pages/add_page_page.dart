@@ -1,11 +1,9 @@
 import 'dart:developer';
 
 import 'package:doce_blocks/data/models/icon.dart';
-import 'package:doce_blocks/data/models/models.dart';
-import 'package:doce_blocks/domain/bloc/icon/icon_bloc.dart';
+import 'package:doce_blocks/domain/bloc/dbicon/db_icon_bloc.dart';
 import 'package:doce_blocks/domain/bloc/pages/pages_bloc.dart';
-import 'package:doce_blocks/presentation/icon/select_icon_page.dart';
-import 'package:doce_blocks/presentation/profile/profile_page.dart';
+import 'package:doce_blocks/presentation/dbicon/select_icon_page.dart';
 import 'package:doce_blocks/presentation/utils/dimens.dart';
 import 'package:doce_blocks/presentation/utils/strings.dart';
 import 'package:flutter/material.dart';

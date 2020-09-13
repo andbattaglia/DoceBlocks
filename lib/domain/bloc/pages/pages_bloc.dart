@@ -30,17 +30,10 @@ class PagesBloc extends Bloc<PagesEvent, PagesState> {
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //          SELECT PAGE EVENT
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//    else if(event is SelectPageEvent){
-//      var userRepository = Injector.provideUserRepository();
-//      var user = await userRepository.getUser();
-//
-//      var pageRepository = Injector.providePageRepository();
-//      var pages = await pageRepository.getPages(user.uid, true);
-//      yield GetPagesSuccess(pages: pages);
-//
-//      pages = pageRepository.setCurrentPage(event.id);
-//      yield GetPagesSuccess(pages: pages);
-//    }
+    else if(event is SelectPageEvent){
+      var pageRepository = Injector.providePageRepository();
+      pageRepository.setCurrentPage(event.id);
+    }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //          ADD PAGE EVENT
@@ -75,6 +68,11 @@ class PagesBloc extends Bloc<PagesEvent, PagesState> {
   ValueStream<List<CustomPage>> getCachedPageStream() {
     var appRepository = Injector.providePageRepository();
     return appRepository.observeCachedPages();
+  }
+
+  ValueStream<CustomPage> getSelectedPageStream() {
+    var appRepository = Injector.providePageRepository();
+    return appRepository.observeSelectedPages();
   }
 }
 

@@ -6,6 +6,7 @@ final ThemeData kLightTheme = _buildLightTheme();
 ThemeData _buildLightTheme() {
   final ThemeData base = ThemeData.light();
   return base.copyWith(
+    brightness: Brightness.light,
     primaryColor: Color(0xFF3366ff),
     accentColor: Color(0x59000000),
     primaryColorDark:  Color(0xFF003dcb),
@@ -36,6 +37,7 @@ final ThemeData kDarkTheme = _buildDarkTheme();
 ThemeData _buildDarkTheme() {
   final ThemeData base = ThemeData.dark();
   return base.copyWith(
+    brightness: Brightness.light,
     primaryColor: Color(0xFF3366ff),
     accentColor: Color(0x59000000),
     primaryColorDark:  Color(0xFF003dcb),

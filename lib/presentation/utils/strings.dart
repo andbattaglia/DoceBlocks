@@ -21,5 +21,7 @@ class DBString{
   static const String add_section_title = "Name new section";
   static const String add_section_hint = "Section name";
   static const String add_section_choose_icon_title = "Choose icon";
+  static const String add_section_adding_success = "Your section was added successfully";
+  static const String add_section_removing_success = "Your section was removed successfully";
 
 }

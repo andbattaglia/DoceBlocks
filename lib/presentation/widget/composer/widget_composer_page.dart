@@ -96,12 +96,7 @@ class _WidgetComposerPageState extends State<WidgetComposerPage> {
 
 
   Widget _buildContent(BuildContext context){
-
-    PagesBloc _counterBloc = new PagesBloc();
-
-    return Container();
-
-
+    
     return Container(
       child: DragTarget(
         builder: (context, List<String> candidateData, rejectedData) {

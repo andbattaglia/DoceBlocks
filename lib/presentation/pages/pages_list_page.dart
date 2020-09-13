@@ -99,51 +99,48 @@ class _PagesListPageState extends State<PagesListPage> {
   //          PAGE_ITEM
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   Widget _buildSmallPageItem(BuildContext context , CustomPage page){
-
     return Dismissible(
-      direction: DismissDirection.endToStart,
-      background: Container(
-        color: Colors.red,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            Text(DBString.standard_remove, style: Theme.of(context).accentTextTheme.bodyText1),
-            SizedBox(width: DBDimens.PaddingHalf),
-            Icon(Icons.delete, color: Theme.of(context).iconTheme.color),
-            SizedBox(width: DBDimens.PaddingHalf),
-          ],
+        direction: DismissDirection.endToStart,
+        background: Container(
+          color: Colors.red,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Text(DBString.standard_remove, style: Theme.of(context).accentTextTheme.bodyText1),
+              SizedBox(width: DBDimens.PaddingHalf),
+              Icon(Icons.delete, color: Theme.of(context).iconTheme.color),
+              SizedBox(width: DBDimens.PaddingHalf),
+            ],
+          ),
         ),
-      ),
-      key: Key(page.uid),
-      onDismissed: (direction) {
-//        Scaffold
-//            .of(context)
-//            .showSnackBar(SnackBar(content: Text("${page.name} dismissed")));
-        _pagesBloc..add(DeletePageEvent(id: page.uid));
-      },
-      child: Container(
-        margin: EdgeInsets.all(DBDimens.PaddingHalf),
-        decoration: BoxDecoration(
-          color: page.isSelected ? Theme.of(context).selectedRowColor : Colors.transparent,
-          borderRadius: BorderRadius.all(Radius.circular(DBDimens.CornerDefault)),
-        ),
-        child: new InkWell(
+        key: Key(page.uid),
+        onDismissed: (direction) {
+          _pagesBloc..add(DeletePageEvent(id: page.uid));
+        },
+        child: Container(
+          margin: EdgeInsets.all(DBDimens.PaddingHalf),
+          decoration: BoxDecoration(
+            color: page.isSelected ? Theme.of(context).selectedRowColor : Colors.transparent,
             borderRadius: BorderRadius.all(Radius.circular(DBDimens.CornerDefault)),
-            onTap: () {
-              BlocProvider.of<PagesBloc>(context).add(SelectPageEvent(id: page.uid));
-            },
-            child: Container(
-              padding: EdgeInsets.all(DBDimens.PaddingDefault),
-              child: Row(
-                children: [
-                  Icon(page.materialIcon, color: Theme.of(context).primaryIconTheme.color),
-                  SizedBox(width: DBDimens.PaddingHalf),
-                  Expanded(child: Text(page.name, style: Theme.of(context).textTheme.bodyText1)),
-                ],
-              ),
-            )
+          ),
+          child: new InkWell(
+              borderRadius: BorderRadius.all(Radius.circular(DBDimens.CornerDefault)),
+              onTap: () {
+                _pagesBloc.add(SelectPageEvent(id: page.uid));
+                Navigator.pop(context);
+              },
+              child: Container(
+                padding: EdgeInsets.all(DBDimens.PaddingDefault),
+                child: Row(
+                  children: [
+                    Icon(page.materialIcon, color: Theme.of(context).primaryIconTheme.color),
+                    SizedBox(width: DBDimens.PaddingHalf),
+                    Expanded(child: Text(page.name, style: Theme.of(context).textTheme.bodyText1)),
+                  ],
+                ),
+              )
+          ),
         ),
-      ),
     );
   }
 
