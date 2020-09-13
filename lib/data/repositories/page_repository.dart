@@ -9,9 +9,11 @@ abstract class PageRepository {
 
   List<CustomPage> setCurrentPage(String uid);
 
-  Future<bool> setPage(String userId, String name, String icon);
-  Future<List<CustomPage>> getPages(String userId, bool fromCache);
-  Future<bool> deletePages(String pageId);
+  void addPage(String userId, String name, String icon);
+  void getPages(String userId);
+  void deletePages(String userId, String pageId);
+
+  ValueStream<List<CustomPage>> observeCachedPages();
 }
 
 class PageRepositoryImpl implements PageRepository {
@@ -32,57 +34,44 @@ class PageRepositoryImpl implements PageRepository {
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //          IMPLEMENTATION
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  List<CustomPage> _cachedPages = List<CustomPage>();
-  String _currentPageId;
+  BehaviorSubject<List<CustomPage>> _subjectCachedPages = new BehaviorSubject<List<CustomPage>>.seeded(new List());
 
-  BehaviorSubject<int> _icons;
+  String _currentPageId;
 
   @override
   List<CustomPage> setCurrentPage(String uid) {
-    if(_cachedPages.isNotEmpty){
-      _currentPageId = uid;
-      _cachedPages.asMap().forEach((index, value) {
-        value.isSelected = value.uid == uid;
-      });
-    }
-
-    return _cachedPages;
+//    if(_cachedPages.isNotEmpty){
+//      _currentPageId = uid;
+//      _cachedPages.asMap().forEach((index, value) {
+//        value.isSelected = value.uid == uid;
+//      });
+//    }
+//
+//    return _cachedPages;
   }
 
   @override
-  Future<bool> setPage(String userId, String name, String icon) {
-    return _firebaseDataSource.setPage(userId, name, icon);
+  void addPage(String userId, String name, String icon) {
+    _firebaseDataSource.addPage(userId, name, icon)
+        .then((value) => _firebaseDataSource.getPages(userId))
+        .then((value) => _subjectCachedPages.add(value));
   }
 
   @override
-  Future<List<CustomPage>> getPages(String userId, bool fromCache) {
-    if(fromCache){
-      return Future<List<CustomPage>>.value(_cachedPages);
-    }
-
-    return _firebaseDataSource.getPages(userId)
-        .then((remoteValue) {
-          _cachedPages = remoteValue;
-          if(_currentPageId != null){
-            _cachedPages.asMap().forEach((index, value) {
-              value.isSelected = value.uid == _currentPageId;
-            });
-          }
-          return _cachedPages;
-    });
+  void getPages(String userId) {
+    _firebaseDataSource.getPages(userId)
+        .then((remoteValue) => _subjectCachedPages.add(remoteValue));
   }
 
   @override
-  Future<bool> deletePages(String pageId) {
-    if(pageId == _currentPageId && _cachedPages.isNotEmpty){
-      _currentPageId = _cachedPages[0].uid;
-    } else {
-      _currentPageId = null;
-    }
+  void deletePages(String userId, String pageId) async {
+    await _firebaseDataSource.deletePage(pageId)
+        .then((value) => _firebaseDataSource.getPages(userId))
+        .then((value) => _subjectCachedPages.add(value));
+  }
 
-    if(_cachedPages.length > 1){
-      return _firebaseDataSource.deletePage(pageId);
-    }
-    return Future<bool>.value(false);
+  @override
+  ValueStream<List<CustomPage>> observeCachedPages() {
+    return _subjectCachedPages;
   }
 }

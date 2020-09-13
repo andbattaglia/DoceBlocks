@@ -11,7 +11,17 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+
+  @override
+  void initState() {
+    PagesBloc pagesBloc = new PagesBloc()..add(GetPagesEvent());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,9 +68,11 @@ class HomePage extends StatelessWidget {
             ],
           ),
       ),
-      body: WidgetComposerPage(),
+      body: WidgetComposerPage()
     );
   }
+
+
 
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //          LARGE PAGE

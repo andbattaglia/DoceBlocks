@@ -20,17 +20,13 @@ class _WidgetComposerPageState extends State<WidgetComposerPage> {
 
   @override
   Widget build(BuildContext context) {
-
-    return BlocProvider<PagesBloc>(
-        create: (_) => PagesBloc()..add(GetPagesEvent()),
-        child: ScreenTypeLayout(
-          mobile: _buildSmallPage(context),
-          tablet: OrientationLayoutBuilder(
-            portrait: (context) => _buildSmallPage(context),
-            landscape: (context) => _buildLargePage(context),
-          ),
-          desktop: _buildLargePage(context),
-        )
+    return ScreenTypeLayout(
+        mobile: _buildSmallPage(context),
+        tablet: OrientationLayoutBuilder(
+          portrait: (context) => _buildSmallPage(context),
+          landscape: (context) => _buildLargePage(context),
+        ),
+        desktop: _buildLargePage(context),
     );
   }
 
@@ -103,26 +99,7 @@ class _WidgetComposerPageState extends State<WidgetComposerPage> {
 
     PagesBloc _counterBloc = new PagesBloc();
 
-    return BlocBuilder<PagesBloc, PagesState>(
-        builder: (context, state) {
-          if(state is GetPagesSuccess){
-
-            var pagesList = state.pages;
-
-//            return Container(
-//              child: new StreamBuilder(stream: _counterBloc.counterObservable, builder: (context, AsyncSnapshot<int> snapshot){
-//                return new Text('${snapshot.data}', style: Theme.of(context).textTheme.display1);
-//              })
-//            );
-
-
-            return Container();
-
-          }
-
-          return Container();
-        }
-    );
+    return Container();
 
 
     return Container(

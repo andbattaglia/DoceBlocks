@@ -3,7 +3,6 @@ import 'dart:developer';
 import 'package:doce_blocks/data/models/models.dart';
 import 'package:doce_blocks/domain/bloc/pages/pages_bloc.dart';
 import 'package:doce_blocks/presentation/pages/add_page_page.dart';
-import 'package:doce_blocks/presentation/profile/profile_page.dart';
 import 'package:doce_blocks/presentation/utils/dimens.dart';
 import 'package:doce_blocks/presentation/utils/strings.dart';
 import 'package:flutter/material.dart';
@@ -17,18 +16,22 @@ class PagesListPage extends StatefulWidget {
 
 class _PagesListPageState extends State<PagesListPage> {
 
+  PagesBloc _pagesBloc;
+
+  @override
+  void initState() {
+    _pagesBloc = new PagesBloc();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<PagesBloc>(
-      create: (_) => PagesBloc()..add(GetPagesEvent()),
-      child: ScreenTypeLayout(
-          mobile: _buildSmallPage(context),
-          tablet: OrientationLayoutBuilder(
-            portrait: (context) => _buildSmallPage(context),
-            landscape: (context) => _buildLargePage(context),
-          ),
+    return ScreenTypeLayout(
+        mobile: _buildSmallPage(context),
+        tablet: OrientationLayoutBuilder(
+          portrait: (context) => _buildSmallPage(context),
+          landscape: (context) => _buildLargePage(context),
+        ),
         desktop: _buildLargePage(context),
-      )
     );
   }
 
@@ -36,11 +39,11 @@ class _PagesListPageState extends State<PagesListPage> {
   //          SMALL PAGE
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   Widget _buildSmallPage(BuildContext context){
-    return BlocBuilder<PagesBloc, PagesState>(
-        builder: (context, state) {
-          if(state is GetPagesSuccess){
+    return Container(
+        child:new StreamBuilder(stream: _pagesBloc.getCachedPageStream(), builder: (context, AsyncSnapshot<List<CustomPage>> snapshot){
+          if(snapshot.hasData){
 
-            var pagesList = state.pages;
+            var pagesList = snapshot.data;
 
             return ListView.builder(
                 itemCount: pagesList.length + 1,
@@ -52,71 +55,94 @@ class _PagesListPageState extends State<PagesListPage> {
                   }
                 });
           }
-
           return Container();
-        }
+        })
     );
   }
+
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //          LARGE PAGE
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   Widget _buildLargePage(BuildContext context){
-    return BlocBuilder<PagesBloc, PagesState>(
-        builder: (context, state) {
-
-          if(state is GetPagesSuccess){
-
-            var pagesList = state.pages;
-
-            return ListView.builder(
-                itemCount: pagesList.length + 2,
-                itemBuilder: (context, index) {
-                  if(index == 0){
-                    return ProfilePage();
-                  } else if(index == pagesList.length + 1){
-                    return _buildAddPageItem(context, false);
-                  } else {
-                    var customPage = pagesList[index-1];
-                    return _buildLargePageItem(context, customPage);
-                  }
-                });
-          }
-
-          return ListView(
-            children: <Widget>[
-              ProfilePage()
-            ],
-          );
-        }
-    );
+//    return BlocBuilder<PagesBloc, PagesState>(
+//        builder: (context, state) {
+//
+//          if(state is GetPagesSuccess){
+//
+//            var pagesList = state.pages;
+//
+//            return ListView.builder(
+//                itemCount: pagesList.length + 2,
+//                itemBuilder: (context, index) {
+//                  if(index == 0){
+//                    return ProfilePage();
+//                  } else if(index == pagesList.length + 1){
+//                    return _buildAddPageItem(context, false);
+//                  } else {
+//                    var customPage = pagesList[index-1];
+//                    return _buildLargePageItem(context, customPage);
+//                  }
+//                });
+//          }
+//
+//          return ListView(
+//            children: <Widget>[
+//              ProfilePage()
+//            ],
+//          );
+//        }
+//    );
   }
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //          PAGE_ITEM
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   Widget _buildSmallPageItem(BuildContext context , CustomPage page){
-    return Container(
-      margin: EdgeInsets.all(DBDimens.PaddingHalf),
-      decoration: BoxDecoration(
-        color: page.isSelected ? Theme.of(context).selectedRowColor : Colors.transparent,
-        borderRadius: BorderRadius.all(Radius.circular(DBDimens.CornerDefault)),
+
+    return Dismissible(
+      direction: DismissDirection.endToStart,
+      background: Container(
+        color: Colors.red,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Text(DBString.standard_remove, style: Theme.of(context).accentTextTheme.bodyText1),
+            SizedBox(width: DBDimens.PaddingHalf),
+            Icon(Icons.delete, color: Theme.of(context).iconTheme.color),
+            SizedBox(width: DBDimens.PaddingHalf),
+          ],
+        ),
       ),
-      child: new InkWell(
-        borderRadius: BorderRadius.all(Radius.circular(DBDimens.CornerDefault)),
-        onTap: () {
-          BlocProvider.of<PagesBloc>(context).add(SelectPageEvent(id: page.uid));
-        },
-        child: Container(
-          padding: EdgeInsets.all(DBDimens.PaddingDefault),
-          child: Row(
-            children: [
-              Icon(page.materialIcon, color: Theme.of(context).primaryIconTheme.color),
-              SizedBox(width: DBDimens.PaddingHalf),
-              Expanded(child: Text(page.name, style: Theme.of(context).textTheme.bodyText1)),
-            ],
-          ),
-        )
+      key: Key(page.uid),
+      onDismissed: (direction) {
+//        Scaffold
+//            .of(context)
+//            .showSnackBar(SnackBar(content: Text("${page.name} dismissed")));
+        _pagesBloc..add(DeletePageEvent(id: page.uid));
+      },
+      child: Container(
+        margin: EdgeInsets.all(DBDimens.PaddingHalf),
+        decoration: BoxDecoration(
+          color: page.isSelected ? Theme.of(context).selectedRowColor : Colors.transparent,
+          borderRadius: BorderRadius.all(Radius.circular(DBDimens.CornerDefault)),
+        ),
+        child: new InkWell(
+            borderRadius: BorderRadius.all(Radius.circular(DBDimens.CornerDefault)),
+            onTap: () {
+              BlocProvider.of<PagesBloc>(context).add(SelectPageEvent(id: page.uid));
+            },
+            child: Container(
+              padding: EdgeInsets.all(DBDimens.PaddingDefault),
+              child: Row(
+                children: [
+                  Icon(page.materialIcon, color: Theme.of(context).primaryIconTheme.color),
+                  SizedBox(width: DBDimens.PaddingHalf),
+                  Expanded(child: Text(page.name, style: Theme.of(context).textTheme.bodyText1)),
+                ],
+              ),
+            )
+        ),
       ),
     );
   }

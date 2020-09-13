@@ -12,6 +12,7 @@ class DBString{
   static const String standard_cancel = "Cancel";
   static const String standard_add = "Add";
   static const String standard_done = "Done";
+  static const String standard_remove = "Elimina";
 
   static const String setting_switch_theme = "Dark Mode";
 

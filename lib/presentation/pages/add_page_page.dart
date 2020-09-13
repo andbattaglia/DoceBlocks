@@ -19,7 +19,15 @@ class AddPagePage extends StatefulWidget {
 
 class _AddPagePageState extends State<AddPagePage> {
 
+  IconBloc _iconBloc;
+
   var _inputController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+     _iconBloc = new IconBloc()..add(SelectIconEvent(iconId: 0));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +52,7 @@ class _AddPagePageState extends State<AddPagePage> {
         builder: (context, state) {
           return Scaffold(
               appBar: AppBar(
-                backgroundColor: Colors.white,
+                backgroundColor: Theme.of(context).backgroundColor,
                 leading: IconButton(
                   icon: Icon(Icons.close),
                   onPressed: () => Navigator.pop(context),
@@ -106,8 +114,6 @@ class _AddPagePageState extends State<AddPagePage> {
   }
 
   Widget _buildIconSelector(BuildContext context){
-    IconBloc _iconBloc = new IconBloc();
-
     return InkWell(
       child: Container(
         color: Theme.of(context).backgroundColor,

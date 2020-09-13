@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:doce_blocks/data/models/models.dart';
+import 'package:doce_blocks/data/models/page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:meta/meta.dart';
 import 'package:uuid/uuid.dart';
@@ -15,8 +16,8 @@ abstract class FirebaseDataSource {
   Future<User> isSignedIn();
   Future<void> signOut();
 
-  Future<bool> setPage(String userId, String name, String icon);
-  Future<bool> deletePage(String pageId);
+  Future<CustomPage> addPage(String userId, String name, String icon);
+  Future<void> deletePage(String pageId);
   Future<List<CustomPage>> getPages(String userId);
 }
 
@@ -66,8 +67,8 @@ class FirebaseDataSourceImpl extends FirebaseDataSource {
   }
 
   Future<User> _getUser(String uid) async {
-    CollectionReference users = _db.collection('users');
-    var snapshot = await users.document(uid).get();
+    CollectionReference dbReference = _db.collection('users');
+    var snapshot = await dbReference.document(uid).get();
     return User.fromMap(snapshot.documentID, snapshot.data);
   }
 
@@ -75,30 +76,25 @@ class FirebaseDataSourceImpl extends FirebaseDataSource {
   //          PAGE METHOD
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   @override
-  Future<bool> setPage(String userId, String name, String icon) async {
+  Future<CustomPage> addPage(String userId, String name, String icon) async {
 
-    CollectionReference pages = _db.collection('pages');
+    CollectionReference dbReference = _db.collection('pages');
 
-    return pages.add({
+    var result = await dbReference.add({
       'userId': userId,
       'name': name,
       'icon': icon,
-    }).then((value) =>  true);
-  }
+    });
 
-  @override
-  Future<bool> deletePage(String pageId) {
-
-    CollectionReference pages = _db.collection('pages');
-
-    return pages.document(pageId).delete().then((value) => true);
+    var snapshot = await dbReference.document(result.documentID).get();
+    return CustomPage.fromJson(result.documentID, snapshot);
   }
 
   @override
   Future<List<CustomPage>> getPages(String userId) async {
-    CollectionReference pages = _db.collection('pages');
+    CollectionReference dbReference = _db.collection('pages');
 
-    var snapshot = await pages.where('userId', isEqualTo: userId).getDocuments();
+    var snapshot = await dbReference.where('userId', isEqualTo: userId).getDocuments();
 
     var result = List<CustomPage>();
     snapshot.documents.forEach((item) {
@@ -106,5 +102,11 @@ class FirebaseDataSourceImpl extends FirebaseDataSource {
     });
 
     return result;
+  }
+
+  @override
+  Future<void> deletePage(String pageId) {
+    CollectionReference dbReference = _db.collection('pages');
+    return dbReference.document(pageId).delete();
   }
 }
