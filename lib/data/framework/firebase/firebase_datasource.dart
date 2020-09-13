@@ -15,7 +15,7 @@ abstract class FirebaseDataSource {
   Future<User> isSignedIn();
   Future<void> signOut();
 
-  Future<bool> setPage(String userId, String name);
+  Future<bool> setPage(String userId, String name, String icon);
   Future<bool> deletePage(String pageId);
   Future<List<CustomPage>> getPages(String userId);
 }
@@ -37,6 +37,9 @@ class FirebaseDataSourceImpl extends FirebaseDataSource {
 
   FirebaseDataSourceImpl._internal();
 
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  //          AUTH METHOD
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   @override
   Future<User> authenticate({
     @required String email,
@@ -68,15 +71,18 @@ class FirebaseDataSourceImpl extends FirebaseDataSource {
     return User.fromMap(snapshot.documentID, snapshot.data);
   }
 
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  //          PAGE METHOD
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   @override
-  Future<bool> setPage(String userId, String name) async {
+  Future<bool> setPage(String userId, String name, String icon) async {
 
     CollectionReference pages = _db.collection('pages');
 
     return pages.add({
       'userId': userId,
       'name': name,
-      'icon': "BUSINESS",
+      'icon': icon,
     }).then((value) =>  true);
   }
 

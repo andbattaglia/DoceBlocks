@@ -52,8 +52,11 @@ class PagesBloc extends Bloc<PagesEvent, PagesState> {
       var userRepository = Injector.provideUserRepository();
       var user = await userRepository.getUser();
 
+      var appRepository = Injector.provideAppRepository();
+      var icon = await appRepository.getSelectedIcon();
+
       var pageRepository = Injector.providePageRepository();
-      await pageRepository.setPage(user.uid, event.name);
+      await pageRepository.setPage(user.uid, event.name, icon.valueToString);
 
       var pages = await pageRepository.getPages(user.uid, false);
       yield GetPagesSuccess(pages: pages);

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:doce_blocks/data/framework/datasources.dart';
+import 'package:doce_blocks/data/models/icon.dart';
 import 'package:doce_blocks/data/models/models.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:rxdart/rxdart.dart';
@@ -8,7 +9,7 @@ abstract class PageRepository {
 
   List<CustomPage> setCurrentPage(String uid);
 
-  Future<bool> setPage(String userId, String name);
+  Future<bool> setPage(String userId, String name, String icon);
   Future<List<CustomPage>> getPages(String userId, bool fromCache);
   Future<bool> deletePages(String pageId);
 }
@@ -49,8 +50,8 @@ class PageRepositoryImpl implements PageRepository {
   }
 
   @override
-  Future<bool> setPage(String userId, String name) {
-    return _firebaseDataSource.setPage(userId, name);
+  Future<bool> setPage(String userId, String name, String icon) {
+    return _firebaseDataSource.setPage(userId, name, icon);
   }
 
   @override

@@ -1,6 +1,8 @@
 import 'dart:developer';
 
+import 'package:doce_blocks/data/models/icon.dart';
 import 'package:doce_blocks/data/models/models.dart';
+import 'package:doce_blocks/domain/bloc/icon/icon_bloc.dart';
 import 'package:doce_blocks/domain/bloc/pages/pages_bloc.dart';
 import 'package:doce_blocks/presentation/icon/select_icon_page.dart';
 import 'package:doce_blocks/presentation/profile/profile_page.dart';
@@ -67,8 +69,6 @@ class _AddPagePageState extends State<AddPagePage> {
           );
         }
     );
-
-
   }
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -85,9 +85,9 @@ class _AddPagePageState extends State<AddPagePage> {
 
     return Column(
       children: [
-
         Divider(color: Colors.grey, height: 1),
         Container(
+          color: Theme.of(context).backgroundColor,
           padding: EdgeInsets.all(DBDimens.PaddingDefault),
           child: TextFormField(
             controller: _inputController,
@@ -99,24 +99,39 @@ class _AddPagePageState extends State<AddPagePage> {
           ),
         ),
         Divider(color: Colors.grey, height: 1),
-        InkWell(
-          child: Container(
-            padding: EdgeInsets.all(DBDimens.PaddingDefault),
-            child: Row(
-              children: [
-                Icon(Icons.apps, color: Theme.of(context).accentIconTheme.color), //TODO: CHANGE WITH SELECTED ICON
-                SizedBox(width: DBDimens.PaddingDefault),
-                Expanded(child: Text("Text")), //TODO: CHANGE WITH SELECTED ICON TEXT
-                Icon(Icons.chevron_right, color: Theme.of(context).accentIconTheme.color),
-              ],
-            ),
-          ),
-          onTap: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => SelectIconPage()));
-          },
-        ),
+        _buildIconSelector(context),
         Divider(color: Colors.grey, height: 1),
       ],
     );
   }
+
+  Widget _buildIconSelector(BuildContext context){
+    IconBloc _iconBloc = new IconBloc();
+
+    return InkWell(
+      child: Container(
+        color: Theme.of(context).backgroundColor,
+        padding: EdgeInsets.all(DBDimens.PaddingDefault),
+        child:
+          new StreamBuilder(stream: _iconBloc.getSelectedIconStream(), builder: (context, AsyncSnapshot<DBIcon> snapshot){
+            if(snapshot.hasData){
+              var icon = snapshot.data;
+              return Row(
+                children: [
+                  Icon(icon.mapToIcon, color: Theme.of(context).accentIconTheme.color),
+                  SizedBox(width: DBDimens.PaddingDefault),
+                  Expanded(child: Text(icon.name)),
+                  Icon(Icons.chevron_right, color: Theme.of(context).accentIconTheme.color),
+                ],
+              );
+            }
+            return Container();
+          })
+      ),
+      onTap: () {
+        Navigator.push(context, MaterialPageRoute(builder: (context) => SelectIconPage()));
+      },
+    );
+  }
+
 }

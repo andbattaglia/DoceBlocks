@@ -5,16 +5,22 @@ import 'package:flutter/material.dart';
 @immutable
 class DBIcon extends Equatable {
 
+  int id;
   String name;
-  IconValue value;
+  IconValue value ;
 
   DBIcon(
+      this.id,
       this.name,
       this.value
   );
 
   @override
-  List<Object> get props => [name, value];
+  List<Object> get props => [id, name, value];
+
+  String get valueToString{
+    return value.toString().substring(value.toString().indexOf('.') +1 );
+  }
 
   IconData get mapToIcon {
     switch(this.value){
@@ -33,11 +39,11 @@ class DBIcon extends Equatable {
 
   static List<DBIcon> generateIcons(){
     return [
-      DBIcon("Default", IconValue.DEFAULT),
-      DBIcon("Business", IconValue.BUSINESS),
-      DBIcon("Finance", IconValue.FINANCE),
-      DBIcon("Design", IconValue.DESIGN),
-      DBIcon("Developer", IconValue.DEVELOPER)
+      DBIcon(0, "Default", IconValue.DEFAULT),
+      DBIcon(1, "Business", IconValue.BUSINESS),
+      DBIcon(2, "Finance", IconValue.FINANCE),
+      DBIcon(3, "Design", IconValue.DESIGN),
+      DBIcon(4, "Developer", IconValue.DEVELOPER)
     ];
   }
 }
