@@ -2,7 +2,7 @@ import 'dart:developer';
 
 import 'package:doce_blocks/data/models/models.dart';
 import 'package:doce_blocks/domain/bloc/pages/pages_bloc.dart';
-import 'package:doce_blocks/presentation/pages/select_icon_page.dart';
+import 'package:doce_blocks/presentation/icon/select_icon_page.dart';
 import 'package:doce_blocks/presentation/profile/profile_page.dart';
 import 'package:doce_blocks/presentation/utils/dimens.dart';
 import 'package:doce_blocks/presentation/utils/strings.dart';
@@ -17,10 +17,12 @@ class AddPagePage extends StatefulWidget {
 
 class _AddPagePageState extends State<AddPagePage> {
 
+  var _inputController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider<PagesBloc>(
-      create: (_) => PagesBloc()..add(GetPagesEvent()),
+      create: (_) => PagesBloc(),
       child: ScreenTypeLayout(
           mobile: _buildSmallPage(context),
           tablet: OrientationLayoutBuilder(
@@ -36,27 +38,37 @@ class _AddPagePageState extends State<AddPagePage> {
   //          SMALL PAGE
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   Widget _buildSmallPage(BuildContext context){
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        leading: IconButton(
-          icon: Icon(Icons.close),
-          onPressed: () => Navigator.pop(context),
-        ),
-        iconTheme: Theme.of(context).accentIconTheme,
-        title: Text(DBString.add_section_title, style: Theme.of(context).textTheme.headline6),
-        elevation: 0.0,
-        actions: [
-          FlatButton(
-            onPressed: () {
-              // Respond to button press
-            },
-            child: Text(DBString.standard_done, style: Theme.of(context).primaryTextTheme.button),
-          )
-        ],
-      ),
-      body: _buildContent(context)
+    return BlocBuilder<PagesBloc, PagesState>(
+        builder: (context, state) {
+          return Scaffold(
+              appBar: AppBar(
+                backgroundColor: Colors.white,
+                leading: IconButton(
+                  icon: Icon(Icons.close),
+                  onPressed: () => Navigator.pop(context),
+                ),
+                iconTheme: Theme.of(context).accentIconTheme,
+                title: Text(DBString.add_section_title, style: Theme.of(context).textTheme.headline6),
+                elevation: 0.0,
+                actions: [
+                  FlatButton(
+                    onPressed: () {
+                      var value = _inputController.text.trim();
+                      if(value.trim().isNotEmpty){
+                        BlocProvider.of<PagesBloc>(context).add(AddPageEvent(name: value));
+                        Navigator.of(context, rootNavigator: true).pop();
+                      }
+                    },
+                    child: Text(DBString.standard_done, style: Theme.of(context).primaryTextTheme.button),
+                  )
+                ],
+              ),
+              body: _buildContent(context)
+          );
+        }
     );
+
+
   }
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -71,8 +83,6 @@ class _AddPagePageState extends State<AddPagePage> {
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   Widget _buildContent(BuildContext context){
 
-    var _inputController = TextEditingController();
-
     return Column(
       children: [
 
@@ -86,12 +96,6 @@ class _AddPagePageState extends State<AddPagePage> {
               hintText: DBString.add_section_hint,
             ),
             textInputAction: TextInputAction.go,
-            onFieldSubmitted: (value) {
-              if(value.trim().isNotEmpty){
-//              Navigator.of(context, rootNavigator: true).pop();
-//              BlocProvider.of<PagesBloc>(context).add(AddPageEvent(name: value.trim()));
-              }
-            },
           ),
         ),
         Divider(color: Colors.grey, height: 1),
@@ -102,7 +106,7 @@ class _AddPagePageState extends State<AddPagePage> {
               children: [
                 Icon(Icons.apps, color: Theme.of(context).accentIconTheme.color), //TODO: CHANGE WITH SELECTED ICON
                 SizedBox(width: DBDimens.PaddingDefault),
-                Expanded(child: Text("Text")),
+                Expanded(child: Text("Text")), //TODO: CHANGE WITH SELECTED ICON TEXT
                 Icon(Icons.chevron_right, color: Theme.of(context).accentIconTheme.color),
               ],
             ),

@@ -12,6 +12,7 @@ ThemeData _buildLightTheme() {
     primaryColorLight:  Color(0xFF7b93ff),
     buttonColor: Color(0xFF3366ff),
     selectedRowColor: Color(0xFFDADADA),
+    backgroundColor: Colors.white,
     iconTheme: new IconThemeData(
         color: Colors.white,
         opacity: 1.0

@@ -74,8 +74,9 @@ class FirebaseDataSourceImpl extends FirebaseDataSource {
     CollectionReference pages = _db.collection('pages');
 
     return pages.add({
-      'userId': userId, // John Doe
-      'name': name, // Stokes and Sons
+      'userId': userId,
+      'name': name,
+      'icon': "BUSINESS",
     }).then((value) =>  true);
   }
 

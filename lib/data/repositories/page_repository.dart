@@ -2,15 +2,15 @@ import 'dart:async';
 import 'package:doce_blocks/data/framework/datasources.dart';
 import 'package:doce_blocks/data/models/models.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:rxdart/rxdart.dart';
 
 abstract class PageRepository {
 
   List<CustomPage> setCurrentPage(String uid);
 
   Future<bool> setPage(String userId, String name);
-  Future<bool> deletePages(String pageId);
-
   Future<List<CustomPage>> getPages(String userId, bool fromCache);
+  Future<bool> deletePages(String pageId);
 }
 
 class PageRepositoryImpl implements PageRepository {
@@ -28,8 +28,13 @@ class PageRepositoryImpl implements PageRepository {
 
   PageRepositoryImpl._internal();
 
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  //          IMPLEMENTATION
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   List<CustomPage> _cachedPages = List<CustomPage>();
   String _currentPageId;
+
+  BehaviorSubject<int> _icons;
 
   @override
   List<CustomPage> setCurrentPage(String uid) {
@@ -49,20 +54,6 @@ class PageRepositoryImpl implements PageRepository {
   }
 
   @override
-  Future<bool> deletePages(String pageId) {
-    if(pageId == _currentPageId && _cachedPages.isNotEmpty){
-      _currentPageId = _cachedPages[0].uid;
-    } else {
-      _currentPageId = null;
-    }
-
-    if(_cachedPages.length > 1){
-      return _firebaseDataSource.deletePage(pageId);
-    }
-     return Future<bool>.value(false);
-  }
-
-  @override
   Future<List<CustomPage>> getPages(String userId, bool fromCache) {
     if(fromCache){
       return Future<List<CustomPage>>.value(_cachedPages);
@@ -78,5 +69,19 @@ class PageRepositoryImpl implements PageRepository {
           }
           return _cachedPages;
     });
+  }
+
+  @override
+  Future<bool> deletePages(String pageId) {
+    if(pageId == _currentPageId && _cachedPages.isNotEmpty){
+      _currentPageId = _cachedPages[0].uid;
+    } else {
+      _currentPageId = null;
+    }
+
+    if(_cachedPages.length > 1){
+      return _firebaseDataSource.deletePage(pageId);
+    }
+    return Future<bool>.value(false);
   }
 }

@@ -38,7 +38,7 @@ class CustomPage extends Equatable {
     switch(this.icon){
       case CustomPageIcon.DEFAULT:
         return Icons.apps;
-        case CustomPageIcon.BUSINESS:
+      case CustomPageIcon.BUSINESS:
         return Icons.business;
       case CustomPageIcon.FINANCE:
         return Icons.account_balance;
