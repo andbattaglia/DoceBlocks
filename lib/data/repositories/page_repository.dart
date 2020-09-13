@@ -89,8 +89,10 @@ class PageRepositoryImpl implements PageRepository {
     CustomPage currentPage = _subjectSelectedPage.value;
 
     if(currentPage == null || currentPage.uid == id){
-      list[0].isSelected = true;
-      _subjectSelectedPage.add(list[0]);
+      if(list.isNotEmpty){
+        list[0].isSelected = true;
+        _subjectSelectedPage.add(list[0]);
+      }
     } else {
       list.asMap().forEach((index, value) {
         value.isSelected = value.uid == currentPage.uid;
