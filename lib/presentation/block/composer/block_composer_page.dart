@@ -1,17 +1,17 @@
+import 'package:doce_blocks/presentation/block/draggableitem/draggable_item.dart';
 import 'package:doce_blocks/presentation/components/floating_action_add.dart';
 import 'package:doce_blocks/presentation/utils/cross_platform_svg.dart';
 import 'package:doce_blocks/presentation/utils/dimens.dart';
 import 'package:doce_blocks/presentation/utils/strings.dart';
-import 'package:doce_blocks/presentation/widget/draggableitem/draggable_item.dart';
 import 'package:flutter/material.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
-class WidgetComposerPage extends StatefulWidget {
+class BlockComposerPage extends StatefulWidget {
   @override
-  _WidgetComposerPageState createState() => _WidgetComposerPageState();
+  _BlockComposerPageState createState() => _BlockComposerPageState();
 }
 
-class _WidgetComposerPageState extends State<WidgetComposerPage> {
+class _BlockComposerPageState extends State<BlockComposerPage> {
 
   bool _isEditMode = false;
 

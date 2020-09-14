@@ -1,12 +1,12 @@
 import 'package:doce_blocks/data/models/models.dart';
 import 'package:doce_blocks/domain/bloc/bloc.dart';
 import 'package:doce_blocks/domain/bloc/sections/sections_bloc.dart';
+import 'package:doce_blocks/presentation/block/composer/block_composer_page.dart';
 import 'package:doce_blocks/presentation/pages/sections_list_page.dart';
 import 'package:doce_blocks/presentation/profile/profile_page.dart';
 import 'package:doce_blocks/presentation/utils/cross_platform_svg.dart';
 import 'package:doce_blocks/presentation/utils/dimens.dart';
 import 'package:doce_blocks/presentation/utils/strings.dart';
-import 'package:doce_blocks/presentation/widget/composer/widget_composer_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:responsive_builder/responsive_builder.dart';
@@ -74,7 +74,7 @@ class _HomePageState extends State<HomePage> {
                   ],
                 ),
               ),
-              body: WidgetComposerPage());
+              body: BlockComposerPage());
         });
   }
 
@@ -92,7 +92,7 @@ class _HomePageState extends State<HomePage> {
             Expanded(
               child: SectionsListPage(),
             ),
-            Expanded(flex: 3, child: WidgetComposerPage()),
+            Expanded(flex: 3, child: BlockComposerPage()),
           ],
         ),
       ),
