@@ -1,12 +1,10 @@
 import 'dart:async';
-import 'dart:developer';
+import 'dart:html';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:doce_blocks/data/models/models.dart';
-import 'package:doce_blocks/data/models/page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:meta/meta.dart';
-import 'package:uuid/uuid.dart';
 
 abstract class FirebaseDataSource {
   Future<User> authenticate({
@@ -16,9 +14,11 @@ abstract class FirebaseDataSource {
   Future<User> isSignedIn();
   Future<void> signOut();
 
-  Future<CustomPage> addPage(String userId, String name, String icon);
-  Future<void> deletePage(String pageId);
-  Future<List<CustomPage>> getPages(String userId);
+  Future<Section> addSection(String userId, String name, String icon);
+  Future<void> deleteSection(String sectionId);
+  Future<List<Section>> getSections(String userId);
+
+  Future<List<Block>> getBlocks(String pageId);
 }
 
 class FirebaseDataSourceImpl extends FirebaseDataSource {
@@ -73,40 +73,49 @@ class FirebaseDataSourceImpl extends FirebaseDataSource {
   }
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  //          PAGE METHOD
+  //          SECTION METHOD
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   @override
-  Future<CustomPage> addPage(String userId, String name, String icon) async {
+  Future<Section> addSection(String userId, String name, String icon) async {
+    final CollectionReference dbReference = _db.collection('sections');
 
-    CollectionReference dbReference = _db.collection('pages');
-
-    var result = await dbReference.add({
+    final result = await dbReference.add({
       'userId': userId,
       'name': name,
       'icon': icon,
     });
 
-    var snapshot = await dbReference.document(result.documentID).get();
-    return CustomPage.fromJson(result.documentID, snapshot);
+    final snapshot = await dbReference.document(result.documentID).get();
+
+    return Section.fromJson(result.documentID, snapshot);
   }
 
   @override
-  Future<List<CustomPage>> getPages(String userId) async {
-    CollectionReference dbReference = _db.collection('pages');
+  Future<List<Section>> getSections(String userId) async {
+    final CollectionReference dbReference = _db.collection('sections');
 
-    var snapshot = await dbReference.where('userId', isEqualTo: userId).getDocuments();
+    final snapshot = await dbReference.where('userId', isEqualTo: userId).getDocuments();
 
-    var result = List<CustomPage>();
+    var result = List<Section>();
+
     snapshot.documents.forEach((item) {
-      result.add(CustomPage.fromJson(item.documentID, item.data));
+      result.add(Section.fromJson(item.documentID, item.data));
     });
 
     return result;
   }
 
   @override
-  Future<void> deletePage(String pageId) {
-    CollectionReference dbReference = _db.collection('pages');
-    return dbReference.document(pageId).delete();
+  Future<void> deleteSection(String sectionId) {
+    final CollectionReference dbReference = _db.collection('sections');
+    return dbReference.document(sectionId).delete();
+  }
+
+  @override
+  Future<List<Block>> getBlocks(String pageId) async {
+    final CollectionReference dbReference = _db.collection('blocks');
+    final snapshot = await dbReference.where('pages', arrayContains: pageId).getDocuments();
+
+    return snapshot.documents.map((document) => Block.fromJson(document.data));
   }
 }

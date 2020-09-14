@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:doce_blocks/data/framework/datasources.dart';
 import 'package:doce_blocks/data/repositories/app_repository.dart';
-import 'package:doce_blocks/data/repositories/page_repository.dart';
+import 'package:doce_blocks/data/repositories/section_repository.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/widgets.dart';
 import 'package:doce_blocks/data/repositories/repositories.dart';
@@ -59,9 +59,14 @@ class Injector {
     return UserRepositoryImpl(firebaseDataSource: firebaseDatasource);
   }
 
-  static PageRepository providePageRepository() {
+  static SectionRepository provideSectionRepository() {
     var firebaseDatasource = Injector.provideFirebaseDataSource();
-    return PageRepositoryImpl(firebaseDataSource: firebaseDatasource);
+    return SectionRepositoryImpl(firebaseDataSource: firebaseDatasource);
+  }
+
+  static BlockRepositoryImpl provideBlockRepository() {
+    var firebaseDatasource = Injector.provideFirebaseDataSource();
+    return BlockRepositoryImpl(firebaseDataSource: firebaseDatasource);
   }
 
   static AppRepository provideAppRepository() {
