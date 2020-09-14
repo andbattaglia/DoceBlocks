@@ -24,4 +24,6 @@ class DBString{
   static const String add_section_adding_success = "Your section was added successfully";
   static const String add_section_removing_success = "Your section was removed successfully";
 
+  static const String composer_description = "Drop your blocks here and configurate later";
+
 }

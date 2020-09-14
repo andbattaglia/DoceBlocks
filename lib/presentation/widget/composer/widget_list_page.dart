@@ -1,16 +1,10 @@
 import 'package:doce_blocks/presentation/utils/dimens.dart';
-import 'package:doce_blocks/presentation/widget/draggableitem/image_drag_item.dart';
-import 'package:doce_blocks/presentation/widget/draggableitem/simple_drag_item.dart';
+import 'package:doce_blocks/presentation/widget/draggableitem/draggable_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
 class WidgetListPage extends StatefulWidget {
-
-  final bool isHorizontal;
-
-  WidgetListPage({@required this.isHorizontal}) : super();
-
   @override
   _WidgetListPageState createState() => _WidgetListPageState();
 }
@@ -55,51 +49,33 @@ class _WidgetListPageState extends State<WidgetListPage> {
   //          LARGE PAGE
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   Widget _buildLargePage(BuildContext context){
-    return Container(
-      padding: EdgeInsets.only( top: DBDimens.PaddingDefault, bottom: DBDimens.PaddingDefault),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisSize: MainAxisSize.max,
-        children: <Widget>[
-          Container(
-            width: 72,
-            child: _buildContent(context)
-          )
-        ],
-      ),
-    );
+    return Container();
+//    return Container(
+//      padding: EdgeInsets.only( top: DBDimens.PaddingDefault, bottom: DBDimens.PaddingDefault),
+//      child: Row(
+//        mainAxisAlignment: MainAxisAlignment.center,
+//        crossAxisAlignment: CrossAxisAlignment.center,
+//        mainAxisSize: MainAxisSize.max,
+//        children: <Widget>[
+//          Container(
+//            width: 72,
+//            child: _buildContent(context)
+//          )
+//        ],
+//      ),
+//    );
   }
 
 
   Widget _buildContent(BuildContext context){
     return ListView(
-      scrollDirection: widget.isHorizontal ? Axis.horizontal : Axis.vertical,
+      scrollDirection: Axis.vertical,
       children: <Widget>[
-        _buildImageWidget(context),
-        _buildImageWidget(context),
-        _buildImageWidget(context),
+        DraggableItem(),
+        DraggableItem(),
+        DraggableItem(),
       ],
     );
   }
-}
-
-
-Widget _buildImageWidget(BuildContext context) {
-
-  var tile = ImageDragItem();
-
-  return Draggable(
-      data: 'Flutter_Image',
-      child: tile,
-      feedback: tile,
-      childWhenDragging: Opacity(
-        opacity: 0.5,
-        child: tile,
-      ),
-      onDragCompleted: () {},
-      onDragEnd: (drag) {
-      },
-  );
 }
 
