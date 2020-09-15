@@ -1,12 +1,12 @@
-import 'package:doce_blocks/data/models/models.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class Section extends Equatable {
   final String uid;
   final String userId;
   final String name;
-  final CustomPageIcon icon;
+  final String icon;
 
   bool isSelected;
 
@@ -24,40 +24,27 @@ class Section extends Equatable {
       uid,
       userId: data["userId"],
       name: data["name"],
-      icon: CustomPageIcon.DESIGN,
-      // icon: CustomPageIcon.values.firstWhere((e) => e.toString() == 'CustomPageIcon.' + data["icon"]),
+      icon: data["icon"],
     );
 
     return section;
   }
-
-  // Section.fromJson(String uid, dynamic data)
-  //     : uid = uid,
-  //       userId = data["userId"],
-  //       name = data["name"],
-  //       icon = CustomPageIcon.values.firstWhere((e) => e.toString() == 'CustomPageIcon.' + data["icon"]),
-  //       blocks = [],
-  //       isSelected = false;
 
   @override
   List<Object> get props => [uid];
 
   IconData get materialIcon {
     switch (this.icon) {
-      case CustomPageIcon.DEFAULT:
-        return Icons.apps;
-      case CustomPageIcon.BUSINESS:
+      case "BUSINESS":
         return Icons.business;
-      case CustomPageIcon.FINANCE:
+      case "FINANCE":
         return Icons.account_balance;
-      case CustomPageIcon.DESIGN:
+      case "DESIGN":
         return Icons.color_lens;
-      case CustomPageIcon.DEVELOPER:
+      case "DEVELOPER":
         return Icons.developer_mode;
       default:
         return Icons.apps;
     }
   }
 }
-
-enum CustomPageIcon { DEFAULT, BUSINESS, FINANCE, DESIGN, DEVELOPER }
