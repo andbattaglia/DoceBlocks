@@ -1,4 +1,5 @@
 import 'package:doce_blocks/data/models/models.dart';
+import 'package:doce_blocks/domain/bloc/blocks/blocks_bloc.dart';
 import 'package:doce_blocks/domain/bloc/sections/sections_bloc.dart';
 import 'package:doce_blocks/presentation/pages/add_section_page.dart';
 import 'package:doce_blocks/presentation/utils/dimens.dart';
@@ -14,10 +15,12 @@ class SectionsListPage extends StatefulWidget {
 
 class _SectionsListPageState extends State<SectionsListPage> {
   SectionsBloc _sectionsBloc;
+  BlockBloc _blockBloc;
 
   @override
   void initState() {
     _sectionsBloc = new SectionsBloc();
+    _blockBloc = new BlockBloc();
   }
 
   @override
@@ -123,6 +126,7 @@ class _SectionsListPageState extends State<SectionsListPage> {
             borderRadius: BorderRadius.all(Radius.circular(DBDimens.CornerDefault)),
             onTap: () {
               _sectionsBloc.add(SelectSectionEvent(id: section.uid));
+              _blockBloc.add(GetBlocksEvent(pageId: section.uid));
               Navigator.pop(context);
             },
             child: Container(

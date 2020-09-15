@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:html';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:doce_blocks/data/models/models.dart';
@@ -114,8 +113,14 @@ class FirebaseDataSourceImpl extends FirebaseDataSource {
   @override
   Future<List<Block>> getBlocks(String pageId) async {
     final CollectionReference dbReference = _db.collection('blocks');
-    final snapshot = await dbReference.where('pages', arrayContains: pageId).getDocuments();
+    final snapshot = await dbReference.where('sections', arrayContains: pageId).getDocuments();
+    final blocks = snapshot.documents
+        .map((document) => Block.fromJson(
+              document.documentID,
+              document.data,
+            ))
+        .toList();
 
-    return snapshot.documents.map((document) => Block.fromJson(document.data));
+    return blocks;
   }
 }

@@ -8,7 +8,7 @@ class GetSectionsEvent extends SectionsEvent {
   const GetSectionsEvent();
 
   @override
-  String toString() => 'GetPagesEvent';
+  String toString() => 'GetSectionsEvent';
 }
 
 class SelectSectionEvent extends SectionsEvent {
