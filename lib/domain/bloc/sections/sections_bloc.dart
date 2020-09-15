@@ -6,77 +6,68 @@ import 'package:doce_blocks/injection/dependency_injection.dart';
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 
-part 'pages_event.dart';
-part 'pages_state.dart';
+part 'sections_event.dart';
+part 'sections_state.dart';
 
-class PagesBloc extends Bloc<PagesEvent, PagesState> {
-
-  PagesBloc() : super(GetPagesInitial());
+class SectionsBloc extends Bloc<SectionsEvent, SectionsState> {
+  SectionsBloc() : super(GetSectionsInitial());
 
   @override
-  Stream<PagesState> mapEventToState(PagesEvent event) async* {
-
+  Stream<SectionsState> mapEventToState(SectionsEvent event) async* {
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //          GET PAGES EVENT
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    if(event is GetPagesEvent){
-      var userRepository = Injector.provideUserRepository();
-      var user = await userRepository.getUser();
+    if (event is GetSectionsEvent) {
+      final userRepository = Injector.provideUserRepository();
+      final user = await userRepository.getUser();
 
-      var pageRepository = Injector.providePageRepository();
-      pageRepository.getPages(user.uid);
+      final sectionRepository = Injector.provideSectionRepository();
+      sectionRepository.getSections(user.uid);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //          SELECT PAGE EVENT
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    else if(event is SelectPageEvent){
-      var pageRepository = Injector.providePageRepository();
-      pageRepository.setCurrentPage(event.id);
+    else if (event is SelectSectionEvent) {
+      final sectionRepository = Injector.provideSectionRepository();
+      sectionRepository.setCurrentSection(event.id);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //          ADD PAGE EVENT
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    else if(event is AddPageEvent){
+    else if (event is AddSectionEvent) {
       var userRepository = Injector.provideUserRepository();
       var user = await userRepository.getUser();
 
       var appRepository = Injector.provideAppRepository();
       var icon = await appRepository.getSelectedIcon();
 
-      var pageRepository = Injector.providePageRepository();
-      pageRepository.addPage(user.uid, event.name, icon.valueToString);
+      var sectionRepository = Injector.provideSectionRepository();
+      sectionRepository.addSection(user.uid, event.name, icon.valueToString);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //          DELETE PAGE EVENT
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    else if(event is DeletePageEvent){
+    else if (event is DeleteSectionEvent) {
       var userRepository = Injector.provideUserRepository();
       var user = await userRepository.getUser();
 
-      var pageRepository = Injector.providePageRepository();
-      pageRepository.deletePages(user.uid, event.id);
-    }
-
-    else {
-      yield GetPagesInitial();
+      var sectionRepository = Injector.provideSectionRepository();
+      sectionRepository.deleteSection(user.uid, event.id);
+    } else {
+      yield GetSectionsInitial();
     }
   }
 
-  ValueStream<List<CustomPage>> getCachedPageStream() {
-    var appRepository = Injector.providePageRepository();
-    return appRepository.observeCachedPages();
+  ValueStream<List<Section>> getCachedSectionsStream() {
+    var sectionRepository = Injector.provideSectionRepository();
+    return sectionRepository.observeCachedSections();
   }
 
-  ValueStream<CustomPage> getSelectedPageStream() {
-    var appRepository = Injector.providePageRepository();
-    return appRepository.observeSelectedPages();
+  ValueStream<Section> getSelectedSectionStream() {
+    var sectionRepository = Injector.provideSectionRepository();
+    return sectionRepository.observeSelectedSection();
   }
 }
-
-
-
-
-

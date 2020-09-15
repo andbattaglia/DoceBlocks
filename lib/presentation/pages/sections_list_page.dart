@@ -1,70 +1,69 @@
-import 'dart:developer';
-
 import 'package:doce_blocks/data/models/models.dart';
-import 'package:doce_blocks/domain/bloc/pages/pages_bloc.dart';
-import 'package:doce_blocks/presentation/pages/add_page_page.dart';
+import 'package:doce_blocks/domain/bloc/blocks/blocks_bloc.dart';
+import 'package:doce_blocks/domain/bloc/sections/sections_bloc.dart';
+import 'package:doce_blocks/presentation/pages/add_section_page.dart';
 import 'package:doce_blocks/presentation/utils/dimens.dart';
 import 'package:doce_blocks/presentation/utils/strings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
-class PagesListPage extends StatefulWidget {
+class SectionsListPage extends StatefulWidget {
   @override
-  _PagesListPageState createState() => _PagesListPageState();
+  _SectionsListPageState createState() => _SectionsListPageState();
 }
 
-class _PagesListPageState extends State<PagesListPage> {
-
-  PagesBloc _pagesBloc;
+class _SectionsListPageState extends State<SectionsListPage> {
+  SectionsBloc _sectionsBloc;
+  BlockBloc _blockBloc;
 
   @override
   void initState() {
-    _pagesBloc = new PagesBloc();
+    _sectionsBloc = new SectionsBloc();
+    _blockBloc = new BlockBloc();
   }
 
   @override
   Widget build(BuildContext context) {
     return ScreenTypeLayout(
-        mobile: _buildSmallPage(context),
-        tablet: OrientationLayoutBuilder(
-          portrait: (context) => _buildSmallPage(context),
-          landscape: (context) => _buildLargePage(context),
-        ),
-        desktop: _buildLargePage(context),
+      mobile: _buildSmallPage(context),
+      tablet: OrientationLayoutBuilder(
+        portrait: (context) => _buildSmallPage(context),
+        landscape: (context) => _buildLargePage(context),
+      ),
+      desktop: _buildLargePage(context),
     );
   }
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //          SMALL PAGE
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  Widget _buildSmallPage(BuildContext context){
+  Widget _buildSmallPage(BuildContext context) {
     return Container(
-        child:new StreamBuilder(stream: _pagesBloc.getCachedPageStream(), builder: (context, AsyncSnapshot<List<CustomPage>> snapshot){
-          if(snapshot.hasData){
+        child: new StreamBuilder(
+            stream: _sectionsBloc.getCachedSectionsStream(),
+            builder: (context, AsyncSnapshot<List<Section>> snapshot) {
+              if (snapshot.hasData) {
+                var pagesList = snapshot.data;
 
-            var pagesList = snapshot.data;
-
-            return ListView.builder(
-                itemCount: pagesList.length + 1,
-                itemBuilder: (context, index) {
-                  if(index == pagesList.length){
-                    return _buildAddPageItem(context, true);
-                  } else {
-                    return _buildSmallPageItem(context, pagesList[index]);
-                  }
-                });
-          }
-          return Container();
-        })
-    );
+                return ListView.builder(
+                    itemCount: pagesList.length + 1,
+                    itemBuilder: (context, index) {
+                      if (index == pagesList.length) {
+                        return _buildAddPageItem(context, true);
+                      } else {
+                        return _buildSmallPageItem(context, pagesList[index]);
+                      }
+                    });
+              }
+              return Container();
+            }));
   }
-
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //          LARGE PAGE
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  Widget _buildLargePage(BuildContext context){
+  Widget _buildLargePage(BuildContext context) {
 //    return BlocBuilder<PagesBloc, PagesState>(
 //        builder: (context, state) {
 //
@@ -98,60 +97,60 @@ class _PagesListPageState extends State<PagesListPage> {
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //          PAGE_ITEM
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  Widget _buildSmallPageItem(BuildContext context , CustomPage page){
+  Widget _buildSmallPageItem(BuildContext context, Section section) {
     return Dismissible(
-        direction: DismissDirection.endToStart,
-        background: Container(
-          color: Colors.red,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Text(DBString.standard_remove, style: Theme.of(context).accentTextTheme.bodyText1),
-              SizedBox(width: DBDimens.PaddingHalf),
-              Icon(Icons.delete, color: Theme.of(context).iconTheme.color),
-              SizedBox(width: DBDimens.PaddingHalf),
-            ],
-          ),
+      direction: DismissDirection.endToStart,
+      background: Container(
+        color: Colors.red,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Text(DBString.standard_remove, style: Theme.of(context).accentTextTheme.bodyText1),
+            SizedBox(width: DBDimens.PaddingHalf),
+            Icon(Icons.delete, color: Theme.of(context).iconTheme.color),
+            SizedBox(width: DBDimens.PaddingHalf),
+          ],
         ),
-        key: Key(page.uid),
-        onDismissed: (direction) {
-          _pagesBloc..add(DeletePageEvent(id: page.uid));
-        },
-        child: Container(
-          margin: EdgeInsets.all(DBDimens.PaddingHalf),
-          decoration: BoxDecoration(
-            color: page.isSelected ? Theme.of(context).selectedRowColor : Colors.transparent,
+      ),
+      key: Key(section.uid),
+      onDismissed: (direction) {
+        _sectionsBloc..add(DeleteSectionEvent(id: section.uid));
+      },
+      child: Container(
+        margin: EdgeInsets.all(DBDimens.PaddingHalf),
+        decoration: BoxDecoration(
+          color: section.isSelected ? Theme.of(context).selectedRowColor : Colors.transparent,
+          borderRadius: BorderRadius.all(Radius.circular(DBDimens.CornerDefault)),
+        ),
+        child: new InkWell(
             borderRadius: BorderRadius.all(Radius.circular(DBDimens.CornerDefault)),
-          ),
-          child: new InkWell(
-              borderRadius: BorderRadius.all(Radius.circular(DBDimens.CornerDefault)),
-              onTap: () {
-                _pagesBloc.add(SelectPageEvent(id: page.uid));
-                Navigator.pop(context);
-              },
-              child: Container(
-                padding: EdgeInsets.all(DBDimens.PaddingDefault),
-                child: Row(
-                  children: [
-                    Icon(page.materialIcon, color: Theme.of(context).primaryIconTheme.color),
-                    SizedBox(width: DBDimens.PaddingHalf),
-                    Expanded(child: Text(page.name, style: Theme.of(context).textTheme.bodyText1)),
-                  ],
-                ),
-              )
-          ),
-        ),
+            onTap: () {
+              _sectionsBloc.add(SelectSectionEvent(id: section.uid));
+              _blockBloc.add(GetBlocksEvent(pageId: section.uid));
+              Navigator.pop(context);
+            },
+            child: Container(
+              padding: EdgeInsets.all(DBDimens.PaddingDefault),
+              child: Row(
+                children: [
+                  Icon(section.materialIcon, color: Theme.of(context).primaryIconTheme.color),
+                  SizedBox(width: DBDimens.PaddingHalf),
+                  Expanded(child: Text(section.name, style: Theme.of(context).textTheme.bodyText1)),
+                ],
+              ),
+            )),
+      ),
     );
   }
 
-   Widget _buildLargePageItem(BuildContext context , CustomPage page){
-    return  Container(
-        margin: EdgeInsets.only( left: DBDimens.PaddingDefault),
+  Widget _buildLargePageItem(BuildContext context, Section section) {
+    return Container(
+        margin: EdgeInsets.only(left: DBDimens.PaddingDefault),
         child: Column(
           children: [
             Container(
               height: 8,
-              color: page.isSelected ? Theme.of(context).backgroundColor : Colors.transparent,
+              color: section.isSelected ? Theme.of(context).backgroundColor : Colors.transparent,
               child: Container(
                 decoration: BoxDecoration(
                   color: Theme.of(context).primaryColor,
@@ -163,33 +162,32 @@ class _PagesListPageState extends State<PagesListPage> {
               height: 56,
               padding: EdgeInsets.only(left: DBDimens.PaddingDefault),
               decoration: BoxDecoration(
-                color: page.isSelected ? Theme.of(context).backgroundColor : Colors.transparent,
+                color: section.isSelected ? Theme.of(context).backgroundColor : Colors.transparent,
                 borderRadius: BorderRadius.only(bottomLeft: Radius.circular(DBDimens.CornerDefault), topLeft: Radius.circular(DBDimens.CornerDefault)),
               ),
               child: new InkWell(
                   borderRadius: BorderRadius.only(bottomLeft: Radius.circular(DBDimens.CornerDefault), topLeft: Radius.circular(DBDimens.CornerDefault)),
                   onTap: () {
-                    BlocProvider.of<PagesBloc>(context).add(SelectPageEvent(id: page.uid));
+                    BlocProvider.of<SectionsBloc>(context).add(SelectSectionEvent(id: section.uid));
                   },
                   child: Container(
-                      constraints: BoxConstraints.expand(),
-                      child: Row(
-                        children: [
-                          Expanded(child: Text(page.name, style: page.isSelected ? Theme.of(context).textTheme.bodyText1 : Theme.of(context).accentTextTheme.bodyText1)),
-                          IconButton(
-                            icon: Icon(Icons.close, color:  page.isSelected ? Theme.of(context).primaryIconTheme.color : Theme.of(context).iconTheme.color),
-                            onPressed: (){
-                              BlocProvider.of<PagesBloc>(context).add(DeletePageEvent(id: page.uid));
-                            },
-                          ),
-                        ],
-                      ),
-                  )
-              ),
+                    constraints: BoxConstraints.expand(),
+                    child: Row(
+                      children: [
+                        Expanded(child: Text(section.name, style: section.isSelected ? Theme.of(context).textTheme.bodyText1 : Theme.of(context).accentTextTheme.bodyText1)),
+                        IconButton(
+                          icon: Icon(Icons.close, color: section.isSelected ? Theme.of(context).primaryIconTheme.color : Theme.of(context).iconTheme.color),
+                          onPressed: () {
+                            BlocProvider.of<SectionsBloc>(context).add(DeleteSectionEvent(id: section.uid));
+                          },
+                        ),
+                      ],
+                    ),
+                  )),
             ),
             Container(
               height: 8,
-              color: page.isSelected ? Theme.of(context).backgroundColor : Colors.transparent,
+              color: section.isSelected ? Theme.of(context).backgroundColor : Colors.transparent,
               child: Container(
                 decoration: BoxDecoration(
                   color: Theme.of(context).primaryColor,
@@ -198,15 +196,13 @@ class _PagesListPageState extends State<PagesListPage> {
               ),
             ),
           ],
-        )
-    );
+        ));
   }
-
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //          ADD_PAGE_ITEM
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  Widget _buildAddPageItem(BuildContext context, bool lightBackground){
+  Widget _buildAddPageItem(BuildContext context, bool lightBackground) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -219,7 +215,10 @@ class _PagesListPageState extends State<PagesListPage> {
           child: new InkWell(
               borderRadius: BorderRadius.all(Radius.circular(DBDimens.CornerDefault)),
               onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => AddPagePage()),);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => AddSectionPage()),
+                );
               },
               child: Container(
                 padding: EdgeInsets.all(DBDimens.PaddingDefault),
@@ -231,8 +230,7 @@ class _PagesListPageState extends State<PagesListPage> {
                     Icon(Icons.add, size: DBDimens.IconSizeSmall, color: lightBackground ? Theme.of(context).primaryIconTheme.color : Theme.of(context).primaryIconTheme.color)
                   ],
                 ),
-              )
-          ),
+              )),
         )
       ],
     );
