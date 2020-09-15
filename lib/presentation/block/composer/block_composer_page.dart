@@ -1,3 +1,4 @@
+import 'package:doce_blocks/presentation/block/composer/add_block_page.dart';
 import 'package:doce_blocks/presentation/block/draggableitem/draggable_item.dart';
 import 'package:doce_blocks/presentation/components/floating_action_add.dart';
 import 'package:doce_blocks/presentation/utils/cross_platform_svg.dart';
@@ -171,7 +172,10 @@ class _BlockComposerPageState extends State<BlockComposerPage> {
                   setState(() {
                     switch (data) {
                       case "DRAGGABLE_ITEM":
-                        Scaffold.of(context).showSnackBar(const SnackBar(content: Text('Drag and Drop Successfully'),));
+                        setState(() {
+                          _isEditMode = false;
+                        });
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => AddBlockPage()));
                         break;
                     }
                   });

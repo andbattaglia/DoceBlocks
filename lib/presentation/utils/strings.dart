@@ -26,4 +26,14 @@ class DBString{
 
   static const String composer_description = "Drop your blocks here and configurate later";
 
+  static const String add_block_article_title = "New Article";
+  static const String add_block_list_title = "New List";
+  static const String add_block_video_title = "New Video";
+  static const String add_block_title_hint = "Title";
+  static const String add_block_description_hint = "Description";
+  static const String add_block_url_hint = "Url";
+  static const String add_block_thumb_hint = "Thumbnail url";
+  static const String add_block_choose_size_title = "Card size";
+
+
 }

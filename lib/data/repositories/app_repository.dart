@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:doce_blocks/data/models/card_props.dart';
 import 'package:doce_blocks/data/models/icon.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -8,6 +9,8 @@ abstract class AppRepository {
   Future<DBIcon> getSelectedIcon();
   ValueStream<DBIcon> observeSelectedIcon();
   void selectIcon(int iconId);
+
+  Future<List<CardProps>> getProps();
 }
 
 class AppRepositoryImpl implements AppRepository {
@@ -23,7 +26,7 @@ class AppRepositoryImpl implements AppRepository {
   AppRepositoryImpl._internal();
 
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  //          IMPLEMENTATION
+  //          ICONS
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   BehaviorSubject<DBIcon> _subjectSelectedIcon = new BehaviorSubject<DBIcon>.seeded(DBIcon.generateIcons()[0]);
@@ -48,5 +51,13 @@ class AppRepositoryImpl implements AppRepository {
     var icons = DBIcon.generateIcons();
     var icon = icons.firstWhere((element) => element.id == iconId);
     _subjectSelectedIcon.add(icon);
+  }
+
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  //          CARD SIZE
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  @override
+  Future<List<CardProps>> getProps() {
+    return Future<List<CardProps>>.value(CardProps.generateProps());
   }
 }
