@@ -1,3 +1,5 @@
+import 'package:doce_blocks/data/models/models.dart';
+import 'package:doce_blocks/domain/bloc/blocks/blocks_bloc.dart';
 import 'package:doce_blocks/domain/bloc/sections/sections_bloc.dart';
 import 'package:doce_blocks/presentation/block/composer/select_card_props_page.dart';
 import 'package:doce_blocks/presentation/dbicon/select_icon_page.dart';
@@ -13,11 +15,10 @@ class AddBlockPage extends StatefulWidget {
 }
 
 class _AddBlockPageState extends State<AddBlockPage> {
-
-  var _inputTitleController = TextEditingController();
-  var _inputDescriptionController = TextEditingController();
-  var _inputUrlController = TextEditingController();
-  var _inputThumbUrlController = TextEditingController();
+  final _inputTitleController = TextEditingController();
+  final _inputDescriptionController = TextEditingController();
+  final _inputUrlController = TextEditingController();
+  final _inputThumbUrlController = TextEditingController();
 
   @override
   void initState() {
@@ -26,23 +27,24 @@ class _AddBlockPageState extends State<AddBlockPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<SectionsBloc>(
-        create: (_) => SectionsBloc(),
-        child: ScreenTypeLayout(
-          mobile: _buildSmallPage(context),
-          tablet: OrientationLayoutBuilder(
-            portrait: (context) => _buildSmallPage(context),
-            landscape: (context) => _buildLargePage(context),
-          ),
-          desktop: _buildLargePage(context),
-        ));
+    return BlocProvider<BlocksBloc>(
+      create: (_) => BlocksBloc(),
+      child: ScreenTypeLayout(
+        mobile: _buildSmallPage(context),
+        tablet: OrientationLayoutBuilder(
+          portrait: (context) => _buildSmallPage(context),
+          landscape: (context) => _buildLargePage(context),
+        ),
+        desktop: _buildLargePage(context),
+      ),
+    );
   }
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //          SMALL PAGE
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   Widget _buildSmallPage(BuildContext context) {
-    return BlocBuilder<SectionsBloc, SectionsState>(builder: (context, state) {
+    return BlocBuilder<BlocksBloc, BlocksState>(builder: (context, state) {
       return Scaffold(
           appBar: AppBar(
             backgroundColor: Theme.of(context).backgroundColor,
@@ -56,11 +58,31 @@ class _AddBlockPageState extends State<AddBlockPage> {
             actions: [
               FlatButton(
                 onPressed: () {
-//                  var value = _inputController.text.trim();
-//                  if (value.trim().isNotEmpty) {
-//                    BlocProvider.of<SectionsBloc>(context).add(AddSectionEvent(name: value));
-//                    Navigator.of(context, rootNavigator: true).pop();
-//                  }
+                  final url = _inputUrlController.text.trim();
+                  final title = _inputTitleController.text.trim();
+                  final description = _inputDescriptionController.text.trim();
+                  final thumbUrl = _inputThumbUrlController.text.trim();
+
+                  //TODO: icons?
+
+                  if (url.isNotEmpty && title.isNotEmpty && description.isNotEmpty && thumbUrl.isNotEmpty) {
+                    BlocProvider.of<BlocksBloc>(context).add(
+                      AddBlocksEvent(
+                        blocks: [
+                          CardBlock(
+                            url: url,
+                            title: title,
+                            description: description,
+                            thumbUrl: thumbUrl,
+                          ),
+                        ],
+                      ),
+                    );
+
+                    Navigator.of(context, rootNavigator: true).pop();
+                  } else {
+                    //TODO: error?
+                  }
                 },
                 child: Text(DBString.standard_add, style: Theme.of(context).primaryTextTheme.button),
               )
@@ -96,7 +118,6 @@ class _AddBlockPageState extends State<AddBlockPage> {
             textInputAction: TextInputAction.go,
           ),
         ),
-
         Divider(color: Colors.grey, height: 1),
         Container(
           color: Theme.of(context).backgroundColor,
@@ -110,7 +131,6 @@ class _AddBlockPageState extends State<AddBlockPage> {
             textInputAction: TextInputAction.go,
           ),
         ),
-
         Divider(color: Colors.grey, height: 1),
         Container(
           color: Theme.of(context).backgroundColor,
@@ -124,7 +144,6 @@ class _AddBlockPageState extends State<AddBlockPage> {
             textInputAction: TextInputAction.go,
           ),
         ),
-
         Divider(color: Colors.grey, height: 1),
         Container(
           color: Theme.of(context).backgroundColor,
@@ -138,7 +157,6 @@ class _AddBlockPageState extends State<AddBlockPage> {
             textInputAction: TextInputAction.go,
           ),
         ),
-
         Divider(color: Colors.grey, height: 1),
         _buildIconSelector(context),
         Divider(color: Colors.grey, height: 1),
@@ -149,16 +167,16 @@ class _AddBlockPageState extends State<AddBlockPage> {
   Widget _buildIconSelector(BuildContext context) {
     return InkWell(
       child: Container(
-          color: Theme.of(context).backgroundColor,
-          padding: EdgeInsets.all(DBDimens.PaddingDefault),
-          child: Row(
-            children: [
-              Icon(Icons.filter, color: Theme.of(context).accentIconTheme.color),
-              SizedBox(width: DBDimens.PaddingDefault),
-              Expanded(child: Text("Name")),
-              Icon(Icons.chevron_right, color: Theme.of(context).accentIconTheme.color),
-            ],
-          ),
+        color: Theme.of(context).backgroundColor,
+        padding: EdgeInsets.all(DBDimens.PaddingDefault),
+        child: Row(
+          children: [
+            Icon(Icons.filter, color: Theme.of(context).accentIconTheme.color),
+            SizedBox(width: DBDimens.PaddingDefault),
+            Expanded(child: Text("Name")),
+            Icon(Icons.chevron_right, color: Theme.of(context).accentIconTheme.color),
+          ],
+        ),
       ),
       onTap: () {
         Navigator.push(context, MaterialPageRoute(builder: (context) => SelectCardPropsPage()));

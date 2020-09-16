@@ -4,6 +4,17 @@ abstract class BlocksEvent {
   const BlocksEvent();
 }
 
+class AddBlocksEvent extends BlocksEvent {
+  final List<Block> blocks;
+
+  const AddBlocksEvent({
+    @required this.blocks,
+  });
+
+  @override
+  String toString() => 'AddBlocksEvent ${this.blocks}';
+}
+
 class GetBlocksEvent extends BlocksEvent {
   final String pageId;
 

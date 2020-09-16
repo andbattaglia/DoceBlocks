@@ -17,6 +17,7 @@ abstract class FirebaseDataSource {
   Future<void> deleteSection(String sectionId);
   Future<List<Section>> getSections(String userId);
 
+  Future<List<String>> addBlocks(List<Map<String, dynamic>> blocks);
   Future<List<Block>> getBlocks(String pageId);
 }
 
@@ -111,15 +112,24 @@ class FirebaseDataSourceImpl extends FirebaseDataSource {
   }
 
   @override
+  Future<List<String>> addBlocks(List<Map<String, dynamic>> blocks) async {
+    final CollectionReference dbReference = _db.collection('blocks');
+
+    final result = List<String>();
+
+    await Future.forEach(blocks, (block) async {
+      final ref = await dbReference.add(block);
+      result.add(ref.documentID);
+    });
+
+    return result;
+  }
+
+  @override
   Future<List<Block>> getBlocks(String pageId) async {
     final CollectionReference dbReference = _db.collection('blocks');
     final snapshot = await dbReference.where('sections', arrayContains: pageId).getDocuments();
-    final blocks = snapshot.documents
-        .map((document) => Block.fromJson(
-              document.documentID,
-              document.data,
-            ))
-        .toList();
+    final blocks = snapshot.documents.map(Block.fromSnapshot).toList();
 
     return blocks;
   }

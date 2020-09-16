@@ -11,6 +11,7 @@ abstract class SectionRepository {
 
   ValueStream<List<Section>> observeCachedSections();
   ValueStream<Section> observeSelectedSection();
+  String getSelectedSectionId();
 }
 
 class SectionRepositoryImpl implements SectionRepository {
@@ -71,6 +72,11 @@ class SectionRepositoryImpl implements SectionRepository {
   @override
   ValueStream<Section> observeSelectedSection() {
     return _subjectSelectedSection;
+  }
+
+  @override
+  String getSelectedSectionId() {
+    return _subjectSelectedSection.value.uid;
   }
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

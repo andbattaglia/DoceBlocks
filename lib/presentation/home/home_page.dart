@@ -17,11 +17,11 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  SectionsBloc _pagesBloc;
+  SectionsBloc _sectionsBloc;
 
   @override
   void initState() {
-    _pagesBloc = SectionsBloc()..add(GetSectionsEvent());
+    _sectionsBloc = SectionsBloc()..add(GetSectionsEvent());
   }
 
   @override
@@ -41,7 +41,7 @@ class _HomePageState extends State<HomePage> {
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   Widget _buildSmallPage(BuildContext context) {
     return StreamBuilder(
-        stream: _pagesBloc.getSelectedSectionStream(),
+        stream: _sectionsBloc.getSelectedSectionStream(),
         builder: (context, AsyncSnapshot<Section> snapshot) {
           String title = DBString.title;
           if (snapshot.hasData) {

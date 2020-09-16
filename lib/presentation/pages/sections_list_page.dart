@@ -15,12 +15,12 @@ class SectionsListPage extends StatefulWidget {
 
 class _SectionsListPageState extends State<SectionsListPage> {
   SectionsBloc _sectionsBloc;
-  BlockBloc _blockBloc;
+  BlocksBloc _blocksBloc;
 
   @override
   void initState() {
     _sectionsBloc = new SectionsBloc();
-    _blockBloc = new BlockBloc();
+    _blocksBloc = new BlocksBloc();
   }
 
   @override
@@ -126,7 +126,7 @@ class _SectionsListPageState extends State<SectionsListPage> {
             borderRadius: BorderRadius.all(Radius.circular(DBDimens.CornerDefault)),
             onTap: () {
               _sectionsBloc.add(SelectSectionEvent(id: section.uid));
-              _blockBloc.add(GetBlocksEvent(pageId: section.uid));
+              _blocksBloc.add(GetBlocksEvent(pageId: section.uid));
               Navigator.pop(context);
             },
             child: Container(
