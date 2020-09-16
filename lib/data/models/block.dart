@@ -14,16 +14,37 @@ extension BlockTypeString on BlockType {
   String get tag => describeEnum(this);
 }
 
+enum CardSize {
+  get,
+  BIG,
+  SMALL,
+}
+
+extension CardSizeString on CardSize {
+  String get tag => describeEnum(this);
+
+  operator [](String key) => (String name) {
+        switch (name.toLowerCase()) {
+          case 'big':
+            return CardSize.BIG;
+          case 'small':
+            return CardSize.SMALL;
+          default:
+            throw RangeError("enum CardSize contains no value '$name'");
+        }
+      }(key);
+}
+
 @immutable
 abstract class Block extends Equatable {
   final String uid;
-  final List<String> pages;
+  final List<String> sections;
   final BlockType type;
 
   const Block({
     this.uid,
     @required this.type,
-    this.pages,
+    this.sections,
   });
 
   static Block fromSnapshot(DocumentSnapshot snap) {
@@ -33,7 +54,7 @@ abstract class Block extends Equatable {
   static Block fromJson(String uid, Map<String, Object> json) {
     final String type = json["type"] as String;
 
-    switch (type) {
+    switch (type.toLowerCase()) {
       case "video":
         return VideoBlock.fromJson(uid, json);
 
@@ -65,8 +86,8 @@ abstract class Block extends Equatable {
 class UnknownBlock extends Block {
   UnknownBlock({
     String uid,
-    List<String> pages,
-  }) : super(uid: uid, type: BlockType.UNKNOWN, pages: pages);
+    List<String> sections,
+  }) : super(uid: uid, type: BlockType.UNKNOWN, sections: sections);
 
   static UnknownBlock fromJson(String uid, dynamic json) {
     return UnknownBlock(uid: uid);
@@ -79,7 +100,7 @@ class UnknownBlock extends Block {
   Map<String, Object> _toDocument() {
     return {
       "type": this.type.tag,
-      "pages": this.pages,
+      "sections": this.sections,
     };
   }
 }
@@ -91,8 +112,8 @@ class VideoBlock extends Block {
   VideoBlock({
     final String uid,
     @required this.url,
-    final List<String> pages,
-  }) : super(uid: uid, type: BlockType.VIDEO, pages: pages);
+    final List<String> sections,
+  }) : super(uid: uid, type: BlockType.VIDEO, sections: sections);
 
   static VideoBlock fromJson(String uid, dynamic json) {
     return VideoBlock(
@@ -108,7 +129,7 @@ class VideoBlock extends Block {
   Map<String, Object> _toDocument() {
     return {
       "type": this.type.tag,
-      "pages": this.pages,
+      "sections": this.sections,
       "url": this.url,
     };
   }
@@ -121,8 +142,8 @@ class ImageBlock extends Block {
   ImageBlock({
     final String uid,
     @required this.url,
-    final List<String> pages,
-  }) : super(uid: uid, type: BlockType.IMAGE, pages: pages);
+    final List<String> sections,
+  }) : super(uid: uid, type: BlockType.IMAGE, sections: sections);
 
   static ImageBlock fromJson(String uid, dynamic json) {
     return ImageBlock(
@@ -138,7 +159,7 @@ class ImageBlock extends Block {
   Map<String, Object> _toDocument() {
     return {
       "type": this.type.tag,
-      "pages": this.pages,
+      "sections": this.sections,
       "url": this.url,
     };
   }
@@ -150,6 +171,7 @@ class CardBlock extends Block {
   final String title;
   final String description;
   final String thumbUrl;
+  final CardSize size;
 
   CardBlock({
     final String uid,
@@ -157,8 +179,9 @@ class CardBlock extends Block {
     @required this.title,
     @required this.description,
     @required this.thumbUrl,
-    final List<String> pages,
-  }) : super(uid: uid, type: BlockType.CARD, pages: pages);
+    @required this.size,
+    final List<String> sections,
+  }) : super(uid: uid, type: BlockType.CARD, sections: sections);
 
   static CardBlock fromJson(String uid, dynamic json) {
     return CardBlock(
@@ -167,6 +190,7 @@ class CardBlock extends Block {
       title: json["title"] as String,
       description: json["description"] as String,
       thumbUrl: json["thumbnail_url"] as String,
+      size: CardSize.get[json["size"] as String],
     );
   }
 
@@ -177,11 +201,12 @@ class CardBlock extends Block {
   Map<String, Object> _toDocument() {
     return {
       "type": this.type.tag,
-      "pages": this.pages,
+      "sections": this.sections,
       "url": this.url,
       "title": this.title,
       "description": this.description,
       "thumbnail_url": this.thumbUrl,
+      "size": this.size.tag,
     };
   }
 }
@@ -192,8 +217,8 @@ class ListBlock extends Block {
   ListBlock({
     final String uid,
     @required this.cards,
-    final List<String> pages,
-  }) : super(uid: uid, type: BlockType.VIDEO, pages: pages);
+    final List<String> sections,
+  }) : super(uid: uid, type: BlockType.VIDEO, sections: sections);
 
   static ListBlock fromJson(String uid, dynamic json) {
     return ListBlock(
@@ -208,7 +233,7 @@ class ListBlock extends Block {
   Map<String, Object> _toDocument() {
     return {
       "type": this.type.tag,
-      "pages": this.pages,
+      "sections": this.sections,
       "cards": [], //TODO:
     };
   }
