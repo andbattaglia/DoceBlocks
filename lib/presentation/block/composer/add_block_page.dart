@@ -20,6 +20,8 @@ class _AddBlockPageState extends State<AddBlockPage> {
   final _inputUrlController = TextEditingController();
   final _inputThumbUrlController = TextEditingController();
 
+  CardSize selectedSize;
+
   @override
   void initState() {
     super.initState();
@@ -63,8 +65,6 @@ class _AddBlockPageState extends State<AddBlockPage> {
                   final description = _inputDescriptionController.text.trim();
                   final thumbUrl = _inputThumbUrlController.text.trim();
 
-                  //TODO: icons?
-
                   if (url.isNotEmpty && title.isNotEmpty && description.isNotEmpty && thumbUrl.isNotEmpty) {
                     BlocProvider.of<BlocksBloc>(context).add(
                       AddBlocksEvent(
@@ -74,6 +74,8 @@ class _AddBlockPageState extends State<AddBlockPage> {
                             title: title,
                             description: description,
                             thumbUrl: thumbUrl,
+                            size: selectedSize,
+                            sections: [],
                           ),
                         ],
                       ),
@@ -178,8 +180,8 @@ class _AddBlockPageState extends State<AddBlockPage> {
           ],
         ),
       ),
-      onTap: () {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => SelectCardPropsPage()));
+      onTap: () async {
+        selectedSize = await Navigator.push(context, MaterialPageRoute(builder: (context) => SelectCardPropsPage()));
       },
     );
   }

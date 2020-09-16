@@ -24,7 +24,7 @@ class BlocksBloc extends Bloc<BlocksEvent, BlocksState> {
       final sectionRepository = Injector.provideSectionRepository();
       final selectedSectionId = sectionRepository.getSelectedSectionId();
       final blocks = event.blocks.map((block) {
-        block.pages.add(selectedSectionId);
+        block.sections.add(selectedSectionId);
         return block;
       }).toList();
 

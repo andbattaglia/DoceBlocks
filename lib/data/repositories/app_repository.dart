@@ -1,16 +1,14 @@
 import 'dart:async';
-import 'package:doce_blocks/data/models/card_props.dart';
-import 'package:doce_blocks/data/models/icon.dart';
+import 'package:doce_blocks/data/models/models.dart';
 import 'package:rxdart/rxdart.dart';
 
 abstract class AppRepository {
-
   Future<List<DBIcon>> getIcons();
   Future<DBIcon> getSelectedIcon();
   ValueStream<DBIcon> observeSelectedIcon();
   void selectIcon(int iconId);
 
-  Future<List<CardProps>> getProps();
+  Future<List<CardSize>> getCardSizeValues();
 }
 
 class AppRepositoryImpl implements AppRepository {
@@ -57,7 +55,7 @@ class AppRepositoryImpl implements AppRepository {
   //          CARD SIZE
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   @override
-  Future<List<CardProps>> getProps() {
-    return Future<List<CardProps>>.value(CardProps.generateProps());
+  Future<List<CardSize>> getCardSizeValues() {
+    return Future<List<CardSize>>.value([CardSize.BIG, CardSize.SMALL]);
   }
 }
