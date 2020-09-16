@@ -62,4 +62,7 @@ flutter:
     - assets/logo.svg
     - assets/empty_slate.svg
     - assets/empty_slate_section.svg
+    - assets/icon_article.svg
+    - assets/icon_list.svg
+    - assets/icon_video.svg
     - assets/login.png

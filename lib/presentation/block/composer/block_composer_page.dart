@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:doce_blocks/presentation/block/composer/add_block_page.dart';
 import 'package:doce_blocks/presentation/block/draggableitem/draggable_item.dart';
@@ -67,6 +68,7 @@ class _BlockComposerPageState extends State<BlockComposerPage> {
 
   Widget _buildContent(BuildContext context) {
     return Container(
+        color: Theme.of(context).backgroundColor,
         padding: EdgeInsets.only(left: DBDimens.Padding50, right: DBDimens.Padding50),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -83,6 +85,7 @@ class _BlockComposerPageState extends State<BlockComposerPage> {
 
   Widget _buildEditMode(BuildContext context) {
     return Container(
+      color: Theme.of(context).backgroundColor,
       child: Column(
         mainAxisSize: MainAxisSize.max,
         children: [
@@ -112,8 +115,22 @@ class _BlockComposerPageState extends State<BlockComposerPage> {
                 },
                 onAccept: (data) {
                   setState(() {
-                    switch (data) {
-                      case "DRAGGABLE_ITEM":
+                    switch (Type.get[data]) {
+                      case Type.ARTICLE:
+                        setState(() {
+                          _isEditMode = false;
+                        });
+                        _floatingButtonController.add(false);
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => AddBlockPage()));
+                        break;
+                      case Type.VIDEO:
+                        setState(() {
+                          _isEditMode = false;
+                        });
+                        _floatingButtonController.add(false);
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => AddBlockPage()));
+                        break;
+                      case Type.LIST:
                         setState(() {
                           _isEditMode = false;
                         });
@@ -136,9 +153,9 @@ class _BlockComposerPageState extends State<BlockComposerPage> {
                 crossAxisCount: 2,
                 childAspectRatio: 1.2 / 1.0,
                 children: [
-                  Container(child: DraggableItem()),
-                  Container(child: DraggableItem()),
-                  Container(child: DraggableItem())
+                  Container(child: DraggableItem(type: Type.ARTICLE, name: DBString.draggable_item_article)),
+                  Container(child: DraggableItem(type: Type.LIST, name: DBString.draggable_item_list)),
+                  Container(child: DraggableItem(type: Type.VIDEO, name: DBString.draggable_item_video))
                 ]
               ),
             )

@@ -50,7 +50,7 @@ class _HomePageState extends State<HomePage> {
 
           return Scaffold(
               appBar: AppBar(
-                backgroundColor: Colors.transparent,
+                backgroundColor: Theme.of(context).backgroundColor,
                 iconTheme: Theme.of(context).accentIconTheme,
                 elevation: 0.0,
                 title: Text(title, style: Theme.of(context).textTheme.headline6),
