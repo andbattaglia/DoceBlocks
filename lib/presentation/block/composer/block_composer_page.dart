@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:developer';
 
+import 'package:doce_blocks/data/models/block.dart';
+import 'package:doce_blocks/domain/bloc/bloc.dart';
 import 'package:doce_blocks/presentation/block/composer/add_block_page.dart';
 import 'package:doce_blocks/presentation/block/draggableitem/draggable_item.dart';
 import 'package:doce_blocks/presentation/components/floating_action_add.dart';
@@ -20,8 +22,12 @@ class _BlockComposerPageState extends State<BlockComposerPage> {
   bool _isEditMode = false;
   StreamController<bool> _floatingButtonController = StreamController<bool>();
 
-  List<Widget> itemsList = [];
+  BlocksBloc _blocksBloc;
 
+  @override
+  void initState() {
+    _blocksBloc = new BlocksBloc();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -67,20 +73,41 @@ class _BlockComposerPageState extends State<BlockComposerPage> {
   }
 
   Widget _buildContent(BuildContext context) {
-    return Container(
-        color: Theme.of(context).backgroundColor,
-        padding: EdgeInsets.only(left: DBDimens.Padding50, right: DBDimens.Padding50),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(DBString.composer_empty_slate_title, textAlign: TextAlign.center, style: Theme.of(context).textTheme.headline4),
-            SizedBox(height: DBDimens.PaddingDouble),
-            CrossPlatformSvg.asset('assets/empty_slate_section.svg', height: 180, width: 180),
-            SizedBox(height: DBDimens.PaddingDouble),
-            Text(DBString.composer_empty_slate_description, textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodyText1),
-          ],
-        )
-    );
+
+    return StreamBuilder(
+        stream: _blocksBloc.getBlocksStream(),
+        builder: (context, AsyncSnapshot<List<Block>> snapshot) {
+          if (snapshot.hasData) {
+            var blockList = snapshot.data;
+
+            if(blockList.isNotEmpty){
+              return Container(
+                padding: EdgeInsets.all(DBDimens.PaddingDefault),
+                color: Theme.of(context).backgroundColor,
+                child: ListView.builder(
+                    itemCount: blockList.length,
+                    itemBuilder: (context, index) {
+                      return Card(
+                        color: Colors.lightBlueAccent,
+                          child: InkWell(
+                            splashColor: Colors.blue.withAlpha(30),
+                            onTap: () {},
+                            child: Container(
+                              width: 300,
+                              height: 100,
+                              child: Text(blockList[index].uid),
+                            ),
+                          )
+                      );
+                    })
+              );
+            } else {
+              return _buildEmptySlate(context);
+            }
+          }
+
+          return Container();
+        });
   }
 
   Widget _buildEditMode(BuildContext context) {
@@ -162,6 +189,23 @@ class _BlockComposerPageState extends State<BlockComposerPage> {
           )
         ],
       ),
+    );
+  }
+
+  Widget _buildEmptySlate(BuildContext context){
+    return Container(
+        color: Theme.of(context).backgroundColor,
+        padding: EdgeInsets.only(left: DBDimens.Padding50, right: DBDimens.Padding50),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(DBString.composer_empty_slate_title, textAlign: TextAlign.center, style: Theme.of(context).textTheme.headline4),
+            SizedBox(height: DBDimens.PaddingDouble),
+            CrossPlatformSvg.asset('assets/empty_slate_section.svg', height: 180, width: 180),
+            SizedBox(height: DBDimens.PaddingDouble),
+            Text(DBString.composer_empty_slate_description, textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodyText1),
+          ],
+        )
     );
   }
 }

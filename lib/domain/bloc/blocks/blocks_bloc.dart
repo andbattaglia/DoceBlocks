@@ -4,6 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:doce_blocks/data/models/models.dart';
 import 'package:doce_blocks/injection/dependency_injection.dart';
 import 'package:flutter/material.dart';
+import 'package:rxdart/rxdart.dart';
 
 part 'blocks_event.dart';
 part 'blocks_state.dart';
@@ -19,7 +20,9 @@ class BlocksBloc extends Bloc<BlocksEvent, BlocksState> {
     if (event is GetBlocksEvent) {
       final blockRepository = Injector.provideBlockRepository();
       blockRepository.getBlocks(event.pageId);
-    } else if (event is AddBlocksEvent) {
+    }
+
+    if (event is AddBlocksEvent) {
       final blockRepository = Injector.provideBlockRepository();
       final sectionRepository = Injector.provideSectionRepository();
       final selectedSectionId = sectionRepository.getSelectedSectionId();
@@ -29,8 +32,11 @@ class BlocksBloc extends Bloc<BlocksEvent, BlocksState> {
       }).toList();
 
       blockRepository.addBlocks(blocks);
-    } else {
-      yield GetBlocksInitial();
     }
+  }
+
+  ValueStream<List<Block>> getBlocksStream() {
+    var blockRepository = Injector.provideBlockRepository();
+    return blockRepository.observeCachedBlocks();
   }
 }

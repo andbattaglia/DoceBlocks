@@ -22,7 +22,11 @@ class SectionsBloc extends Bloc<SectionsEvent, SectionsState> {
       final user = await userRepository.getUser();
 
       final sectionRepository = Injector.provideSectionRepository();
-      sectionRepository.getSections(user.uid);
+      await sectionRepository.getSections(user.uid);
+
+      final blockRepository = Injector.provideBlockRepository();
+      var sectionId = sectionRepository.getSelectedSectionId();
+      blockRepository.getBlocks(sectionId);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////

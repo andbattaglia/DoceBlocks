@@ -6,7 +6,7 @@ abstract class SectionRepository {
   void setCurrentSection(String uid);
 
   void addSection(String userId, String name, String icon);
-  void getSections(String userId);
+  Future<bool> getSections(String userId);
   void deleteSection(String userId, String pageId);
 
   ValueStream<List<Section>> observeCachedSections();
@@ -51,17 +51,19 @@ class SectionRepositoryImpl implements SectionRepository {
   }
 
   @override
-  void getSections(String userId) {
-    _firebaseDataSource.getSections(userId).then((remoteValue) {
-      _subjectCachedSections.add(setSelected(remoteValue));
-    });
+  Future<bool> getSections(String userId) async {
+    await _firebaseDataSource.getSections(userId)
+        .then((remoteValue) {
+          _subjectCachedSections.add(setSelected(remoteValue));
+          return true;
+        });
   }
 
   @override
   void deleteSection(String userId, String pageId) async {
-    await _firebaseDataSource.deleteSection(pageId).then((value) => _firebaseDataSource.getSections(userId)).then((value) {
-      _subjectCachedSections.add(setSelected(value, id: pageId));
-    });
+    await _firebaseDataSource.deleteSection(pageId)
+        .then((value) => _firebaseDataSource.getSections(userId))
+        .then((value) =>_subjectCachedSections.add(setSelected(value, id: pageId)));
   }
 
   @override
