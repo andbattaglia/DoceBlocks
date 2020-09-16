@@ -87,18 +87,16 @@ class _BlockComposerPageState extends State<BlockComposerPage> {
                 child: ListView.builder(
                     itemCount: blockList.length,
                     itemBuilder: (context, index) {
-                      return Card(
-                        color: Colors.lightBlueAccent,
-                          child: InkWell(
-                            splashColor: Colors.blue.withAlpha(30),
-                            onTap: () {},
-                            child: Container(
-                              width: 300,
-                              height: 100,
-                              child: Text(blockList[index].uid),
-                            ),
-                          )
-                      );
+
+                      Block block = blockList[index];
+
+                      switch(block.type){
+                        case BlockType.CARD:
+                          CardBlock cardBlock = block as CardBlock;
+                          return _buildCardBlock(context, cardBlock);
+                        default:
+                          return Container();
+                      }
                     })
               );
             } else {
@@ -205,6 +203,29 @@ class _BlockComposerPageState extends State<BlockComposerPage> {
             SizedBox(height: DBDimens.PaddingDouble),
             Text(DBString.composer_empty_slate_description, textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodyText1),
           ],
+        )
+    );
+  }
+
+  Widget _buildCardBlock(BuildContext context, CardBlock cardBlock){
+    return Card(
+        color: Colors.lightBlueAccent,
+        child: InkWell(
+            splashColor: Colors.blue.withAlpha(30),
+            onTap: () {},
+            child: Container(
+              width: 300,
+              height: 100,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(cardBlock.title, textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodyText1),
+                  Text(cardBlock.description, textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodyText1),
+                  Text(cardBlock.thumbUrl, textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodyText1),
+                  Text(cardBlock.url, textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodyText1),
+                ],
+              ),
+            )
         )
     );
   }
