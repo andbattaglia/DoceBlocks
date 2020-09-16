@@ -12,7 +12,7 @@ ThemeData _buildLightTheme() {
     primaryColorDark:  Color(0xFF003dcb),
     primaryColorLight:  Color(0xFF7b93ff),
     buttonColor: Color(0xFF3366ff),
-    selectedRowColor: Color(0xFFDADADA),
+    selectedRowColor: Color(0xFFeceef0),
     backgroundColor: Colors.white,
     iconTheme: new IconThemeData(
         color: Colors.white,

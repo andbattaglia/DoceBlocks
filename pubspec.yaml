@@ -60,4 +60,5 @@ flutter:
   uses-material-design: true
   assets:
     - assets/logo.svg
+    - assets/empty_slate.svg
     - assets/login.png

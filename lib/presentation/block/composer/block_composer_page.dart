@@ -155,9 +155,9 @@ class _BlockComposerPageState extends State<BlockComposerPage> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          CrossPlatformSvg.asset('assets/logo.svg'),
-                          SizedBox(height: DBDimens.PaddingHalf),
-                          Text(DBString.composer_description, textAlign: TextAlign.center, style: Theme.of(context).textTheme.headline5),
+                          CrossPlatformSvg.asset('assets/empty_slate.svg'),
+                          SizedBox(height: DBDimens.PaddingDefault),
+                          Text(DBString.composer_description, textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodyText1),
                           SizedBox(
                             height: DBDimens.Padding50,
                           ),

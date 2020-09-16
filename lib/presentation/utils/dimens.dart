@@ -5,6 +5,7 @@ class DBDimens{
   static const double PaddingDouble = 32.0;
 
   static const double Padding50 = 50.0;
+  static const double Padding100 = 100.0;
 
   static const double IconSizeSmall = 16.0;
   static const double IconSize = 24.0;

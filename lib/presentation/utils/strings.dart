@@ -35,5 +35,9 @@ class DBString{
   static const String add_block_thumb_hint = "Thumbnail url";
   static const String add_block_choose_size_title = "Card size";
 
+  static const String profile_title = "My Account";
+  static const String profile_signout = "Signout";
+
+
 
 }

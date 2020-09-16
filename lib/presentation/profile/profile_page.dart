@@ -1,7 +1,7 @@
 import 'package:doce_blocks/data/models/models.dart';
 import 'package:doce_blocks/domain/bloc/bloc.dart';
-import 'package:doce_blocks/domain/bloc/theme/theme_bloc.dart';
 import 'package:doce_blocks/presentation/utils/dimens.dart';
+import 'package:doce_blocks/presentation/utils/strings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:responsive_builder/responsive_builder.dart';
@@ -26,122 +26,108 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Widget _buildSmallPage(BuildContext context){
-    return Dialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(DBDimens.PaddingDefault),
-      ),
-      elevation: 0.0,
-      backgroundColor: Colors.transparent,
-      child: BlocBuilder<AuthenticationBloc, AuthenticationState>(
-        builder: (context, state){
-          if(state is AuthenticationSuccess){
-            return _buildContent(state.user);
-          }
-          return Container();
-        },
-      ),
-    );
+    return Scaffold(
+        appBar: AppBar(
+          backgroundColor: Theme.of(context).backgroundColor,
+          leading: IconButton(
+            icon: Icon(Icons.close),
+            onPressed: () => Navigator.pop(context),
+          ),
+          iconTheme: Theme.of(context).accentIconTheme,
+          title: Text(DBString.profile_title, style: Theme.of(context).textTheme.headline6),
+          elevation: 0.0,
+        ),
+        body: SafeArea(
+          child: _buildContent(),
+        ),);
   }
 
   Widget _buildLargePage(BuildContext context){
+//    return BlocBuilder<AuthenticationBloc, AuthenticationState>(
+//      builder: (context, state){
+//        if(state is AuthenticationSuccess){
+//          return Container(
+//            padding: EdgeInsets.only(left: DBDimens.PaddingDefault, right: DBDimens.PaddingDefault, top: DBDimens.PaddingDefault, bottom: DBDimens.PaddingHalf),
+//            child: _buildContent(state.user),
+//          );
+//        }
+//        return Container();
+//      },
+//    );
+  }
+
+  Widget _buildContent(){
     return BlocBuilder<AuthenticationBloc, AuthenticationState>(
       builder: (context, state){
         if(state is AuthenticationSuccess){
+
+          User user = state.user;
+
           return Container(
-            padding: EdgeInsets.only(left: DBDimens.PaddingDefault, right: DBDimens.PaddingDefault, top: DBDimens.PaddingDefault, bottom: DBDimens.PaddingHalf),
-            child: _buildContent(state.user),
+            color: Theme.of(context).backgroundColor,
+            child:
+            Column(
+              mainAxisSize: MainAxisSize.max,
+              children: [
+
+                SizedBox(height: DBDimens.PaddingDouble),
+
+                Container(
+                  margin: EdgeInsets.all(DBDimens.PaddingHalf),
+                  padding: EdgeInsets.all(DBDimens.PaddingQuarter),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(100),
+                      border: Border.all(width: 3, color: Theme.of(context).primaryColor)),
+                  child: CircleAvatar(
+                    backgroundColor: Theme.of(context).primaryColor,
+                    radius: DBDimens.RadiusAvatar,
+                    child: Text(user.getInitials(), style: Theme.of(context).accentTextTheme.headline4),
+                  ),
+                ),
+
+
+
+                SizedBox(height: DBDimens.PaddingDefault),
+                Text('${user.name} ${user.lastName}', style: Theme.of(context).textTheme.headline4),
+                SizedBox(height: DBDimens.PaddingHalf),
+                Text(user.email, textAlign: TextAlign.center, style: Theme.of(context).textTheme.subtitle1),
+                SizedBox(height: DBDimens.PaddingDouble),
+                Divider(color: Colors.grey, height: 1),
+
+                Expanded(
+                  child: Container(
+                    alignment: Alignment.bottomCenter,
+                    child: new InkWell(
+                      onTap: () {
+                        BlocProvider.of<AuthenticationBloc>(context).add(
+                          AuthenticationLoggedOut(),
+                        );
+                        Navigator.of(context).pop();
+                      },
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Icon(Icons.logout, color: Theme.of(context).accentIconTheme.color),
+                            SizedBox(width: DBDimens.PaddingHalf),
+                            Text(DBString.profile_signout, style: Theme.of(context).textTheme.bodyText1),
+                          ],
+                        ),
+                      ),
+                  ),
+                )
+
+
+              ],
+            )
           );
         }
-        return Container();
+
+        return Container(
+          color: Theme.of(context).backgroundColor,
+        );
       },
-    );
-  }
-
-  Widget _buildContent(User user){
-    return Container(
-      decoration: BoxDecoration(
-        color: Theme.of(context).backgroundColor,
-        borderRadius: BorderRadius.circular(DBDimens.CornerDefault),
-      ),
-      child: Container(
-        constraints: BoxConstraints(maxWidth: 400),
-        padding: EdgeInsets.all(DBDimens.PaddingDouble),
-        child:
-          Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _buildAvatar(context, user.getInitials()),
-              SizedBox(height: DBDimens.PaddingDefault),
-              Text('${user.name} ${user.lastName}', style: Theme.of(context).textTheme.headline6),
-              SizedBox(height: DBDimens.PaddingHalf),
-              Text(user.email, textAlign: TextAlign.center, style: Theme.of(context).textTheme.subtitle1),
-              SizedBox(height: DBDimens.PaddingDefault),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  _buildThemeSwitchButton(context),
-                  _buildLogoutButton(context),
-                ],
-              )
-            ],
-        ),
-      )
-    );
-  }
-
-  Widget _buildAvatar(BuildContext context, String name){
-    return Container(
-      child:CircleAvatar(
-        backgroundColor: Theme.of(context).primaryColor,
-        radius: DBDimens.RadiusAvatar,
-        child: Text(name, style: Theme.of(context).accentTextTheme.headline4),
-      ),
-    );
-  }
-
-  Widget _buildLogoutButton(BuildContext context){
-    return _buildInk(context, Icons.logout, () {
-      var deviceType = getDeviceType(MediaQuery.of(context).size);
-      if(deviceType == DeviceScreenType.mobile) {
-        Navigator.of(context).pop();
-      }
-
-      BlocProvider.of<AuthenticationBloc>(context).add(
-        AuthenticationLoggedOut(),
-      );
-
-    });
-  }
-
-  Widget _buildThemeSwitchButton(BuildContext context) {
-    return BlocBuilder<SettingsThemeBloc, SettingsThemeState>(
-        builder: (context, state) {
-
-          if(state is ChangeThemeLight){
-            return _buildInk(context, Icons.brightness_5, () {
-              BlocProvider.of<SettingsThemeBloc>(context).add(OnSettingsThemeChangedEvent(true));
-            });
-          }
-
-          if(state is ChangeThemeDark) {
-            return _buildInk(context, Icons.bedtime, () {
-              BlocProvider.of<SettingsThemeBloc>(context).add(OnSettingsThemeChangedEvent(false));
-            });
-          }
-
-          return Container();
-        }
-    );
-  }
-
-  Widget _buildInk(BuildContext context, IconData iconData, Function onPressed){
-    return RawMaterialButton(
-      onPressed: onPressed,
-      elevation: 0.0,
-      fillColor: Theme.of(context).selectedRowColor,
-      child: Icon(iconData, color: Theme.of(context).primaryIconTheme.color),
-      padding: EdgeInsets.all(15.0),
-      shape: CircleBorder(),
     );
   }
 }

@@ -117,10 +117,10 @@ class _SectionsListPageState extends State<SectionsListPage> {
         _sectionsBloc..add(DeleteSectionEvent(id: section.uid));
       },
       child: Container(
-        margin: EdgeInsets.all(DBDimens.PaddingHalf),
+        margin: EdgeInsets.only(top: DBDimens.PaddingHalf, right: DBDimens.PaddingHalf, bottom: DBDimens.PaddingHalf),
         decoration: BoxDecoration(
           color: section.isSelected ? Theme.of(context).selectedRowColor : Colors.transparent,
-          borderRadius: BorderRadius.all(Radius.circular(DBDimens.CornerDefault)),
+          borderRadius: BorderRadius.only(topRight: Radius.circular(DBDimens.CornerDefault), bottomRight: Radius.circular(DBDimens.CornerDefault)),
         ),
         child: new InkWell(
             borderRadius: BorderRadius.all(Radius.circular(DBDimens.CornerDefault)),

@@ -54,26 +54,46 @@ class _HomePageState extends State<HomePage> {
                 iconTheme: Theme.of(context).accentIconTheme,
                 elevation: 0.0,
                 title: Text(title, style: Theme.of(context).textTheme.headline6),
-                actions: <Widget>[_buildProfileAvatar(context)],
               ),
               drawer: Drawer(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.max,
-                  children: <Widget>[
-                    Expanded(
-                      flex: 1,
-                      child: DrawerHeader(
+                    children: <Widget>[
+
+                      Container(
+                        padding: EdgeInsets.only(top: DBDimens.Padding100, left: DBDimens.PaddingDefault, right: DBDimens.PaddingDefault, bottom: DBDimens.PaddingDefault),
                         child: CrossPlatformSvg.asset('assets/logo.svg'),
                       ),
-                    ),
-                    Expanded(
-                      flex: 5,
-                      child: SectionsListPage(),
-                    ),
-                  ],
+
+                      Divider(color: Colors.grey, height: 1),
+
+                      Container(
+                        margin: EdgeInsets.only(top: DBDimens.PaddingHalf, right: DBDimens.PaddingHalf, bottom: DBDimens.PaddingHalf),
+                        child: new InkWell(
+                          borderRadius: BorderRadius.only(topRight: Radius.circular(DBDimens.CornerDefault), bottomRight: Radius.circular(DBDimens.CornerDefault)),
+                          onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ProfilePage())),
+                          child: Container(
+                            padding: EdgeInsets.all(DBDimens.PaddingDefault),
+                            child: Row(
+                              children: [
+                                Icon(Icons.account_circle, color: Theme.of(context).primaryIconTheme.color),
+                                SizedBox(width: DBDimens.PaddingHalf),
+                                Expanded(child: Text(DBString.profile_title, style: Theme.of(context).textTheme.bodyText1)),
+                              ],
+                            ),
+                          )
+                        ),
+                      ),
+
+                      Divider(color: Colors.grey, height: 1),
+
+                      Expanded(
+                        child: SectionsListPage(),
+                      ),
+
+                    ],
+                  ),
                 ),
-              ),
               body: BlockComposerPage());
         });
   }
@@ -96,31 +116,6 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
       ),
-    );
-  }
-
-  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  //          OTHERS
-  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  Widget _buildProfileAvatar(BuildContext context) {
-    return BlocBuilder<AuthenticationBloc, AuthenticationState>(
-      builder: (context, state) {
-        if (state is AuthenticationSuccess) {
-          return Container(
-            padding: EdgeInsets.only(right: DBDimens.PaddingQuarter, left: DBDimens.PaddingQuarter),
-            child: GestureDetector(
-              onTap: () {
-                showDialog(context: context, builder: (BuildContext context) => ProfilePage());
-              },
-              child: CircleAvatar(
-                backgroundColor: Theme.of(context).primaryColorDark,
-                child: Text('${state.user.name[0]}${state.user.lastName[0]}', style: Theme.of(context).accentTextTheme.headline6),
-              ),
-            ),
-          );
-        }
-        return null;
-      },
     );
   }
 }
