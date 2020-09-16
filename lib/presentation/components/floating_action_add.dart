@@ -2,18 +2,28 @@ import 'package:flutter/material.dart';
 
 class FloatingActionAdd extends StatefulWidget {
 
+  final Stream<bool> stream;
+
   final VoidCallback onAdd;
   final VoidCallback onClose;
 
-  FloatingActionAdd({@required this.onAdd, @required this.onClose}) : super();
+  FloatingActionAdd({@required this.onAdd, @required this.onClose, this.stream}) : super();
 
   @override
   _FloatingActionAddState createState() => _FloatingActionAddState();
 }
 
 class _FloatingActionAddState extends State<FloatingActionAdd> {
+
   bool isOpen = false;
-//  PersistentBottomSheetController bottomSheetController;
+
+  @override
+  void initState() {
+    super.initState();
+    widget.stream.listen((value) {
+      _changeState(value);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +33,7 @@ class _FloatingActionAddState extends State<FloatingActionAdd> {
         child: Icon(Icons.close),
         onPressed: () {
           widget.onClose();
-          changeState(false);
+          _changeState(false);
         },
       );
     } else {
@@ -32,29 +42,13 @@ class _FloatingActionAddState extends State<FloatingActionAdd> {
         child: Icon(Icons.add),
         onPressed: () {
           widget.onAdd();
-          changeState(true);
+          _changeState(true);
         },
       );
-//      return FloatingActionButton(
-//          backgroundColor: Theme.of(context).primaryColor,
-//          child: Icon(Icons.add),
-//          onPressed: () {
-//            bottomSheetController = showBottomSheet(
-//                context: context,
-//                builder: (context) => Container(
-//                  constraints: BoxConstraints.expand(height: 150),
-//                  color: Theme.of(context).selectedRowColor,
-//                  child: WidgetListPage(isHorizontal: true),
-//                ));
-//            changeState(true);
-//            bottomSheetController.closed.then((value) {
-//              changeState(false);
-//            });
-//          });
     }
   }
 
-  void changeState(bool value) {
+  void _changeState(bool value) {
     setState(() {
       isOpen = value;
     });

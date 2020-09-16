@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:doce_blocks/presentation/block/composer/add_block_page.dart';
 import 'package:doce_blocks/presentation/block/draggableitem/draggable_item.dart';
 import 'package:doce_blocks/presentation/components/floating_action_add.dart';
@@ -15,8 +17,10 @@ class BlockComposerPage extends StatefulWidget {
 class _BlockComposerPageState extends State<BlockComposerPage> {
 
   bool _isEditMode = false;
+  StreamController<bool> _floatingButtonController = StreamController<bool>();
 
   List<Widget> itemsList = [];
+
 
   @override
   Widget build(BuildContext context) {
@@ -45,8 +49,12 @@ class _BlockComposerPageState extends State<BlockComposerPage> {
             setState(() {
               _isEditMode = false;
             });
-          }),
-      body: _isEditMode ? _buildEditMode(context) : _buildContent(context),
+          },
+          stream: _floatingButtonController.stream,
+      ),
+      body: SafeArea(
+        child: _isEditMode ? _buildEditMode(context) : _buildContent(context),
+      )
     );
   }
 
@@ -55,88 +63,22 @@ class _BlockComposerPageState extends State<BlockComposerPage> {
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   Widget _buildLargePage(BuildContext context) {
     return Container();
-//    return Container(
-//        margin: EdgeInsets.only(top: DBDimens.PaddingDefault, bottom: DBDimens.PaddingDefault, right: DBDimens.PaddingDefault),
-//        decoration: BoxDecoration(
-//          color: Theme.of(context).backgroundColor,
-//          borderRadius: BorderRadius.circular(DBDimens.CornerDefault),
-//        ),
-//        child: Stack(
-//          children: [
-//            Row(
-//              children: [
-//                Expanded(
-//                    flex: 9,
-//                    child: Container(
-//                      decoration: BoxDecoration(
-//                        color: Theme.of(context).selectedRowColor,
-//                        borderRadius: BorderRadius.only(topLeft: Radius.circular(DBDimens.CornerDefault), bottomLeft: Radius.circular(DBDimens.CornerDefault)),
-//                      ),
-//                    )),
-//                Expanded(
-//                    flex: 1,
-//                    child: Container(
-//                      decoration: BoxDecoration(
-//                        color: Theme.of(context).selectedRowColor,
-//                        borderRadius: BorderRadius.only(topRight: Radius.circular(DBDimens.CornerDefault), bottomRight: Radius.circular(DBDimens.CornerDefault)),
-//                      ),
-//                      child: WidgetListPage(isHorizontal: false),
-//                    ))
-//              ],
-//            ),
-//            Row(
-//              children: [
-//                Expanded(
-//                    flex: 9,
-//                    child: Container(
-//                      decoration: BoxDecoration(
-//                        color: Theme.of(context).backgroundColor,
-//                        borderRadius: BorderRadius.all(Radius.circular(DBDimens.CornerDefault)),
-//                      ),
-//                      child: _buildContent(context),
-//                    )),
-//                Expanded(flex: 1, child: Container())
-//              ],
-//            ),
-//          ],
-//        ));
   }
 
   Widget _buildContent(BuildContext context) {
     return Container(
-      child: Text("CONTENT"),
+        padding: EdgeInsets.only(left: DBDimens.Padding50, right: DBDimens.Padding50),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(DBString.composer_empty_slate_title, textAlign: TextAlign.center, style: Theme.of(context).textTheme.headline4),
+            SizedBox(height: DBDimens.PaddingDouble),
+            CrossPlatformSvg.asset('assets/empty_slate_section.svg', height: 180, width: 180),
+            SizedBox(height: DBDimens.PaddingDouble),
+            Text(DBString.composer_empty_slate_description, textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodyText1),
+          ],
+        )
     );
-//    return Container(
-//      child: DragTarget(
-//        builder: (context, List<String> candidateData, rejectedData) {
-//          if (itemsList.length > 0) {
-//            return ListView.builder(
-//                itemCount: itemsList.length,
-//                itemBuilder: (context, index) {
-//                  return itemsList[index];
-//                });
-//          } else {
-//            return Container();
-//          }
-//        },
-//        onWillAccept: (data) {
-//          return true;
-//        },
-//        onAccept: (data) {
-//          setState(() {
-//            switch (data) {
-//              case "DRAGGABLE_ITEM":
-//                itemsList.add(DraggableItem());
-//                break;
-//            }
-//            var deviceType = getDeviceType(MediaQuery.of(context).size);
-//            if (deviceType == DeviceScreenType.mobile) {
-//              Navigator.of(context).pop();
-//            }
-//          });
-//        },
-//      ),
-//    );
   }
 
   Widget _buildEditMode(BuildContext context) {
@@ -157,7 +99,7 @@ class _BlockComposerPageState extends State<BlockComposerPage> {
                         children: [
                           CrossPlatformSvg.asset('assets/empty_slate.svg'),
                           SizedBox(height: DBDimens.PaddingDefault),
-                          Text(DBString.composer_description, textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodyText1),
+                          Text(DBString.composer_drag_drop_description, textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodyText1),
                           SizedBox(
                             height: DBDimens.Padding50,
                           ),
@@ -175,6 +117,7 @@ class _BlockComposerPageState extends State<BlockComposerPage> {
                         setState(() {
                           _isEditMode = false;
                         });
+                        _floatingButtonController.add(false);
                         Navigator.push(context, MaterialPageRoute(builder: (context) => AddBlockPage()));
                         break;
                     }

@@ -61,4 +61,5 @@ flutter:
   assets:
     - assets/logo.svg
     - assets/empty_slate.svg
+    - assets/empty_slate_section.svg
     - assets/login.png

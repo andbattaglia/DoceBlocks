@@ -24,7 +24,9 @@ class DBString{
   static const String add_section_adding_success = "Your section was added successfully";
   static const String add_section_removing_success = "Your section was removed successfully";
 
-  static const String composer_description = "Drop your blocks here and configurate later";
+  static const String composer_empty_slate_title = "New Section";
+  static const String composer_empty_slate_description = "Populate your section adding content with + button at the bottom";
+  static const String composer_drag_drop_description = "Drop your blocks here and configurate later";
 
   static const String add_block_article_title = "New Article";
   static const String add_block_list_title = "New List";
@@ -37,6 +39,10 @@ class DBString{
 
   static const String profile_title = "My Account";
   static const String profile_signout = "Signout";
+
+  static const String draggable_item_article = "Article";
+  static const String draggable_item_video = "Video";
+  static const String draggable_item_list = "List";
 
 
 

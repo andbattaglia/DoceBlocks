@@ -24,8 +24,8 @@ class DraggableItem extends StatelessWidget {
 
   Widget _buildContent(BuildContext context) {
     return Container(
-      width: 210,
-      height: 170,
+      width: 210, //TODO: to calculate
+      height: 170, //TODO: to calculate
       padding: EdgeInsets.only(left: DBDimens.PaddingDefault, right: DBDimens.PaddingDefault),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
