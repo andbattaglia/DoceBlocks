@@ -18,7 +18,8 @@ class SectionRepositoryImpl implements SectionRepository {
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //          SINGLETON
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  static final SectionRepositoryImpl _singleton = SectionRepositoryImpl._internal();
+  static final SectionRepositoryImpl _singleton =
+      SectionRepositoryImpl._internal();
 
   FirebaseDataSource _firebaseDataSource;
 
@@ -32,12 +33,15 @@ class SectionRepositoryImpl implements SectionRepository {
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //          IMPLEMENTATION
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  final BehaviorSubject<List<Section>> _subjectCachedSections = new BehaviorSubject<List<Section>>.seeded(new List());
-  final BehaviorSubject<Section> _subjectSelectedSection = new BehaviorSubject<Section>();
+  final BehaviorSubject<List<Section>> _subjectCachedSections =
+      new BehaviorSubject<List<Section>>.seeded(new List());
+  final BehaviorSubject<Section> _subjectSelectedSection =
+      new BehaviorSubject<Section>();
 
   @override
   void setCurrentSection(String uid) {
-    final Section page = _subjectCachedSections.value.firstWhere((element) => element.uid == uid);
+    final Section page = _subjectCachedSections.value
+        .firstWhere((element) => element.uid == uid);
     _subjectSelectedSection.add(page);
 
     _subjectCachedSections.add(setSelected(_subjectCachedSections.value));
@@ -45,25 +49,29 @@ class SectionRepositoryImpl implements SectionRepository {
 
   @override
   void addSection(String userId, String name, String icon) {
-    _firebaseDataSource.addSection(userId, name, icon).then((value) => _firebaseDataSource.getSections(userId)).then((value) {
+    _firebaseDataSource
+        .addSection(userId, name, icon)
+        .then((value) => _firebaseDataSource.getSections(userId))
+        .then((value) {
       _subjectCachedSections.add(setSelected(value));
     });
   }
 
   @override
   Future<bool> getSections(String userId) async {
-    await _firebaseDataSource.getSections(userId)
-        .then((remoteValue) {
-          _subjectCachedSections.add(setSelected(remoteValue));
-          return true;
-        });
+    return await _firebaseDataSource.getSections(userId).then((remoteValue) {
+      _subjectCachedSections.add(setSelected(remoteValue));
+      return true;
+    });
   }
 
   @override
   void deleteSection(String userId, String pageId) async {
-    await _firebaseDataSource.deleteSection(pageId)
+    await _firebaseDataSource
+        .deleteSection(pageId)
         .then((value) => _firebaseDataSource.getSections(userId))
-        .then((value) =>_subjectCachedSections.add(setSelected(value, id: pageId)));
+        .then((value) =>
+            _subjectCachedSections.add(setSelected(value, id: pageId)));
   }
 
   @override

@@ -70,6 +70,9 @@ class _BlockComposerPageState extends State<BlockComposerPage> {
     return Container();
   }
 
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  //          CONTENT
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   Widget _buildContent(BuildContext context) {
     return StreamBuilder(
         stream: _blocksBloc.getBlocksStream(),
@@ -202,6 +205,9 @@ class _BlockComposerPageState extends State<BlockComposerPage> {
     );
   }
 
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  //          EMPTY SLATE
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   Widget _buildEmptySlate(BuildContext context) {
     return Container(
         color: Theme.of(context).backgroundColor,
@@ -224,16 +230,16 @@ class _BlockComposerPageState extends State<BlockComposerPage> {
         ));
   }
 
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  //          CARDS
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   Widget _buildCardBlock(BuildContext context, CardBlock cardBlock) {
     return InkWell(
         onTap: () {},
         child: Container(
           width: double.infinity,
           padding: EdgeInsets.only(
-              top: DBDimens.PaddingHalf,
-              bottom: DBDimens.PaddingHalf,
-              right: DBDimens.PaddingDefault,
-              left: DBDimens.PaddingDefault),
+              top: DBDimens.PaddingHalf, bottom: DBDimens.PaddingHalf),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -260,6 +266,8 @@ class _BlockComposerPageState extends State<BlockComposerPage> {
                   textAlign: TextAlign.start,
                   style: Theme.of(context).textTheme.bodyText2),
               SizedBox(height: DBDimens.PaddingDefault),
+              _buildCardFooter(context),
+              SizedBox(height: DBDimens.PaddingDefault),
               Divider(color: Colors.grey, height: 1),
             ],
           ),
@@ -272,35 +280,29 @@ class _BlockComposerPageState extends State<BlockComposerPage> {
         child: Container(
             width: double.infinity,
             padding: EdgeInsets.only(
-                top: DBDimens.PaddingHalf,
-                bottom: DBDimens.PaddingHalf,
-                right: DBDimens.PaddingDefault,
-                left: DBDimens.PaddingDefault),
+                top: DBDimens.PaddingHalf, bottom: DBDimens.PaddingHalf),
             child: Column(
               children: [
                 Row(
                   children: [
-
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(cardBlock.title,
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                                textAlign: TextAlign.start,
-                                style: Theme.of(context).textTheme.headline6),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              textAlign: TextAlign.start,
+                              style: Theme.of(context).textTheme.headline6),
                           SizedBox(height: DBDimens.PaddingHalf),
                           Text(cardBlock.description,
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                                textAlign: TextAlign.start,
-                                style: Theme.of(context).textTheme.bodyText2),
-
-                          ],
-                        ),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              textAlign: TextAlign.start,
+                              style: Theme.of(context).textTheme.bodyText2),
+                        ],
+                      ),
                     ),
-
                     ClipRRect(
                       borderRadius: BorderRadius.circular(6.0),
                       child: FadeInImage.assetNetwork(
@@ -314,10 +316,89 @@ class _BlockComposerPageState extends State<BlockComposerPage> {
                     SizedBox(height: DBDimens.PaddingDefault),
                   ],
                 ),
-
+                SizedBox(height: DBDimens.PaddingDefault),
+                _buildCardFooter(context),
                 SizedBox(height: DBDimens.PaddingDefault),
                 Divider(color: Colors.grey, height: 1),
               ],
             )));
+  }
+
+  Widget _buildCardFooter(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(flex: 1, child: Text("by Andrea")),
+        Icon(
+          Icons.book,
+          color: Colors.grey[400],
+        ),
+        SizedBox(width: DBDimens.PaddingHalf),
+        InkWell(
+          onTap: () {
+            showModalBottomSheet(
+                context: context,
+                builder: (context) => _buildCardBottomSheet(context));
+          },
+          child: Icon(
+            Icons.more_horiz,
+            color: Colors.grey[400],
+          ),
+        )
+      ],
+    );
+  }
+
+  Widget _buildCardBottomSheet(BuildContext context) {
+    return Wrap(children: <Widget>[
+      Container(
+        child: Container(
+          decoration: new BoxDecoration(
+              color: Colors.white,
+              borderRadius: new BorderRadius.only(
+                  topLeft: const Radius.circular(25.0),
+                  topRight: const Radius.circular(25.0))),
+          child: SafeArea(
+            child: Container(
+              child: Column(
+                children: [
+                  _buildIconSelector(
+                      context,
+                      Icons.edit,
+                      DBString.standard_edit,
+                      () => Navigator.of(context).pop()),
+                  _buildIconSelector(
+                      context,
+                      Icons.delete,
+                      DBString.standard_remove,
+                      () => Navigator.of(context).pop()),
+                  _buildIconSelector(
+                      context,
+                      Icons.close,
+                      DBString.standard_cancel,
+                      () => Navigator.of(context).pop()),
+                ],
+              ),
+            ),
+          ),
+        ),
+      )
+    ]);
+  }
+
+  Widget _buildIconSelector(
+      BuildContext context, IconData icon, String text, VoidCallback onAction) {
+    return InkWell(
+      child: Container(
+          color: Theme.of(context).backgroundColor,
+          padding: EdgeInsets.all(DBDimens.PaddingDefault),
+          child: Row(
+            children: [
+              Icon(icon, color: Colors.grey[400]),
+              SizedBox(width: DBDimens.PaddingDefault),
+              Expanded(child: Text(text)),
+            ],
+          )),
+      onTap: onAction,
+    );
   }
 }
