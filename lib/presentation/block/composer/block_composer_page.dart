@@ -18,7 +18,6 @@ class BlockComposerPage extends StatefulWidget {
 }
 
 class _BlockComposerPageState extends State<BlockComposerPage> {
-
   bool _isEditMode = false;
   StreamController<bool> _floatingButtonController = StreamController<bool>();
 
@@ -46,7 +45,7 @@ class _BlockComposerPageState extends State<BlockComposerPage> {
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   Widget _buildSmallPage(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionAdd(
+        floatingActionButton: FloatingActionAdd(
           onAdd: () {
             setState(() {
               _isEditMode = true;
@@ -58,11 +57,10 @@ class _BlockComposerPageState extends State<BlockComposerPage> {
             });
           },
           stream: _floatingButtonController.stream,
-      ),
-      body: SafeArea(
-        child: _isEditMode ? _buildEditMode(context) : _buildContent(context),
-      )
-    );
+        ),
+        body: SafeArea(
+          child: _isEditMode ? _buildEditMode(context) : _buildContent(context),
+        ));
   }
 
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -73,32 +71,31 @@ class _BlockComposerPageState extends State<BlockComposerPage> {
   }
 
   Widget _buildContent(BuildContext context) {
-
     return StreamBuilder(
         stream: _blocksBloc.getBlocksStream(),
         builder: (context, AsyncSnapshot<List<Block>> snapshot) {
           if (snapshot.hasData) {
             var blockList = snapshot.data;
 
-            if(blockList.isNotEmpty){
+            if (blockList.isNotEmpty) {
               return Container(
-                padding: EdgeInsets.all(DBDimens.PaddingDefault),
-                color: Theme.of(context).backgroundColor,
-                child: ListView.builder(
-                    itemCount: blockList.length,
-                    itemBuilder: (context, index) {
+                  padding: EdgeInsets.all(DBDimens.PaddingDefault),
+                  color: Theme.of(context).backgroundColor,
+                  child: ListView.builder(
+                      itemCount: blockList.length,
+                      itemBuilder: (context, index) {
+                        Block block = blockList[index];
 
-                      Block block = blockList[index];
-
-                      switch(block.type){
-                        case BlockType.CARD:
-                          CardBlock cardBlock = block as CardBlock;
-                          return _buildCardBlock(context, cardBlock);
-                        default:
-                          return Container();
-                      }
-                    })
-              );
+                        switch (block.type) {
+                          case BlockType.CARD:
+                            CardBlock cardBlock = block as CardBlock;
+                            return (cardBlock.size == CardSize.BIG)
+                                ? _buildCardBlock(context, cardBlock)
+                                : _buildSmallCardBlock(context, cardBlock);
+                          default:
+                            return Container();
+                        }
+                      }));
             } else {
               return _buildEmptySlate(context);
             }
@@ -114,119 +111,213 @@ class _BlockComposerPageState extends State<BlockComposerPage> {
       child: Column(
         mainAxisSize: MainAxisSize.max,
         children: [
-
           Expanded(
-            flex: 6,
-            child: Container(
-              child: DragTarget(
-                builder: (context, List<String> candidateData, rejectedData) {
-                  return Container(
-                      padding: EdgeInsets.only(left: DBDimens.Padding50, right: DBDimens.Padding50),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          CrossPlatformSvg.asset('assets/empty_slate.svg'),
-                          SizedBox(height: DBDimens.PaddingDefault),
-                          Text(DBString.composer_drag_drop_description, textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodyText1),
-                          SizedBox(
-                            height: DBDimens.Padding50,
-                          ),
-                        ],
-                      )
-                  );
-                },
-                onWillAccept: (data) {
-                  return true;
-                },
-                onAccept: (data) {
-                  setState(() {
-                    switch (Type.get[data]) {
-                      case Type.ARTICLE:
-                        setState(() {
-                          _isEditMode = false;
-                        });
-                        _floatingButtonController.add(false);
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => AddBlockPage()));
-                        break;
-                      case Type.VIDEO:
-                        setState(() {
-                          _isEditMode = false;
-                        });
-                        _floatingButtonController.add(false);
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => AddBlockPage()));
-                        break;
-                      case Type.LIST:
-                        setState(() {
-                          _isEditMode = false;
-                        });
-                        _floatingButtonController.add(false);
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => AddBlockPage()));
-                        break;
-                    }
-                  });
-                },
-              ),
-            )
-          ),
-
+              flex: 6,
+              child: Container(
+                child: DragTarget(
+                  builder: (context, List<String> candidateData, rejectedData) {
+                    return Container(
+                        padding: EdgeInsets.only(
+                            left: DBDimens.Padding50,
+                            right: DBDimens.Padding50),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            CrossPlatformSvg.asset('assets/empty_slate.svg'),
+                            SizedBox(height: DBDimens.PaddingDefault),
+                            Text(DBString.composer_drag_drop_description,
+                                textAlign: TextAlign.center,
+                                style: Theme.of(context).textTheme.bodyText1),
+                            SizedBox(
+                              height: DBDimens.Padding50,
+                            ),
+                          ],
+                        ));
+                  },
+                  onWillAccept: (data) {
+                    return true;
+                  },
+                  onAccept: (data) {
+                    setState(() {
+                      switch (Type.get[data]) {
+                        case Type.ARTICLE:
+                          setState(() {
+                            _isEditMode = false;
+                          });
+                          _floatingButtonController.add(false);
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => AddBlockPage()));
+                          break;
+                        case Type.VIDEO:
+                          setState(() {
+                            _isEditMode = false;
+                          });
+                          _floatingButtonController.add(false);
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => AddBlockPage()));
+                          break;
+                        case Type.LIST:
+                          setState(() {
+                            _isEditMode = false;
+                          });
+                          _floatingButtonController.add(false);
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => AddBlockPage()));
+                          break;
+                      }
+                    });
+                  },
+                ),
+              )),
           Divider(color: Colors.grey, height: 1),
-
           Expanded(
-            flex: 5,
-            child: Container(
-              child: GridView.count(
-                crossAxisCount: 2,
-                childAspectRatio: 1.2 / 1.0,
-                children: [
-                  Container(child: DraggableItem(type: Type.ARTICLE, name: DBString.draggable_item_article)),
-                  Container(child: DraggableItem(type: Type.LIST, name: DBString.draggable_item_list)),
-                  Container(child: DraggableItem(type: Type.VIDEO, name: DBString.draggable_item_video))
-                ]
-              ),
-            )
-          )
+              flex: 5,
+              child: Container(
+                child: GridView.count(
+                    crossAxisCount: 2,
+                    childAspectRatio: 1.2 / 1.0,
+                    children: [
+                      Container(
+                          child: DraggableItem(
+                              type: Type.ARTICLE,
+                              name: DBString.draggable_item_article)),
+                      Container(
+                          child: DraggableItem(
+                              type: Type.LIST,
+                              name: DBString.draggable_item_list)),
+                      Container(
+                          child: DraggableItem(
+                              type: Type.VIDEO,
+                              name: DBString.draggable_item_video))
+                    ]),
+              ))
         ],
       ),
     );
   }
 
-  Widget _buildEmptySlate(BuildContext context){
+  Widget _buildEmptySlate(BuildContext context) {
     return Container(
         color: Theme.of(context).backgroundColor,
-        padding: EdgeInsets.only(left: DBDimens.Padding50, right: DBDimens.Padding50),
+        padding: EdgeInsets.only(
+            left: DBDimens.Padding50, right: DBDimens.Padding50),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(DBString.composer_empty_slate_title, textAlign: TextAlign.center, style: Theme.of(context).textTheme.headline4),
+            Text(DBString.composer_empty_slate_title,
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.headline4),
             SizedBox(height: DBDimens.PaddingDouble),
-            CrossPlatformSvg.asset('assets/empty_slate_section.svg', height: 180, width: 180),
+            CrossPlatformSvg.asset('assets/empty_slate_section.svg',
+                height: 180, width: 180),
             SizedBox(height: DBDimens.PaddingDouble),
-            Text(DBString.composer_empty_slate_description, textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodyText1),
+            Text(DBString.composer_empty_slate_description,
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.bodyText1),
           ],
-        )
-    );
+        ));
   }
 
-  Widget _buildCardBlock(BuildContext context, CardBlock cardBlock){
-    return Card(
-        color: Colors.lightBlueAccent,
-        child: InkWell(
-            splashColor: Colors.blue.withAlpha(30),
-            onTap: () {},
-            child: Container(
-              width: 300,
-              height: 100,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(cardBlock.title, textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodyText1),
-                  Text(cardBlock.description, textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodyText1),
-                  Text(cardBlock.thumbUrl, textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodyText1),
-                  Text(cardBlock.url, textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodyText1),
-                ],
+  Widget _buildCardBlock(BuildContext context, CardBlock cardBlock) {
+    return InkWell(
+        onTap: () {},
+        child: Container(
+          width: double.infinity,
+          padding: EdgeInsets.only(
+              top: DBDimens.PaddingHalf,
+              bottom: DBDimens.PaddingHalf,
+              right: DBDimens.PaddingDefault,
+              left: DBDimens.PaddingDefault),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(6.0),
+                child: FadeInImage.assetNetwork(
+                  placeholder: 'assets/placeholder.png',
+                  image: cardBlock.thumbUrl,
+                  height: 174.0,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                ),
               ),
-            )
-        )
-    );
+              SizedBox(height: DBDimens.PaddingDefault),
+              Text(cardBlock.title,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.start,
+                  style: Theme.of(context).textTheme.headline6),
+              SizedBox(height: DBDimens.PaddingHalf),
+              Text(cardBlock.description,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.start,
+                  style: Theme.of(context).textTheme.bodyText2),
+              SizedBox(height: DBDimens.PaddingDefault),
+              Divider(color: Colors.grey, height: 1),
+            ],
+          ),
+        ));
+  }
+
+  Widget _buildSmallCardBlock(BuildContext context, CardBlock cardBlock) {
+    return InkWell(
+        onTap: () {},
+        child: Container(
+            width: double.infinity,
+            padding: EdgeInsets.only(
+                top: DBDimens.PaddingHalf,
+                bottom: DBDimens.PaddingHalf,
+                right: DBDimens.PaddingDefault,
+                left: DBDimens.PaddingDefault),
+            child: Column(
+              children: [
+                Row(
+                  children: [
+
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(cardBlock.title,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                textAlign: TextAlign.start,
+                                style: Theme.of(context).textTheme.headline6),
+                          SizedBox(height: DBDimens.PaddingHalf),
+                          Text(cardBlock.description,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                textAlign: TextAlign.start,
+                                style: Theme.of(context).textTheme.bodyText2),
+
+                          ],
+                        ),
+                    ),
+
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(6.0),
+                      child: FadeInImage.assetNetwork(
+                        placeholder: 'assets/placeholder.png',
+                        image: cardBlock.thumbUrl,
+                        height: 75,
+                        width: 75,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    SizedBox(height: DBDimens.PaddingDefault),
+                  ],
+                ),
+
+                SizedBox(height: DBDimens.PaddingDefault),
+                Divider(color: Colors.grey, height: 1),
+              ],
+            )));
   }
 }
