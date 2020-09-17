@@ -47,4 +47,6 @@ class DBString {
   static const String draggable_item_article = "Article";
   static const String draggable_item_video = "Video";
   static const String draggable_item_list = "List";
+
+  static const String player_title = "Player";
 }

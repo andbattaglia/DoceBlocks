@@ -1,8 +1,6 @@
 import 'package:doce_blocks/data/models/models.dart';
 import 'package:doce_blocks/domain/bloc/blocks/blocks_bloc.dart';
-import 'package:doce_blocks/domain/bloc/sections/sections_bloc.dart';
 import 'package:doce_blocks/presentation/block/composer/select_card_props_page.dart';
-import 'package:doce_blocks/presentation/dbicon/select_icon_page.dart';
 import 'package:doce_blocks/presentation/utils/dimens.dart';
 import 'package:doce_blocks/presentation/utils/strings.dart';
 import 'package:flutter/material.dart';
@@ -184,7 +182,7 @@ class _AddBlockPageState extends State<AddBlockPage> {
                       padding: EdgeInsets.all(DBDimens.PaddingDefault),
                       child: Row(
                         children: [
-                          Icon(Icons.filter,
+                          Icon(Icons.apps,
                               color: Theme.of(context).accentIconTheme.color),
                           SizedBox(width: DBDimens.PaddingDefault),
                           Expanded(child: Text(cardSize.tag)),
@@ -206,7 +204,7 @@ class _AddBlockPageState extends State<AddBlockPage> {
                       padding: EdgeInsets.all(DBDimens.PaddingDefault),
                       child: Row(
                         children: [
-                          Icon(Icons.filter,
+                          Icon(Icons.apps,
                               color: Theme.of(context).accentIconTheme.color),
                           SizedBox(width: DBDimens.PaddingDefault),
                           Expanded(child: Text(cardSize.tag)),

@@ -6,6 +6,7 @@ import 'package:doce_blocks/domain/bloc/bloc.dart';
 import 'package:doce_blocks/presentation/block/composer/add_block_page.dart';
 import 'package:doce_blocks/presentation/block/draggableitem/draggable_item.dart';
 import 'package:doce_blocks/presentation/components/floating_action_add.dart';
+import 'package:doce_blocks/presentation/player/player_page.dart';
 import 'package:doce_blocks/presentation/utils/cross_platform_svg.dart';
 import 'package:doce_blocks/presentation/utils/dimens.dart';
 import 'package:doce_blocks/presentation/utils/strings.dart';
@@ -222,7 +223,7 @@ class _BlockComposerPageState extends State<BlockComposerPage> {
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   Widget _buildCardBlock(BuildContext context, CardBlock cardBlock) {
     return InkWell(
-        onTap: () {},
+        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => PlayerPage(url: cardBlock.url,))),
         child: Container(
           width: double.infinity,
           padding: EdgeInsets.only(
@@ -263,7 +264,7 @@ class _BlockComposerPageState extends State<BlockComposerPage> {
 
   Widget _buildSmallCardBlock(BuildContext context, CardBlock cardBlock) {
     return InkWell(
-        onTap: () {},
+        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => PlayerPage(url: cardBlock.url,))),
         child: Container(
             width: double.infinity,
             padding: EdgeInsets.only(
