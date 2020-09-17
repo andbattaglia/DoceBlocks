@@ -33,10 +33,24 @@ class BlocksBloc extends Bloc<BlocksEvent, BlocksState> {
 
       blockRepository.addBlocks(blocks);
     }
+
+    if (event is AddCardBlockEvent) {
+      final blockRepository = Injector.provideBlockRepository();
+      final sectionRepository = Injector.provideSectionRepository();
+      final selectedSectionId = sectionRepository.getSelectedSectionId();
+      final block = event.block;
+      block.sections.add(selectedSectionId);
+      blockRepository.addCardBlock(block);
+    }
   }
 
   ValueStream<List<Block>> getBlocksStream() {
     var blockRepository = Injector.provideBlockRepository();
     return blockRepository.observeCachedBlocks();
+  }
+
+  ValueStream<CardSize> getSelectedCardSizeStream() {
+    var blockRepository = Injector.provideBlockRepository();
+    return blockRepository.observeSelectedCardSize();
   }
 }

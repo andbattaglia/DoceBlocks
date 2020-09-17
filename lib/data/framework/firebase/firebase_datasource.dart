@@ -18,7 +18,9 @@ abstract class FirebaseDataSource {
   Future<List<Section>> getSections(String userId);
 
   Future<List<String>> addBlocks(List<Map<String, dynamic>> blocks);
+  Future<String> addBlock(Map<String, dynamic> block);
   Future<List<Block>> getBlocks(String pageId);
+  Future<void> deleteBlock(String blockId);
 }
 
 class FirebaseDataSourceImpl extends FirebaseDataSource {
@@ -28,7 +30,8 @@ class FirebaseDataSourceImpl extends FirebaseDataSource {
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //          SINGLETON
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  static final FirebaseDataSourceImpl _singleton = FirebaseDataSourceImpl._internal();
+  static final FirebaseDataSourceImpl _singleton =
+      FirebaseDataSourceImpl._internal();
 
   factory FirebaseDataSourceImpl({FirebaseAuth auth, Firestore db}) {
     _singleton._auth = auth;
@@ -46,7 +49,8 @@ class FirebaseDataSourceImpl extends FirebaseDataSource {
     @required String email,
     @required String password,
   }) async {
-    var authResp = await _auth.signInWithEmailAndPassword(email: email, password: password);
+    var authResp = await _auth.signInWithEmailAndPassword(
+        email: email, password: password);
     var user = await _getUser(authResp.user.uid);
     return user;
   }
@@ -94,7 +98,8 @@ class FirebaseDataSourceImpl extends FirebaseDataSource {
   Future<List<Section>> getSections(String userId) async {
     final CollectionReference dbReference = _db.collection('sections');
 
-    final snapshot = await dbReference.where('userId', isEqualTo: userId).getDocuments();
+    final snapshot =
+        await dbReference.where('userId', isEqualTo: userId).getDocuments();
 
     var result = List<Section>();
 
@@ -109,6 +114,17 @@ class FirebaseDataSourceImpl extends FirebaseDataSource {
   Future<void> deleteSection(String sectionId) {
     final CollectionReference dbReference = _db.collection('sections');
     return dbReference.document(sectionId).delete();
+  }
+
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  //          BLOCK METHOD
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  @override
+  Future<String> addBlock(Map<String, dynamic> block) async {
+    final CollectionReference dbReference = _db.collection('blocks');
+    final ref = await dbReference.add(block);
+    return ref.documentID;
   }
 
   @override
@@ -128,9 +144,17 @@ class FirebaseDataSourceImpl extends FirebaseDataSource {
   @override
   Future<List<Block>> getBlocks(String pageId) async {
     final CollectionReference dbReference = _db.collection('blocks');
-    final snapshot = await dbReference.where('sections', arrayContains: pageId).getDocuments();
+    final snapshot = await dbReference
+        .where('sections', arrayContains: pageId)
+        .getDocuments();
     final blocks = snapshot.documents.map(Block.fromSnapshot).toList();
 
     return blocks;
+  }
+
+  @override
+  Future<void> deleteBlock(String blockId) {
+    final CollectionReference dbReference = _db.collection('blocks');
+    return dbReference.document(blockId).delete();
   }
 }

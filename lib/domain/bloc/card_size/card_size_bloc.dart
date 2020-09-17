@@ -22,5 +22,10 @@ class CardSizeBloc extends Bloc<CardSizeEvent, CardSizeState> {
 
       yield GetCardSizeInitial(values: values);
     }
+
+    if (event is SelectCardSizeEvent) {
+      final blockRepository = Injector.provideBlockRepository();
+      blockRepository.selectCardSize(event.cardSize);
+    }
   }
 }

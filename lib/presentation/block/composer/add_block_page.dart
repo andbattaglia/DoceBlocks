@@ -20,11 +20,12 @@ class _AddBlockPageState extends State<AddBlockPage> {
   final _inputUrlController = TextEditingController();
   final _inputThumbUrlController = TextEditingController();
 
-  CardSize selectedSize;
+  BlocksBloc _blockBloc;
 
   @override
   void initState() {
     super.initState();
+    _blockBloc = new BlocksBloc();
   }
 
   @override
@@ -55,7 +56,8 @@ class _AddBlockPageState extends State<AddBlockPage> {
               onPressed: () => Navigator.pop(context),
             ),
             iconTheme: Theme.of(context).accentIconTheme,
-            title: Text(DBString.add_block_article_title, style: Theme.of(context).textTheme.headline6),
+            title: Text(DBString.add_block_article_title,
+                style: Theme.of(context).textTheme.headline6),
             elevation: 0.0,
             actions: [
               FlatButton(
@@ -65,19 +67,19 @@ class _AddBlockPageState extends State<AddBlockPage> {
                   final description = _inputDescriptionController.text.trim();
                   final thumbUrl = _inputThumbUrlController.text.trim();
 
-                  if (url.isNotEmpty && title.isNotEmpty && description.isNotEmpty && thumbUrl.isNotEmpty) {
+                  if (url.isNotEmpty &&
+                      title.isNotEmpty &&
+                      description.isNotEmpty &&
+                      thumbUrl.isNotEmpty) {
                     BlocProvider.of<BlocksBloc>(context).add(
-                      AddBlocksEvent(
-                        blocks: [
-                          CardBlock(
-                            url: url,
-                            title: title,
-                            description: description,
-                            thumbUrl: thumbUrl,
-                            size: selectedSize,
-                            sections: [],
-                          ),
-                        ],
+                      AddCardBlockEvent(
+                        block: CardBlock(
+                          url: url,
+                          title: title,
+                          description: description,
+                          thumbUrl: thumbUrl,
+                          sections: [],
+                        ),
                       ),
                     );
 
@@ -86,7 +88,8 @@ class _AddBlockPageState extends State<AddBlockPage> {
                     //TODO: error?
                   }
                 },
-                child: Text(DBString.standard_add, style: Theme.of(context).primaryTextTheme.button),
+                child: Text(DBString.standard_add,
+                    style: Theme.of(context).primaryTextTheme.button),
               )
             ],
           ),
@@ -167,22 +170,60 @@ class _AddBlockPageState extends State<AddBlockPage> {
   }
 
   Widget _buildIconSelector(BuildContext context) {
-    return InkWell(
-      child: Container(
-        color: Theme.of(context).backgroundColor,
-        padding: EdgeInsets.all(DBDimens.PaddingDefault),
-        child: Row(
-          children: [
-            Icon(Icons.filter, color: Theme.of(context).accentIconTheme.color),
-            SizedBox(width: DBDimens.PaddingDefault),
-            Expanded(child: Text("Name")),
-            Icon(Icons.chevron_right, color: Theme.of(context).accentIconTheme.color),
-          ],
-        ),
-      ),
-      onTap: () async {
-        selectedSize = await Navigator.push(context, MaterialPageRoute(builder: (context) => SelectCardPropsPage()));
-      },
-    );
+    return StreamBuilder(
+        stream: _blockBloc.getSelectedCardSizeStream(),
+        builder: (context, AsyncSnapshot<CardSize> snapshot) {
+          if (snapshot.hasData) {
+            var cardSize = snapshot.data;
+
+            switch (cardSize) {
+              case CardSize.BIG:
+                return InkWell(
+                  child: Container(
+                      color: Theme.of(context).backgroundColor,
+                      padding: EdgeInsets.all(DBDimens.PaddingDefault),
+                      child: Row(
+                        children: [
+                          Icon(Icons.filter,
+                              color: Theme.of(context).accentIconTheme.color),
+                          SizedBox(width: DBDimens.PaddingDefault),
+                          Expanded(child: Text(cardSize.tag)),
+                          Icon(Icons.chevron_right,
+                              color: Theme.of(context).accentIconTheme.color),
+                        ],
+                      )),
+                  onTap: () async {
+                    await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => SelectCardPropsPage()));
+                  },
+                );
+              default:
+                return InkWell(
+                  child: Container(
+                      color: Theme.of(context).backgroundColor,
+                      padding: EdgeInsets.all(DBDimens.PaddingDefault),
+                      child: Row(
+                        children: [
+                          Icon(Icons.filter,
+                              color: Theme.of(context).accentIconTheme.color),
+                          SizedBox(width: DBDimens.PaddingDefault),
+                          Expanded(child: Text(cardSize.tag)),
+                          Icon(Icons.chevron_right,
+                              color: Theme.of(context).accentIconTheme.color),
+                        ],
+                      )),
+                  onTap: () async {
+                    await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => SelectCardPropsPage()));
+                  },
+                );
+            }
+          }
+          return Container();
+        });
   }
 }

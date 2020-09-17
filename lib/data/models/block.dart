@@ -171,7 +171,7 @@ class CardBlock extends Block {
   final String title;
   final String description;
   final String thumbUrl;
-  final CardSize size;
+  CardSize size;
 
   CardBlock({
     final String uid,
@@ -179,7 +179,7 @@ class CardBlock extends Block {
     @required this.title,
     @required this.description,
     @required this.thumbUrl,
-    @required this.size,
+    this.size,
     final List<String> sections,
   }) : super(uid: uid, type: BlockType.CARD, sections: sections);
 
@@ -223,7 +223,9 @@ class ListBlock extends Block {
   static ListBlock fromJson(String uid, dynamic json) {
     return ListBlock(
       uid: uid,
-      cards: (json["cards"] as List).map((card) => CardBlock.fromJson(uid, card)).toList(),
+      cards: (json["cards"] as List)
+          .map((card) => CardBlock.fromJson(uid, card))
+          .toList(),
     );
   }
 

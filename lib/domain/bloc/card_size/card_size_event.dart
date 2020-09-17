@@ -10,3 +10,14 @@ class GetCardSizeEvent extends CardSizeEvent {
   @override
   String toString() => 'GetCardSizeEvent';
 }
+
+class SelectCardSizeEvent extends CardSizeEvent {
+  final CardSize cardSize;
+
+  const SelectCardSizeEvent({
+    @required this.cardSize,
+  });
+
+  @override
+  String toString() => 'SelectCardSizeEvent: ${cardSize.tag}';
+}

@@ -1,4 +1,5 @@
 import 'package:doce_blocks/data/models/block.dart';
+import 'package:doce_blocks/domain/bloc/blocks/blocks_bloc.dart';
 import 'package:doce_blocks/domain/bloc/card_size/card_size_bloc.dart';
 import 'package:doce_blocks/presentation/utils/dimens.dart';
 import 'package:doce_blocks/presentation/utils/strings.dart';
@@ -32,7 +33,8 @@ class _SelectCardPropsPageState extends State<SelectCardPropsPage> {
         appBar: AppBar(
           backgroundColor: Colors.white,
           iconTheme: Theme.of(context).accentIconTheme,
-          title: Text(DBString.add_block_choose_size_title, style: Theme.of(context).textTheme.headline6),
+          title: Text(DBString.add_block_choose_size_title,
+              style: Theme.of(context).textTheme.headline6),
           elevation: 0.0,
         ),
         body: _buildContent(context));
@@ -51,7 +53,8 @@ class _SelectCardPropsPageState extends State<SelectCardPropsPage> {
   Widget _buildContent(BuildContext context) {
     return BlocProvider<CardSizeBloc>(
         create: (_) => CardSizeBloc()..add(GetCardSizeEvent()),
-        child: BlocBuilder<CardSizeBloc, CardSizeState>(builder: (context, state) {
+        child:
+            BlocBuilder<CardSizeBloc, CardSizeState>(builder: (context, state) {
           if (state is GetCardSizeInitial) {
             final values = state.values;
 
@@ -70,12 +73,17 @@ class _SelectCardPropsPageState extends State<SelectCardPropsPage> {
                               padding: EdgeInsets.all(DBDimens.PaddingDefault),
                               child: Row(
                                 children: [
-                                  Text(value.tag, style: Theme.of(context).textTheme.bodyText1),
+                                  Text(value.tag,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyText1),
                                 ],
                               ),
                             ),
                             onTap: () {
-                              Navigator.pop(context, value);
+                              BlocProvider.of<CardSizeBloc>(context)
+                                  .add(SelectCardSizeEvent(cardSize: value));
+                              Navigator.pop(context);
                             },
                           ),
                         ],

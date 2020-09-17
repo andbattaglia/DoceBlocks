@@ -363,11 +363,6 @@ class _BlockComposerPageState extends State<BlockComposerPage> {
                 children: [
                   _buildIconSelector(
                       context,
-                      Icons.edit,
-                      DBString.standard_edit,
-                      () => Navigator.of(context).pop()),
-                  _buildIconSelector(
-                      context,
                       Icons.delete,
                       DBString.standard_remove,
                       () => Navigator.of(context).pop()),
