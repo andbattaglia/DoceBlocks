@@ -115,7 +115,7 @@ class _BlockComposerPageState extends State<BlockComposerPage> {
         mainAxisSize: MainAxisSize.max,
         children: [
           Expanded(
-              flex: 6,
+              flex: 7,
               child: Container(
                 child: DragTarget(
                   builder: (context, List<String> candidateData, rejectedData) {
@@ -153,25 +153,16 @@ class _BlockComposerPageState extends State<BlockComposerPage> {
                               MaterialPageRoute(
                                   builder: (context) => AddBlockPage()));
                           break;
-                        case Type.VIDEO:
-                          setState(() {
-                            _isEditMode = false;
-                          });
-                          _floatingButtonController.add(false);
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => AddBlockPage()));
-                          break;
                         case Type.LIST:
                           setState(() {
                             _isEditMode = false;
                           });
                           _floatingButtonController.add(false);
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => AddBlockPage()));
+                          //TODO: call Docebo catalog
+                          // Navigator.push(
+                          //     context,
+                          //     MaterialPageRoute(
+                          //         builder: (context) => AddBlockPage()));
                           break;
                       }
                     });
@@ -180,7 +171,7 @@ class _BlockComposerPageState extends State<BlockComposerPage> {
               )),
           Divider(color: Colors.grey, height: 1),
           Expanded(
-              flex: 5,
+              flex: 3,
               child: Container(
                 child: GridView.count(
                     crossAxisCount: 2,
@@ -194,10 +185,6 @@ class _BlockComposerPageState extends State<BlockComposerPage> {
                           child: DraggableItem(
                               type: Type.LIST,
                               name: DBString.draggable_item_list)),
-                      Container(
-                          child: DraggableItem(
-                              type: Type.VIDEO,
-                              name: DBString.draggable_item_video))
                     ]),
               ))
         ],
@@ -266,7 +253,7 @@ class _BlockComposerPageState extends State<BlockComposerPage> {
                   textAlign: TextAlign.start,
                   style: Theme.of(context).textTheme.bodyText2),
               SizedBox(height: DBDimens.PaddingDefault),
-              _buildCardFooter(context),
+              _buildCardFooter(context, cardBlock.uid),
               SizedBox(height: DBDimens.PaddingDefault),
               Divider(color: Colors.grey, height: 1),
             ],
@@ -317,17 +304,17 @@ class _BlockComposerPageState extends State<BlockComposerPage> {
                   ],
                 ),
                 SizedBox(height: DBDimens.PaddingDefault),
-                _buildCardFooter(context),
+                _buildCardFooter(context, cardBlock.uid),
                 SizedBox(height: DBDimens.PaddingDefault),
                 Divider(color: Colors.grey, height: 1),
               ],
             )));
   }
 
-  Widget _buildCardFooter(BuildContext context) {
+  Widget _buildCardFooter(BuildContext context, String blockId) {
     return Row(
       children: [
-        Expanded(flex: 1, child: Text("by Andrea")),
+        Expanded(flex: 1, child: Text("by Hairy-Hearts")),
         Icon(
           Icons.book,
           color: Colors.grey[400],
@@ -337,7 +324,7 @@ class _BlockComposerPageState extends State<BlockComposerPage> {
           onTap: () {
             showModalBottomSheet(
                 context: context,
-                builder: (context) => _buildCardBottomSheet(context));
+                builder: (context) => _buildCardBottomSheet(context, blockId));
           },
           child: Icon(
             Icons.more_horiz,
@@ -348,7 +335,7 @@ class _BlockComposerPageState extends State<BlockComposerPage> {
     );
   }
 
-  Widget _buildCardBottomSheet(BuildContext context) {
+  Widget _buildCardBottomSheet(BuildContext context, String blockId) {
     return Wrap(children: <Widget>[
       Container(
         child: Container(
@@ -362,10 +349,10 @@ class _BlockComposerPageState extends State<BlockComposerPage> {
               child: Column(
                 children: [
                   _buildIconSelector(
-                      context,
-                      Icons.delete,
-                      DBString.standard_remove,
-                      () => Navigator.of(context).pop()),
+                      context, Icons.delete, DBString.standard_remove, () {
+                    _blocksBloc.add(DeleteBlockEvent(blockId: blockId));
+                    Navigator.of(context).pop();
+                  }),
                   _buildIconSelector(
                       context,
                       Icons.close,

@@ -36,3 +36,14 @@ class GetBlocksEvent extends BlocksEvent {
   @override
   String toString() => 'GetBlocksEvent ${this.pageId}';
 }
+
+class DeleteBlockEvent extends BlocksEvent {
+  final String blockId;
+
+  const DeleteBlockEvent({
+    @required this.blockId,
+  });
+
+  @override
+  String toString() => 'DeleteBlockEvent ${this.blockId}';
+}

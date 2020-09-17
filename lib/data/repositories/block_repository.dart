@@ -68,12 +68,11 @@ class BlockRepositoryImpl implements BlockRepository {
   }
 
   @override
-  void deleteBlock(String userId, String blockId) async {
-    await _firebaseDataSource
-        .deleteSection(pageId)
-        .then((value) => _firebaseDataSource.getSections(userId))
-        .then((value) =>
-            _subjectCachedSections.add(setSelected(value, id: pageId)));
+  void deleteBlock(String pageId, String blockId) {
+    _firebaseDataSource
+        .deleteBlock(blockId)
+        .then((value) => _firebaseDataSource.getBlocks(pageId))
+        .then((value) => _subjectCachedBlock.add(value));
   }
 
   @override

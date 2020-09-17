@@ -42,6 +42,13 @@ class BlocksBloc extends Bloc<BlocksEvent, BlocksState> {
       block.sections.add(selectedSectionId);
       blockRepository.addCardBlock(block);
     }
+
+    if (event is DeleteBlockEvent) {
+      final blockRepository = Injector.provideBlockRepository();
+      final sectionRepository = Injector.provideSectionRepository();
+      final selectedSectionId = sectionRepository.getSelectedSectionId();
+      blockRepository.deleteBlock(selectedSectionId, event.blockId);
+    }
   }
 
   ValueStream<List<Block>> getBlocksStream() {
