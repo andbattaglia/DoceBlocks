@@ -11,6 +11,7 @@ import 'package:doce_blocks/presentation/utils/cross_platform_svg.dart';
 import 'package:doce_blocks/presentation/utils/dimens.dart';
 import 'package:doce_blocks/presentation/utils/strings.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
 class BlockComposerPage extends StatefulWidget {
@@ -93,9 +94,7 @@ class _BlockComposerPageState extends State<BlockComposerPage> {
                         switch (block.type) {
                           case BlockType.CARD:
                             CardBlock cardBlock = block as CardBlock;
-                            return (cardBlock.size == CardSize.BIG)
-                                ? _buildCardBlock(context, cardBlock)
-                                : _buildSmallCardBlock(context, cardBlock);
+                            return (cardBlock.size == CardSize.BIG) ? _buildCardBlock(context, cardBlock) : _buildSmallCardBlock(context, cardBlock);
                           default:
                             return Container();
                         }
@@ -121,17 +120,13 @@ class _BlockComposerPageState extends State<BlockComposerPage> {
                 child: DragTarget(
                   builder: (context, List<String> candidateData, rejectedData) {
                     return Container(
-                        padding: EdgeInsets.only(
-                            left: DBDimens.Padding50,
-                            right: DBDimens.Padding50),
+                        padding: EdgeInsets.only(left: DBDimens.Padding50, right: DBDimens.Padding50),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             CrossPlatformSvg.asset('assets/empty_slate.svg'),
                             SizedBox(height: DBDimens.PaddingDefault),
-                            Text(DBString.composer_drag_drop_description,
-                                textAlign: TextAlign.center,
-                                style: Theme.of(context).textTheme.bodyText1),
+                            Text(DBString.composer_drag_drop_description, textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodyText1),
                             SizedBox(
                               height: DBDimens.Padding50,
                             ),
@@ -149,16 +144,16 @@ class _BlockComposerPageState extends State<BlockComposerPage> {
                             _isEditMode = false;
                           });
                           _floatingButtonController.add(false);
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => AddBlockPage()));
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => AddBlockPage()));
                           break;
                         case Type.LIST:
                           setState(() {
                             _isEditMode = false;
                           });
                           _floatingButtonController.add(false);
+
+                          _blocksBloc.add(SyncDoceboCatalogEvent());
+
                           //TODO: call Docebo catalog
                           // Navigator.push(
                           //     context,
@@ -174,19 +169,10 @@ class _BlockComposerPageState extends State<BlockComposerPage> {
           Expanded(
               flex: 3,
               child: Container(
-                child: GridView.count(
-                    crossAxisCount: 2,
-                    childAspectRatio: 1.2 / 1.0,
-                    children: [
-                      Container(
-                          child: DraggableItem(
-                              type: Type.ARTICLE,
-                              name: DBString.draggable_item_article)),
-                      Container(
-                          child: DraggableItem(
-                              type: Type.LIST,
-                              name: DBString.draggable_item_list)),
-                    ]),
+                child: GridView.count(crossAxisCount: 2, childAspectRatio: 1.2 / 1.0, children: [
+                  Container(child: DraggableItem(type: Type.ARTICLE, name: DBString.draggable_item_article)),
+                  Container(child: DraggableItem(type: Type.LIST, name: DBString.draggable_item_list)),
+                ]),
               ))
         ],
       ),
@@ -199,21 +185,15 @@ class _BlockComposerPageState extends State<BlockComposerPage> {
   Widget _buildEmptySlate(BuildContext context) {
     return Container(
         color: Theme.of(context).backgroundColor,
-        padding: EdgeInsets.only(
-            left: DBDimens.Padding50, right: DBDimens.Padding50),
+        padding: EdgeInsets.only(left: DBDimens.Padding50, right: DBDimens.Padding50),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(DBString.composer_empty_slate_title,
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.headline4),
+            Text(DBString.composer_empty_slate_title, textAlign: TextAlign.center, style: Theme.of(context).textTheme.headline4),
             SizedBox(height: DBDimens.PaddingDouble),
-            CrossPlatformSvg.asset('assets/empty_slate_section.svg',
-                height: 180, width: 180),
+            CrossPlatformSvg.asset('assets/empty_slate_section.svg', height: 180, width: 180),
             SizedBox(height: DBDimens.PaddingDouble),
-            Text(DBString.composer_empty_slate_description,
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.bodyText1),
+            Text(DBString.composer_empty_slate_description, textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodyText1),
           ],
         ));
   }
@@ -223,11 +203,15 @@ class _BlockComposerPageState extends State<BlockComposerPage> {
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   Widget _buildCardBlock(BuildContext context, CardBlock cardBlock) {
     return InkWell(
-        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => PlayerPage(url: cardBlock.url,))),
+        onTap: () => Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => PlayerPage(
+                      url: cardBlock.url,
+                    ))),
         child: Container(
           width: double.infinity,
-          padding: EdgeInsets.only(
-              top: DBDimens.PaddingHalf, bottom: DBDimens.PaddingHalf),
+          padding: EdgeInsets.only(top: DBDimens.PaddingHalf, bottom: DBDimens.PaddingHalf),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -242,17 +226,9 @@ class _BlockComposerPageState extends State<BlockComposerPage> {
                 ),
               ),
               SizedBox(height: DBDimens.PaddingDefault),
-              Text(cardBlock.title,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.start,
-                  style: Theme.of(context).textTheme.headline6),
+              Text(cardBlock.title, maxLines: 2, overflow: TextOverflow.ellipsis, textAlign: TextAlign.start, style: Theme.of(context).textTheme.headline6),
               SizedBox(height: DBDimens.PaddingHalf),
-              Text(cardBlock.description,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.start,
-                  style: Theme.of(context).textTheme.bodyText2),
+              Text(cardBlock.description, maxLines: 2, overflow: TextOverflow.ellipsis, textAlign: TextAlign.start, style: Theme.of(context).textTheme.bodyText2),
               SizedBox(height: DBDimens.PaddingDefault),
               _buildCardFooter(context, cardBlock.uid),
               SizedBox(height: DBDimens.PaddingDefault),
@@ -264,11 +240,15 @@ class _BlockComposerPageState extends State<BlockComposerPage> {
 
   Widget _buildSmallCardBlock(BuildContext context, CardBlock cardBlock) {
     return InkWell(
-        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => PlayerPage(url: cardBlock.url,))),
+        onTap: () => Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => PlayerPage(
+                      url: cardBlock.url,
+                    ))),
         child: Container(
             width: double.infinity,
-            padding: EdgeInsets.only(
-                top: DBDimens.PaddingHalf, bottom: DBDimens.PaddingHalf),
+            padding: EdgeInsets.only(top: DBDimens.PaddingHalf, bottom: DBDimens.PaddingHalf),
             child: Column(
               children: [
                 Row(
@@ -277,17 +257,9 @@ class _BlockComposerPageState extends State<BlockComposerPage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(cardBlock.title,
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                              textAlign: TextAlign.start,
-                              style: Theme.of(context).textTheme.headline6),
+                          Text(cardBlock.title, maxLines: 2, overflow: TextOverflow.ellipsis, textAlign: TextAlign.start, style: Theme.of(context).textTheme.headline6),
                           SizedBox(height: DBDimens.PaddingHalf),
-                          Text(cardBlock.description,
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                              textAlign: TextAlign.start,
-                              style: Theme.of(context).textTheme.bodyText2),
+                          Text(cardBlock.description, maxLines: 2, overflow: TextOverflow.ellipsis, textAlign: TextAlign.start, style: Theme.of(context).textTheme.bodyText2),
                         ],
                       ),
                     ),
@@ -323,9 +295,7 @@ class _BlockComposerPageState extends State<BlockComposerPage> {
         SizedBox(width: DBDimens.PaddingHalf),
         InkWell(
           onTap: () {
-            showModalBottomSheet(
-                context: context,
-                builder: (context) => _buildCardBottomSheet(context, blockId));
+            showModalBottomSheet(context: context, builder: (context) => _buildCardBottomSheet(context, blockId));
           },
           child: Icon(
             Icons.more_horiz,
@@ -340,25 +310,16 @@ class _BlockComposerPageState extends State<BlockComposerPage> {
     return Wrap(children: <Widget>[
       Container(
         child: Container(
-          decoration: new BoxDecoration(
-              color: Colors.white,
-              borderRadius: new BorderRadius.only(
-                  topLeft: const Radius.circular(25.0),
-                  topRight: const Radius.circular(25.0))),
+          decoration: new BoxDecoration(color: Colors.white, borderRadius: new BorderRadius.only(topLeft: const Radius.circular(25.0), topRight: const Radius.circular(25.0))),
           child: SafeArea(
             child: Container(
               child: Column(
                 children: [
-                  _buildIconSelector(
-                      context, Icons.delete, DBString.standard_remove, () {
+                  _buildIconSelector(context, Icons.delete, DBString.standard_remove, () {
                     _blocksBloc.add(DeleteBlockEvent(blockId: blockId));
                     Navigator.of(context).pop();
                   }),
-                  _buildIconSelector(
-                      context,
-                      Icons.close,
-                      DBString.standard_cancel,
-                      () => Navigator.of(context).pop()),
+                  _buildIconSelector(context, Icons.close, DBString.standard_cancel, () => Navigator.of(context).pop()),
                 ],
               ),
             ),
@@ -368,8 +329,7 @@ class _BlockComposerPageState extends State<BlockComposerPage> {
     ]);
   }
 
-  Widget _buildIconSelector(
-      BuildContext context, IconData icon, String text, VoidCallback onAction) {
+  Widget _buildIconSelector(BuildContext context, IconData icon, String text, VoidCallback onAction) {
     return InkWell(
       child: Container(
           color: Theme.of(context).backgroundColor,

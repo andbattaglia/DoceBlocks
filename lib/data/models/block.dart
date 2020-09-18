@@ -1,3 +1,5 @@
+import 'package:lipsum/lipsum.dart' as lipsum;
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
@@ -70,6 +72,19 @@ abstract class Block extends Equatable {
       default:
         return UnknownBlock.fromJson(uid, json);
     }
+  }
+
+  static Block fromDoceboApi(dynamic item, CardSize size) {
+    final seed = item["item_id"] as String ?? "seed";
+
+    return CardBlock(
+      url: "https://www.google.com",
+      title: item["item_name"] as String,
+      description: lipsum.createSentence(),
+      thumbUrl: "https://picsum.photos/seed/$seed/254/254",
+      size: size,
+      sections: [],
+    );
   }
 
   static Map<String, Object> toDocument(Block block) {
@@ -223,9 +238,7 @@ class ListBlock extends Block {
   static ListBlock fromJson(String uid, dynamic json) {
     return ListBlock(
       uid: uid,
-      cards: (json["cards"] as List)
-          .map((card) => CardBlock.fromJson(uid, card))
-          .toList(),
+      cards: (json["cards"] as List).map((card) => CardBlock.fromJson(uid, card)).toList(),
     );
   }
 

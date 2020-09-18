@@ -126,7 +126,7 @@ class _SectionsListPageState extends State<SectionsListPage> {
             borderRadius: BorderRadius.all(Radius.circular(DBDimens.CornerDefault)),
             onTap: () {
               _sectionsBloc.add(SelectSectionEvent(id: section.uid));
-              _blocksBloc.add(GetBlocksEvent(pageId: section.uid));
+              _blocksBloc.add(GetBlocksEvent(sectionId: section.uid));
               Navigator.pop(context);
             },
             child: Container(

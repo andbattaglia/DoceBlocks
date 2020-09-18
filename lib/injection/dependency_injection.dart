@@ -46,27 +46,32 @@ class Injector {
   //          DATASOURCE
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   static FirebaseDataSource provideFirebaseDataSource() {
-    var firebaseAuth = Injector.provideFirebaseAuth();
-    var firestore = Injector.provideFirestore();
+    final firebaseAuth = Injector.provideFirebaseAuth();
+    final firestore = Injector.provideFirestore();
     return FirebaseDataSourceImpl(auth: firebaseAuth, db: firestore);
+  }
+
+  static DoceboDataSource provideDoceboDataSource() {
+    return DoceboDataSourceImpl();
   }
 
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //          REPOSITORY
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   static UserRepository provideUserRepository() {
-    var firebaseDatasource = Injector.provideFirebaseDataSource();
+    final firebaseDatasource = Injector.provideFirebaseDataSource();
     return UserRepositoryImpl(firebaseDataSource: firebaseDatasource);
   }
 
   static SectionRepository provideSectionRepository() {
-    var firebaseDatasource = Injector.provideFirebaseDataSource();
+    final firebaseDatasource = Injector.provideFirebaseDataSource();
     return SectionRepositoryImpl(firebaseDataSource: firebaseDatasource);
   }
 
-  static BlockRepositoryImpl provideBlockRepository() {
-    var firebaseDatasource = Injector.provideFirebaseDataSource();
-    return BlockRepositoryImpl(firebaseDataSource: firebaseDatasource);
+  static BlockRepository provideBlockRepository() {
+    final firebaseDatasource = Injector.provideFirebaseDataSource();
+    final doceboDataSource = Injector.provideDoceboDataSource();
+    return BlockRepositoryImpl(firebaseDataSource: firebaseDatasource, doceboDataSource: doceboDataSource);
   }
 
   static AppRepository provideAppRepository() {
