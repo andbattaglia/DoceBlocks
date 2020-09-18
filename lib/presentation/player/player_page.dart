@@ -1,9 +1,7 @@
-import 'dart:async';
-
 import 'package:doce_blocks/presentation/utils/strings.dart';
+import 'package:easy_web_view/easy_web_view.dart';
 import 'package:flutter/material.dart';
 import 'package:responsive_builder/responsive_builder.dart';
-import 'package:webview_flutter/webview_flutter.dart';
 
 class PlayerPage extends StatefulWidget {
   final String url;
@@ -50,28 +48,11 @@ class _PlayerPageState extends State<PlayerPage> {
   //          CONTENT
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   Widget _buildContent(BuildContext context) {
-    final Completer<WebViewController> _controller =
-        Completer<WebViewController>();
-
-    return WebView(
-      initialUrl: widget.url,
-      javascriptMode: JavascriptMode.unrestricted,
-      onWebViewCreated: (WebViewController webViewController) {
-        _controller.complete(webViewController);
-      },
-      navigationDelegate: (NavigationRequest request) {
-        if (request.url.startsWith('https://www.youtube.com/')) {
-          return NavigationDecision.prevent;
-        }
-        return NavigationDecision.navigate;
-      },
-      onPageStarted: (String url) {
-        print('Page started loading: $url');
-      },
-      onPageFinished: (String url) {
-        print('Page finished loading: $url');
-      },
-      gestureNavigationEnabled: true,
+    return EasyWebView(
+      src: widget.url,
+      onLoaded: () {},
+      isHtml: false,
+      isMarkdown: false,
     );
   }
 }

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:doce_blocks/data/models/models.dart';
 import 'package:doce_blocks/domain/bloc/blocks/blocks_bloc.dart';
 import 'package:doce_blocks/domain/bloc/sections/sections_bloc.dart';
@@ -5,7 +7,6 @@ import 'package:doce_blocks/presentation/pages/add_section_page.dart';
 import 'package:doce_blocks/presentation/utils/dimens.dart';
 import 'package:doce_blocks/presentation/utils/strings.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
 class SectionsListPage extends StatefulWidget {
@@ -16,8 +17,6 @@ class SectionsListPage extends StatefulWidget {
 class _SectionsListPageState extends State<SectionsListPage> {
   SectionsBloc _sectionsBloc;
   BlocksBloc _blocksBloc;
-
-  bool _backEnabled = false;
 
   @override
   void initState() {
@@ -30,14 +29,8 @@ class _SectionsListPageState extends State<SectionsListPage> {
     return ScreenTypeLayout(
       mobile: _buildSmallPage(context),
       tablet: OrientationLayoutBuilder(
-        portrait: (context) {
-          _backEnabled = true;
-          return _buildSmallPage(context);
-        },
-        landscape: (context) {
-          _backEnabled = false;
-          return _buildSmallPage(context);
-        },
+        portrait: (context) => _buildSmallPage(context),
+        landscape: (context) => _buildSmallPage(context),
       ),
       desktop: _buildSmallPage(context),
     );
@@ -67,11 +60,6 @@ class _SectionsListPageState extends State<SectionsListPage> {
               return Container();
             }));
   }
-
-  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  //          LARGE PAGE
-  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  Widget _buildLargePage(BuildContext context) {}
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //          PAGE_ITEM
@@ -116,7 +104,8 @@ class _SectionsListPageState extends State<SectionsListPage> {
               _sectionsBloc.add(SelectSectionEvent(id: section.uid));
               _blocksBloc.add(GetBlocksEvent(sectionId: section.uid));
 
-              if (_backEnabled) {
+              var deviceType = getDeviceType(MediaQuery.of(context).size);
+              if (deviceType == DeviceScreenType.mobile) {
                 Navigator.pop(context);
               }
             },
@@ -124,8 +113,7 @@ class _SectionsListPageState extends State<SectionsListPage> {
               padding: EdgeInsets.all(DBDimens.PaddingDefault),
               child: Row(
                 children: [
-                  Icon(section.materialIcon,
-                      color: Theme.of(context).primaryIconTheme.color),
+                  Icon(section.materialIcon, color: Colors.grey),
                   SizedBox(width: DBDimens.PaddingHalf),
                   Expanded(
                       child: Text(section.name,
@@ -135,85 +123,6 @@ class _SectionsListPageState extends State<SectionsListPage> {
             )),
       ),
     );
-  }
-
-  Widget _buildLargePageItem(BuildContext context, Section section) {
-    return Container(
-        margin: EdgeInsets.only(left: DBDimens.PaddingDefault),
-        child: Column(
-          children: [
-            Container(
-              height: 8,
-              color: section.isSelected
-                  ? Theme.of(context).backgroundColor
-                  : Colors.transparent,
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Theme.of(context).primaryColor,
-                  borderRadius: BorderRadius.only(
-                      bottomRight: Radius.circular(DBDimens.CornerDefault)),
-                ),
-              ),
-            ),
-            Container(
-              height: 56,
-              padding: EdgeInsets.only(left: DBDimens.PaddingDefault),
-              decoration: BoxDecoration(
-                color: section.isSelected
-                    ? Theme.of(context).backgroundColor
-                    : Colors.transparent,
-                borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(DBDimens.CornerDefault),
-                    topLeft: Radius.circular(DBDimens.CornerDefault)),
-              ),
-              child: new InkWell(
-                  borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(DBDimens.CornerDefault),
-                      topLeft: Radius.circular(DBDimens.CornerDefault)),
-                  onTap: () {
-                    BlocProvider.of<SectionsBloc>(context)
-                        .add(SelectSectionEvent(id: section.uid));
-                  },
-                  child: Container(
-                    constraints: BoxConstraints.expand(),
-                    child: Row(
-                      children: [
-                        Expanded(
-                            child: Text(section.name,
-                                style: section.isSelected
-                                    ? Theme.of(context).textTheme.bodyText1
-                                    : Theme.of(context)
-                                        .accentTextTheme
-                                        .bodyText1)),
-                        IconButton(
-                          icon: Icon(Icons.close,
-                              color: section.isSelected
-                                  ? Theme.of(context).primaryIconTheme.color
-                                  : Theme.of(context).iconTheme.color),
-                          onPressed: () {
-                            BlocProvider.of<SectionsBloc>(context)
-                                .add(DeleteSectionEvent(id: section.uid));
-                          },
-                        ),
-                      ],
-                    ),
-                  )),
-            ),
-            Container(
-              height: 8,
-              color: section.isSelected
-                  ? Theme.of(context).backgroundColor
-                  : Colors.transparent,
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Theme.of(context).primaryColor,
-                  borderRadius: BorderRadius.only(
-                      topRight: Radius.circular(DBDimens.CornerDefault)),
-                ),
-              ),
-            ),
-          ],
-        ));
   }
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

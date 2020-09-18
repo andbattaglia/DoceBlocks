@@ -65,7 +65,8 @@ class _HomePageState extends State<HomePage> {
                           left: DBDimens.PaddingDefault,
                           right: DBDimens.PaddingDefault,
                           bottom: DBDimens.PaddingDefault),
-                      child: CrossPlatformSvg.asset('assets/logo.svg'),
+                      child:
+                          CrossPlatformSvg.asset('assets/logo.png', height: 30),
                     ),
                     Divider(color: Colors.grey, height: 1),
                     _buildHeader(context),
@@ -85,15 +86,15 @@ class _HomePageState extends State<HomePage> {
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   Widget _buildLargePage(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
-      body: SafeArea(
-          child: Column(
+        backgroundColor: Theme.of(context).backgroundColor,
+        body: SafeArea(
+            child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
               height: DBDimens.ToolbarHeigth,
               padding: EdgeInsets.all(DBDimens.PaddingDefault),
-              child: CrossPlatformSvg.asset('assets/logo.svg', height: 30),
+              child: CrossPlatformSvg.asset('assets/logo.png', height: 30),
             ),
             Divider(color: Colors.grey, height: 1),
             Expanded(
@@ -114,7 +115,6 @@ class _HomePageState extends State<HomePage> {
                       ],
                     ),
                   ),
-
                   Expanded(flex: 3, child: BlockComposerPage()),
                 ],
               ),
@@ -139,8 +139,7 @@ class _HomePageState extends State<HomePage> {
             padding: EdgeInsets.all(DBDimens.PaddingDefault),
             child: Row(
               children: [
-                Icon(Icons.account_circle,
-                    color: Theme.of(context).primaryIconTheme.color),
+                Icon(Icons.account_circle, color: Colors.grey),
                 SizedBox(width: DBDimens.PaddingHalf),
                 Expanded(
                     child: Text(DBString.profile_title,

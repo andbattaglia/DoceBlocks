@@ -78,7 +78,7 @@ abstract class Block extends Equatable {
     final seed = item["item_id"] as String ?? "seed";
 
     return CardBlock(
-      url: "https://www.google.com",
+      url: 'https://flutter.dev',
       title: item["item_name"] as String,
       description: lipsum.createSentence(),
       thumbUrl: "https://picsum.photos/seed/$seed/254/254",
@@ -238,7 +238,9 @@ class ListBlock extends Block {
   static ListBlock fromJson(String uid, dynamic json) {
     return ListBlock(
       uid: uid,
-      cards: (json["cards"] as List).map((card) => CardBlock.fromJson(uid, card)).toList(),
+      cards: (json["cards"] as List)
+          .map((card) => CardBlock.fromJson(uid, card))
+          .toList(),
     );
   }
 
