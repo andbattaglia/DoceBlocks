@@ -52,25 +52,31 @@ class LoginPage extends StatelessWidget {
   }
 
   Widget _buildLargeLayout(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          flex: 1,
-          child: Container(
-            alignment: Alignment.center,
-            color: Theme.of(context).primaryColor,
-            child: Image.asset('assets/login.png'),
-          ),
-        ),
-        Expanded(
-            flex: 1,
-            child: Container(
+    return Container(
+      alignment: Alignment.center,
+      color: Theme.of(context).backgroundColor,
+      child: Container(
+        width: 400,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
               alignment: Alignment.center,
-              color: Theme.of(context).backgroundColor,
+              child: Image.asset('assets/login.png', height: 170, width: 328),
+            ),
+
+            SizedBox(
+              height: DBDimens.Padding50,
+            ),
+
+            Container(
+              alignment: Alignment.center,
               child: LoginForm(),
             )
-        )
-      ],
+          ],
+        ),
+      ),
     );
   }
 }

@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:doce_blocks/data/models/block.dart';
 import 'package:doce_blocks/domain/bloc/bloc.dart';
@@ -11,7 +10,6 @@ import 'package:doce_blocks/presentation/utils/cross_platform_svg.dart';
 import 'package:doce_blocks/presentation/utils/dimens.dart';
 import 'package:doce_blocks/presentation/utils/strings.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
 class BlockComposerPage extends StatefulWidget {
@@ -47,6 +45,7 @@ class _BlockComposerPageState extends State<BlockComposerPage> {
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   Widget _buildSmallPage(BuildContext context) {
     return Scaffold(
+        backgroundColor: Theme.of(context).backgroundColor,
         floatingActionButton: FloatingActionAdd(
           onAdd: () {
             setState(() {
@@ -69,7 +68,27 @@ class _BlockComposerPageState extends State<BlockComposerPage> {
   //          LARGE PAGE
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   Widget _buildLargePage(BuildContext context) {
-    return Container();
+    return Scaffold(
+      backgroundColor: Theme.of(context).backgroundColor,
+      floatingActionButton: FloatingActionAdd(
+        onAdd: () {
+          setState(() {
+            _isEditMode = true;
+          });
+        },
+        onClose: () {
+          setState(() {
+            _isEditMode = false;
+          });
+        },
+        stream: _floatingButtonController.stream,
+      ),
+      body: _isEditMode ? _buildLargeEditMode(context) : Row(
+        children: [
+          Expanded(flex: 3, child: _buildContent(context)),
+          Expanded(flex: 1, child: Container()),
+        ],
+      ));
   }
 
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -153,12 +172,6 @@ class _BlockComposerPageState extends State<BlockComposerPage> {
                           _floatingButtonController.add(false);
 
                           _blocksBloc.add(SyncDoceboCatalogEvent());
-
-                          //TODO: call Docebo catalog
-                          // Navigator.push(
-                          //     context,
-                          //     MaterialPageRoute(
-                          //         builder: (context) => AddBlockPage()));
                           break;
                       }
                     });
@@ -170,6 +183,71 @@ class _BlockComposerPageState extends State<BlockComposerPage> {
               flex: 3,
               child: Container(
                 child: GridView.count(crossAxisCount: 2, childAspectRatio: 1.2 / 1.0, children: [
+                  Container(child: DraggableItem(type: Type.ARTICLE, name: DBString.draggable_item_article)),
+                  Container(child: DraggableItem(type: Type.LIST, name: DBString.draggable_item_list)),
+                ]),
+              ))
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLargeEditMode(BuildContext context) {
+    return Container(
+      color: Theme.of(context).backgroundColor,
+      child: Row(
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          Expanded(
+              flex: 3,
+              child: Container(
+                child: DragTarget(
+                  builder: (context, List<String> candidateData, rejectedData) {
+                    return Container(
+                        padding: EdgeInsets.only(left: DBDimens.Padding50, right: DBDimens.Padding50),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            CrossPlatformSvg.asset('assets/empty_slate.svg'),
+                            SizedBox(height: DBDimens.PaddingDefault),
+                            Text(DBString.composer_drag_drop_description, textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodyText1),
+                            SizedBox(
+                              height: DBDimens.Padding50,
+                            ),
+                          ],
+                        ));
+                  },
+                  onWillAccept: (data) {
+                    return true;
+                  },
+                  onAccept: (data) {
+                    setState(() {
+                      switch (Type.get[data]) {
+                        case Type.ARTICLE:
+                          setState(() {
+                            _isEditMode = false;
+                          });
+                          _floatingButtonController.add(false);
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => AddBlockPage()));
+                          break;
+                        case Type.LIST:
+                          setState(() {
+                            _isEditMode = false;
+                          });
+                          _floatingButtonController.add(false);
+
+                          _blocksBloc.add(SyncDoceboCatalogEvent());
+                          break;
+                      }
+                    });
+                  },
+                ),
+              )),
+          VerticalDivider(color: Colors.grey, width: 1),
+          Expanded(
+              flex: 1,
+              child: Container(
+                child: ListView( children: [
                   Container(child: DraggableItem(type: Type.ARTICLE, name: DBString.draggable_item_article)),
                   Container(child: DraggableItem(type: Type.LIST, name: DBString.draggable_item_list)),
                 ]),

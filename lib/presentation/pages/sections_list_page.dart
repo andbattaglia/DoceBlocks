@@ -17,6 +17,8 @@ class _SectionsListPageState extends State<SectionsListPage> {
   SectionsBloc _sectionsBloc;
   BlocksBloc _blocksBloc;
 
+  bool _backEnabled = false;
+
   @override
   void initState() {
     _sectionsBloc = new SectionsBloc();
@@ -28,10 +30,16 @@ class _SectionsListPageState extends State<SectionsListPage> {
     return ScreenTypeLayout(
       mobile: _buildSmallPage(context),
       tablet: OrientationLayoutBuilder(
-        portrait: (context) => _buildSmallPage(context),
-        landscape: (context) => _buildLargePage(context),
+        portrait: (context) {
+          _backEnabled = true;
+          return _buildSmallPage(context);
+        },
+        landscape: (context) {
+          _backEnabled = false;
+          return _buildSmallPage(context);
+        },
       ),
-      desktop: _buildLargePage(context),
+      desktop: _buildSmallPage(context),
     );
   }
 
@@ -63,36 +71,7 @@ class _SectionsListPageState extends State<SectionsListPage> {
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //          LARGE PAGE
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  Widget _buildLargePage(BuildContext context) {
-//    return BlocBuilder<PagesBloc, PagesState>(
-//        builder: (context, state) {
-//
-//          if(state is GetPagesSuccess){
-//
-//            var pagesList = state.pages;
-//
-//            return ListView.builder(
-//                itemCount: pagesList.length + 2,
-//                itemBuilder: (context, index) {
-//                  if(index == 0){
-//                    return ProfilePage();
-//                  } else if(index == pagesList.length + 1){
-//                    return _buildAddPageItem(context, false);
-//                  } else {
-//                    var customPage = pagesList[index-1];
-//                    return _buildLargePageItem(context, customPage);
-//                  }
-//                });
-//          }
-//
-//          return ListView(
-//            children: <Widget>[
-//              ProfilePage()
-//            ],
-//          );
-//        }
-//    );
-  }
+  Widget _buildLargePage(BuildContext context) {}
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //          PAGE_ITEM
@@ -105,7 +84,8 @@ class _SectionsListPageState extends State<SectionsListPage> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            Text(DBString.standard_remove, style: Theme.of(context).accentTextTheme.bodyText1),
+            Text(DBString.standard_remove,
+                style: Theme.of(context).accentTextTheme.bodyText1),
             SizedBox(width: DBDimens.PaddingHalf),
             Icon(Icons.delete, color: Theme.of(context).iconTheme.color),
             SizedBox(width: DBDimens.PaddingHalf),
@@ -117,25 +97,39 @@ class _SectionsListPageState extends State<SectionsListPage> {
         _sectionsBloc..add(DeleteSectionEvent(id: section.uid));
       },
       child: Container(
-        margin: EdgeInsets.only(top: DBDimens.PaddingHalf, right: DBDimens.PaddingHalf, bottom: DBDimens.PaddingHalf),
+        margin: EdgeInsets.only(
+            top: DBDimens.PaddingHalf,
+            right: DBDimens.PaddingHalf,
+            bottom: DBDimens.PaddingHalf),
         decoration: BoxDecoration(
-          color: section.isSelected ? Theme.of(context).selectedRowColor : Colors.transparent,
-          borderRadius: BorderRadius.only(topRight: Radius.circular(DBDimens.CornerDefault), bottomRight: Radius.circular(DBDimens.CornerDefault)),
+          color: section.isSelected
+              ? Theme.of(context).selectedRowColor
+              : Colors.transparent,
+          borderRadius: BorderRadius.only(
+              topRight: Radius.circular(DBDimens.CornerDefault),
+              bottomRight: Radius.circular(DBDimens.CornerDefault)),
         ),
         child: new InkWell(
-            borderRadius: BorderRadius.all(Radius.circular(DBDimens.CornerDefault)),
+            borderRadius:
+                BorderRadius.all(Radius.circular(DBDimens.CornerDefault)),
             onTap: () {
               _sectionsBloc.add(SelectSectionEvent(id: section.uid));
               _blocksBloc.add(GetBlocksEvent(sectionId: section.uid));
-              Navigator.pop(context);
+
+              if (_backEnabled) {
+                Navigator.pop(context);
+              }
             },
             child: Container(
               padding: EdgeInsets.all(DBDimens.PaddingDefault),
               child: Row(
                 children: [
-                  Icon(section.materialIcon, color: Theme.of(context).primaryIconTheme.color),
+                  Icon(section.materialIcon,
+                      color: Theme.of(context).primaryIconTheme.color),
                   SizedBox(width: DBDimens.PaddingHalf),
-                  Expanded(child: Text(section.name, style: Theme.of(context).textTheme.bodyText1)),
+                  Expanded(
+                      child: Text(section.name,
+                          style: Theme.of(context).textTheme.bodyText1)),
                 ],
               ),
             )),
@@ -150,11 +144,14 @@ class _SectionsListPageState extends State<SectionsListPage> {
           children: [
             Container(
               height: 8,
-              color: section.isSelected ? Theme.of(context).backgroundColor : Colors.transparent,
+              color: section.isSelected
+                  ? Theme.of(context).backgroundColor
+                  : Colors.transparent,
               child: Container(
                 decoration: BoxDecoration(
                   color: Theme.of(context).primaryColor,
-                  borderRadius: BorderRadius.only(bottomRight: Radius.circular(DBDimens.CornerDefault)),
+                  borderRadius: BorderRadius.only(
+                      bottomRight: Radius.circular(DBDimens.CornerDefault)),
                 ),
               ),
             ),
@@ -162,23 +159,40 @@ class _SectionsListPageState extends State<SectionsListPage> {
               height: 56,
               padding: EdgeInsets.only(left: DBDimens.PaddingDefault),
               decoration: BoxDecoration(
-                color: section.isSelected ? Theme.of(context).backgroundColor : Colors.transparent,
-                borderRadius: BorderRadius.only(bottomLeft: Radius.circular(DBDimens.CornerDefault), topLeft: Radius.circular(DBDimens.CornerDefault)),
+                color: section.isSelected
+                    ? Theme.of(context).backgroundColor
+                    : Colors.transparent,
+                borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(DBDimens.CornerDefault),
+                    topLeft: Radius.circular(DBDimens.CornerDefault)),
               ),
               child: new InkWell(
-                  borderRadius: BorderRadius.only(bottomLeft: Radius.circular(DBDimens.CornerDefault), topLeft: Radius.circular(DBDimens.CornerDefault)),
+                  borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(DBDimens.CornerDefault),
+                      topLeft: Radius.circular(DBDimens.CornerDefault)),
                   onTap: () {
-                    BlocProvider.of<SectionsBloc>(context).add(SelectSectionEvent(id: section.uid));
+                    BlocProvider.of<SectionsBloc>(context)
+                        .add(SelectSectionEvent(id: section.uid));
                   },
                   child: Container(
                     constraints: BoxConstraints.expand(),
                     child: Row(
                       children: [
-                        Expanded(child: Text(section.name, style: section.isSelected ? Theme.of(context).textTheme.bodyText1 : Theme.of(context).accentTextTheme.bodyText1)),
+                        Expanded(
+                            child: Text(section.name,
+                                style: section.isSelected
+                                    ? Theme.of(context).textTheme.bodyText1
+                                    : Theme.of(context)
+                                        .accentTextTheme
+                                        .bodyText1)),
                         IconButton(
-                          icon: Icon(Icons.close, color: section.isSelected ? Theme.of(context).primaryIconTheme.color : Theme.of(context).iconTheme.color),
+                          icon: Icon(Icons.close,
+                              color: section.isSelected
+                                  ? Theme.of(context).primaryIconTheme.color
+                                  : Theme.of(context).iconTheme.color),
                           onPressed: () {
-                            BlocProvider.of<SectionsBloc>(context).add(DeleteSectionEvent(id: section.uid));
+                            BlocProvider.of<SectionsBloc>(context)
+                                .add(DeleteSectionEvent(id: section.uid));
                           },
                         ),
                       ],
@@ -187,11 +201,14 @@ class _SectionsListPageState extends State<SectionsListPage> {
             ),
             Container(
               height: 8,
-              color: section.isSelected ? Theme.of(context).backgroundColor : Colors.transparent,
+              color: section.isSelected
+                  ? Theme.of(context).backgroundColor
+                  : Colors.transparent,
               child: Container(
                 decoration: BoxDecoration(
                   color: Theme.of(context).primaryColor,
-                  borderRadius: BorderRadius.only(topRight: Radius.circular(DBDimens.CornerDefault)),
+                  borderRadius: BorderRadius.only(
+                      topRight: Radius.circular(DBDimens.CornerDefault)),
                 ),
               ),
             ),
@@ -210,10 +227,12 @@ class _SectionsListPageState extends State<SectionsListPage> {
           padding: EdgeInsets.only(left: DBDimens.PaddingDefault),
           decoration: BoxDecoration(
             color: Colors.transparent,
-            borderRadius: BorderRadius.all(Radius.circular(DBDimens.CornerDefault)),
+            borderRadius:
+                BorderRadius.all(Radius.circular(DBDimens.CornerDefault)),
           ),
           child: new InkWell(
-              borderRadius: BorderRadius.all(Radius.circular(DBDimens.CornerDefault)),
+              borderRadius:
+                  BorderRadius.all(Radius.circular(DBDimens.CornerDefault)),
               onTap: () {
                 Navigator.push(
                   context,
@@ -225,9 +244,16 @@ class _SectionsListPageState extends State<SectionsListPage> {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text(DBString.standard_add.toUpperCase(), style: lightBackground ? Theme.of(context).primaryTextTheme.button : Theme.of(context).primaryTextTheme.button),
+                    Text(DBString.standard_add.toUpperCase(),
+                        style: lightBackground
+                            ? Theme.of(context).primaryTextTheme.button
+                            : Theme.of(context).primaryTextTheme.button),
                     SizedBox(width: DBDimens.PaddingHalf),
-                    Icon(Icons.add, size: DBDimens.IconSizeSmall, color: lightBackground ? Theme.of(context).primaryIconTheme.color : Theme.of(context).primaryIconTheme.color)
+                    Icon(Icons.add,
+                        size: DBDimens.IconSizeSmall,
+                        color: lightBackground
+                            ? Theme.of(context).primaryIconTheme.color
+                            : Theme.of(context).primaryIconTheme.color)
                   ],
                 ),
               )),
