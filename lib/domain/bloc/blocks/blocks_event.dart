@@ -27,14 +27,21 @@ class AddCardBlockEvent extends BlocksEvent {
 }
 
 class GetBlocksEvent extends BlocksEvent {
-  final String pageId;
+  final String sectionId;
 
   const GetBlocksEvent({
-    @required this.pageId,
+    @required this.sectionId,
   });
 
   @override
-  String toString() => 'GetBlocksEvent ${this.pageId}';
+  String toString() => 'GetBlocksEvent ${this.sectionId}';
+}
+
+class SyncDoceboCatalogEvent extends BlocksEvent {
+  const SyncDoceboCatalogEvent();
+
+  @override
+  String toString() => 'SyncDoceboCatalogEvent';
 }
 
 class DeleteBlockEvent extends BlocksEvent {

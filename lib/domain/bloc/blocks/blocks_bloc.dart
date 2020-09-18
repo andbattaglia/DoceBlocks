@@ -19,7 +19,7 @@ class BlocksBloc extends Bloc<BlocksEvent, BlocksState> {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     if (event is GetBlocksEvent) {
       final blockRepository = Injector.provideBlockRepository();
-      blockRepository.getBlocks(event.pageId);
+      blockRepository.getBlocks(event.sectionId);
     }
 
     if (event is AddBlocksEvent) {
@@ -48,6 +48,13 @@ class BlocksBloc extends Bloc<BlocksEvent, BlocksState> {
       final sectionRepository = Injector.provideSectionRepository();
       final selectedSectionId = sectionRepository.getSelectedSectionId();
       blockRepository.deleteBlock(selectedSectionId, event.blockId);
+    }
+
+    if (event is SyncDoceboCatalogEvent) {
+      final blockRepository = Injector.provideBlockRepository();
+      final sectionRepository = Injector.provideSectionRepository();
+      final selectedSectionId = sectionRepository.getSelectedSectionId();
+      blockRepository.syncDoceboCatalog(selectedSectionId);
     }
   }
 
