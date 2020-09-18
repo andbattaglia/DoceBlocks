@@ -5,9 +5,8 @@ class SplashPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(child:
-        CrossPlatformSvg.asset('assets/logo.svg')
-      ),
+      body:
+          Center(child: CrossPlatformSvg.asset('assets/logo.png', height: 40)),
     );
   }
 }

@@ -111,9 +111,15 @@ class FirebaseDataSourceImpl extends FirebaseDataSource {
   }
 
   @override
-  Future<void> deleteSection(String sectionId) {
-    final CollectionReference dbReference = _db.collection('sections');
-    return dbReference.document(sectionId).delete();
+  Future<void> deleteSection(String sectionId) async {
+    final CollectionReference dbSectionReference = _db.collection('sections');
+    await dbSectionReference.document(sectionId).delete();
+    final CollectionReference dbBlockReference = _db.collection('blocks');
+    await dbBlockReference.where('sections', arrayContains: sectionId).getDocuments().then((snapshot) {
+      for (DocumentSnapshot ds in snapshot.documents){
+        ds.reference.delete();
+      }
+    });
   }
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

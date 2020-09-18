@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:doce_blocks/data/models/models.dart';
 import 'package:doce_blocks/domain/bloc/blocks/blocks_bloc.dart';
 import 'package:doce_blocks/domain/bloc/sections/sections_bloc.dart';
@@ -5,7 +7,6 @@ import 'package:doce_blocks/presentation/pages/add_section_page.dart';
 import 'package:doce_blocks/presentation/utils/dimens.dart';
 import 'package:doce_blocks/presentation/utils/strings.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
 class SectionsListPage extends StatefulWidget {
@@ -29,9 +30,9 @@ class _SectionsListPageState extends State<SectionsListPage> {
       mobile: _buildSmallPage(context),
       tablet: OrientationLayoutBuilder(
         portrait: (context) => _buildSmallPage(context),
-        landscape: (context) => _buildLargePage(context),
+        landscape: (context) => _buildSmallPage(context),
       ),
-      desktop: _buildLargePage(context),
+      desktop: _buildSmallPage(context),
     );
   }
 
@@ -61,40 +62,6 @@ class _SectionsListPageState extends State<SectionsListPage> {
   }
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  //          LARGE PAGE
-  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  Widget _buildLargePage(BuildContext context) {
-//    return BlocBuilder<PagesBloc, PagesState>(
-//        builder: (context, state) {
-//
-//          if(state is GetPagesSuccess){
-//
-//            var pagesList = state.pages;
-//
-//            return ListView.builder(
-//                itemCount: pagesList.length + 2,
-//                itemBuilder: (context, index) {
-//                  if(index == 0){
-//                    return ProfilePage();
-//                  } else if(index == pagesList.length + 1){
-//                    return _buildAddPageItem(context, false);
-//                  } else {
-//                    var customPage = pagesList[index-1];
-//                    return _buildLargePageItem(context, customPage);
-//                  }
-//                });
-//          }
-//
-//          return ListView(
-//            children: <Widget>[
-//              ProfilePage()
-//            ],
-//          );
-//        }
-//    );
-  }
-
-  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //          PAGE_ITEM
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   Widget _buildSmallPageItem(BuildContext context, Section section) {
@@ -105,7 +72,8 @@ class _SectionsListPageState extends State<SectionsListPage> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            Text(DBString.standard_remove, style: Theme.of(context).accentTextTheme.bodyText1),
+            Text(DBString.standard_remove,
+                style: Theme.of(context).accentTextTheme.bodyText1),
             SizedBox(width: DBDimens.PaddingHalf),
             Icon(Icons.delete, color: Theme.of(context).iconTheme.color),
             SizedBox(width: DBDimens.PaddingHalf),
@@ -117,86 +85,44 @@ class _SectionsListPageState extends State<SectionsListPage> {
         _sectionsBloc..add(DeleteSectionEvent(id: section.uid));
       },
       child: Container(
-        margin: EdgeInsets.only(top: DBDimens.PaddingHalf, right: DBDimens.PaddingHalf, bottom: DBDimens.PaddingHalf),
+        margin: EdgeInsets.only(
+            top: DBDimens.PaddingHalf,
+            right: DBDimens.PaddingHalf,
+            bottom: DBDimens.PaddingHalf),
         decoration: BoxDecoration(
-          color: section.isSelected ? Theme.of(context).selectedRowColor : Colors.transparent,
-          borderRadius: BorderRadius.only(topRight: Radius.circular(DBDimens.CornerDefault), bottomRight: Radius.circular(DBDimens.CornerDefault)),
+          color: section.isSelected
+              ? Theme.of(context).selectedRowColor
+              : Colors.transparent,
+          borderRadius: BorderRadius.only(
+              topRight: Radius.circular(DBDimens.CornerDefault),
+              bottomRight: Radius.circular(DBDimens.CornerDefault)),
         ),
         child: new InkWell(
-            borderRadius: BorderRadius.all(Radius.circular(DBDimens.CornerDefault)),
+            borderRadius:
+                BorderRadius.all(Radius.circular(DBDimens.CornerDefault)),
             onTap: () {
               _sectionsBloc.add(SelectSectionEvent(id: section.uid));
               _blocksBloc.add(GetBlocksEvent(sectionId: section.uid));
-              Navigator.pop(context);
+
+              var deviceType = getDeviceType(MediaQuery.of(context).size);
+              if (deviceType == DeviceScreenType.mobile) {
+                Navigator.pop(context);
+              }
             },
             child: Container(
               padding: EdgeInsets.all(DBDimens.PaddingDefault),
               child: Row(
                 children: [
-                  Icon(section.materialIcon, color: Theme.of(context).primaryIconTheme.color),
+                  Icon(section.materialIcon, color: Colors.grey),
                   SizedBox(width: DBDimens.PaddingHalf),
-                  Expanded(child: Text(section.name, style: Theme.of(context).textTheme.bodyText1)),
+                  Expanded(
+                      child: Text(section.name,
+                          style: Theme.of(context).textTheme.bodyText1)),
                 ],
               ),
             )),
       ),
     );
-  }
-
-  Widget _buildLargePageItem(BuildContext context, Section section) {
-    return Container(
-        margin: EdgeInsets.only(left: DBDimens.PaddingDefault),
-        child: Column(
-          children: [
-            Container(
-              height: 8,
-              color: section.isSelected ? Theme.of(context).backgroundColor : Colors.transparent,
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Theme.of(context).primaryColor,
-                  borderRadius: BorderRadius.only(bottomRight: Radius.circular(DBDimens.CornerDefault)),
-                ),
-              ),
-            ),
-            Container(
-              height: 56,
-              padding: EdgeInsets.only(left: DBDimens.PaddingDefault),
-              decoration: BoxDecoration(
-                color: section.isSelected ? Theme.of(context).backgroundColor : Colors.transparent,
-                borderRadius: BorderRadius.only(bottomLeft: Radius.circular(DBDimens.CornerDefault), topLeft: Radius.circular(DBDimens.CornerDefault)),
-              ),
-              child: new InkWell(
-                  borderRadius: BorderRadius.only(bottomLeft: Radius.circular(DBDimens.CornerDefault), topLeft: Radius.circular(DBDimens.CornerDefault)),
-                  onTap: () {
-                    BlocProvider.of<SectionsBloc>(context).add(SelectSectionEvent(id: section.uid));
-                  },
-                  child: Container(
-                    constraints: BoxConstraints.expand(),
-                    child: Row(
-                      children: [
-                        Expanded(child: Text(section.name, style: section.isSelected ? Theme.of(context).textTheme.bodyText1 : Theme.of(context).accentTextTheme.bodyText1)),
-                        IconButton(
-                          icon: Icon(Icons.close, color: section.isSelected ? Theme.of(context).primaryIconTheme.color : Theme.of(context).iconTheme.color),
-                          onPressed: () {
-                            BlocProvider.of<SectionsBloc>(context).add(DeleteSectionEvent(id: section.uid));
-                          },
-                        ),
-                      ],
-                    ),
-                  )),
-            ),
-            Container(
-              height: 8,
-              color: section.isSelected ? Theme.of(context).backgroundColor : Colors.transparent,
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Theme.of(context).primaryColor,
-                  borderRadius: BorderRadius.only(topRight: Radius.circular(DBDimens.CornerDefault)),
-                ),
-              ),
-            ),
-          ],
-        ));
   }
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -210,10 +136,12 @@ class _SectionsListPageState extends State<SectionsListPage> {
           padding: EdgeInsets.only(left: DBDimens.PaddingDefault),
           decoration: BoxDecoration(
             color: Colors.transparent,
-            borderRadius: BorderRadius.all(Radius.circular(DBDimens.CornerDefault)),
+            borderRadius:
+                BorderRadius.all(Radius.circular(DBDimens.CornerDefault)),
           ),
           child: new InkWell(
-              borderRadius: BorderRadius.all(Radius.circular(DBDimens.CornerDefault)),
+              borderRadius:
+                  BorderRadius.all(Radius.circular(DBDimens.CornerDefault)),
               onTap: () {
                 Navigator.push(
                   context,
@@ -225,9 +153,16 @@ class _SectionsListPageState extends State<SectionsListPage> {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text(DBString.standard_add.toUpperCase(), style: lightBackground ? Theme.of(context).primaryTextTheme.button : Theme.of(context).primaryTextTheme.button),
+                    Text(DBString.standard_add.toUpperCase(),
+                        style: lightBackground
+                            ? Theme.of(context).primaryTextTheme.button
+                            : Theme.of(context).primaryTextTheme.button),
                     SizedBox(width: DBDimens.PaddingHalf),
-                    Icon(Icons.add, size: DBDimens.IconSizeSmall, color: lightBackground ? Theme.of(context).primaryIconTheme.color : Theme.of(context).primaryIconTheme.color)
+                    Icon(Icons.add,
+                        size: DBDimens.IconSizeSmall,
+                        color: lightBackground
+                            ? Theme.of(context).primaryIconTheme.color
+                            : Theme.of(context).primaryIconTheme.color)
                   ],
                 ),
               )),

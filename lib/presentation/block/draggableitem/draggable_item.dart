@@ -4,7 +4,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class DraggableItem extends StatelessWidget {
-
   final Type type;
   final String name;
 
@@ -15,31 +14,29 @@ class DraggableItem extends StatelessWidget {
     return Container(
         width: 210, //TODO: to calculate
         height: 170, //TODO: to calculate
-        padding: EdgeInsets.only(left: DBDimens.PaddingDefault, right: DBDimens.PaddingDefault),
+        padding: EdgeInsets.only(
+            left: DBDimens.PaddingDefault, right: DBDimens.PaddingDefault),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-
             Container(
                 padding: EdgeInsets.all(DBDimens.PaddingDefault),
                 decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(4),
-                    border: Border.all(color: Color(0xFFdfe4e8))
-                ),
-                child: _buildDraggableTile(context)
-            ),
-
+                    border: Border.all(color: Color(0xFFdfe4e8))),
+                child: _buildDraggableTile(context)),
             SizedBox(height: DBDimens.PaddingHalf),
-            Text(name, textAlign: TextAlign.center, style: Theme.of(context).textTheme.headline6),
+            Text(name,
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.headline6),
           ],
-        )
-    );
+        ));
   }
 
   Widget _buildDraggableTile(BuildContext context) {
-    var tile =   CrossPlatformSvg.asset(_mapIcon(), width: 72, height: 72);
+    var tile = CrossPlatformSvg.asset(_mapIcon(), width: 72, height: 72);
 
     return Draggable(
       data: type.tag,
@@ -50,44 +47,34 @@ class DraggableItem extends StatelessWidget {
         child: tile,
       ),
       onDragCompleted: () {},
-      onDragEnd: (drag) {
-      },
+      onDragEnd: (drag) {},
     );
   }
 
-  String _mapIcon(){
-    switch(type){
+  String _mapIcon() {
+    switch (type) {
       case Type.LIST:
-        return 'assets/icon_list.svg';
-      case Type.VIDEO:
-        return 'assets/icon_video.svg';
+        return 'assets/icon_list.png';
       default:
-        return 'assets/icon_article.svg';
+        return 'assets/icon_article.png';
     }
   }
 }
 
-enum Type {
-  get,
-  ARTICLE,
-  VIDEO,
-  LIST
-}
+enum Type { get, ARTICLE, VIDEO, LIST }
 
 extension TypeString on Type {
   String get tag => describeEnum(this);
   operator [](String key) => (name) {
-    switch (name) {
-      case 'ARTICLE':
-        return Type.ARTICLE;
-      case 'LIST':
-        return Type.LIST;
-      case 'VIDEO':
-        return Type.VIDEO;
-      default:
-        throw RangeError("enum TypeString contains no value '$name'");
-    }
-  }(key);
+        switch (name) {
+          case 'ARTICLE':
+            return Type.ARTICLE;
+          case 'LIST':
+            return Type.LIST;
+          case 'VIDEO':
+            return Type.VIDEO;
+          default:
+            throw RangeError("enum TypeString contains no value '$name'");
+        }
+      }(key);
 }
-
-

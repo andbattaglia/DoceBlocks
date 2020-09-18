@@ -32,9 +32,9 @@ class _AddSectionPageState extends State<AddSectionPage> {
           mobile: _buildSmallPage(context),
           tablet: OrientationLayoutBuilder(
             portrait: (context) => _buildSmallPage(context),
-            landscape: (context) => _buildLargePage(context),
+            landscape: (context) => _buildSmallPage(context),
           ),
-          desktop: _buildLargePage(context),
+          desktop: _buildSmallPage(context),
         ));
   }
 

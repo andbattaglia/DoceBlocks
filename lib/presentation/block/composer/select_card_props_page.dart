@@ -19,9 +19,9 @@ class _SelectCardPropsPageState extends State<SelectCardPropsPage> {
       mobile: _buildSmallPage(context),
       tablet: OrientationLayoutBuilder(
         portrait: (context) => _buildSmallPage(context),
-        landscape: (context) => _buildLargePage(context),
+        landscape: (context) => _buildSmallPage(context),
       ),
-      desktop: _buildLargePage(context),
+      desktop: _buildSmallPage(context),
     );
   }
 
@@ -38,13 +38,6 @@ class _SelectCardPropsPageState extends State<SelectCardPropsPage> {
           elevation: 0.0,
         ),
         body: _buildContent(context));
-  }
-
-  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  //          LARGE PAGE
-  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  Widget _buildLargePage(BuildContext context) {
-    return Container();
   }
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

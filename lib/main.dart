@@ -38,6 +38,7 @@ class App extends StatelessWidget {
       builder: (context, state){
 
         return new MaterialApp(
+          debugShowCheckedModeBanner: false,
           title: DBString.title,
           theme: kLightTheme,
           darkTheme: kDarkTheme,

@@ -19,9 +19,9 @@ class _ProfilePageState extends State<ProfilePage> {
       mobile: _buildSmallPage(context),
       tablet: OrientationLayoutBuilder(
         portrait: (context) => _buildSmallPage(context),
-        landscape: (context) => _buildLargePage(context),
+        landscape: (context) => _buildSmallPage(context),
       ),
-      desktop: _buildLargePage(context),
+      desktop: _buildSmallPage(context),
     );
   }
 
@@ -42,20 +42,6 @@ class _ProfilePageState extends State<ProfilePage> {
         ),);
   }
 
-  Widget _buildLargePage(BuildContext context){
-//    return BlocBuilder<AuthenticationBloc, AuthenticationState>(
-//      builder: (context, state){
-//        if(state is AuthenticationSuccess){
-//          return Container(
-//            padding: EdgeInsets.only(left: DBDimens.PaddingDefault, right: DBDimens.PaddingDefault, top: DBDimens.PaddingDefault, bottom: DBDimens.PaddingHalf),
-//            child: _buildContent(state.user),
-//          );
-//        }
-//        return Container();
-//      },
-//    );
-  }
-
   Widget _buildContent(){
     return BlocBuilder<AuthenticationBloc, AuthenticationState>(
       builder: (context, state){
@@ -64,6 +50,7 @@ class _ProfilePageState extends State<ProfilePage> {
           User user = state.user;
 
           return Container(
+            padding: EdgeInsets.all(DBDimens.PaddingDefault),
             color: Theme.of(context).backgroundColor,
             child:
             Column(
