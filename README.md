@@ -1,16 +1,25 @@
-# doce_blocks
+# DoceBlocks
 
 A Project for Docebo Internal Hackaton 2020
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+1. To install flutter SDK follow this [guide](https://flutter.dev/docs/get-started/install "Flutter Install").
+2. To run the web application use this command line:
+```console
+flutter run -d web --release
+```
+3. To run mobile application get the device id using thie command:
+```console
+flutter devices
+```
+after launch the command to run the applicazione:
+```console
+flutter run -d <device_id>
+```
 
-A few resources to get you started if this is your first Flutter project:
+## Web app
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+to try the web application click on this [link](https://doceblock.web.app/#/ "doceblocks").
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+
